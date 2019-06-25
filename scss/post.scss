@@ -1,0 +1,31 @@
+@charset "UTF-8";
+/* stylelint-disable color-hex-length */
+
+/*
+ * Navigation bar colors and layout.
+ */
+.navbar {
+  background-color: $savoir-darkgrey;
+  padding-left: initial;
+
+  div.logo {
+    background-color: $primary;
+  }
+  .savoir-site-name {
+    font-weight: bolder;
+    color: white;
+  }
+  .usermenu a.dropdown-toggle, .usermenu .login a {
+    color: $navbar-dark-active-color;
+
+    @include hover-focus {
+      color: $navbar-dark-active-color;
+    }
+  }
+}
+[data-region="drawer-toggle"] {
+  width: $drawer-width;
+  .drawer-img {
+    max-height: $navbar-brand-height;
+  }
+}
