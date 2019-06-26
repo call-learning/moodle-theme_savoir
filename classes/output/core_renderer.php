@@ -16,10 +16,18 @@
 
 namespace theme_savoir\output;
 
+use action_menu;
+use action_menu_filler;
+use action_menu_link_secondary;
+use block_contents;
+use block_move_target;
+use coding_exception;
 use context_system;
+use core_text;
 use custom_menu;
 use html_writer;
 use moodle_url;
+use pix_icon;
 use renderer_base;
 use stdClass;
 use context_course;
@@ -277,13 +285,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $loginpage = $this->is_login_page();
         $loginurl = get_login_url();
         // If not logged in, show the typical not-logged-in string.
-        $loginpage = $this->is_login_page();
-        $loginurl = get_login_url();
-        // If not logged in, show the typical not-logged-in string.
         if (!isloggedin()) {
+            // SAVOIR-ENSAM: Modificiations : do not display prompt
             $returnstr = "";
+            // SAVOIR-ENSAM: Modificiations
             if (!$loginpage) {
-                $returnstr .= " <a href=\"$loginurl\">" . get_string('login') . '</a> ';
+                $returnstr .= " (<a href=\"$loginurl\">" . get_string('login') . '</a>)';
             }
             return html_writer::div(
                     html_writer::span(
@@ -292,7 +299,227 @@ class core_renderer extends \theme_boost\output\core_renderer {
                     ),
                     $usermenuclasses
             );
+
         }
-        return parent::user_menu($user, $withlinks);
+
+        // If logged in as a guest user, show a string to that effect.
+        if (isguestuser()) {
+            $returnstr = get_string('loggedinasguest');
+            if (!$loginpage && $withlinks) {
+                $returnstr .= " (<a href=\"$loginurl\">".get_string('login').'</a>)';
+            }
+
+            return html_writer::div(
+                    html_writer::span(
+                            $returnstr,
+                            'login'
+                    ),
+                    $usermenuclasses
+            );
+        }
+
+        // Get some navigation opts.
+        $opts = user_get_user_navigation_info($user, $this->page);
+
+        $avatarclasses = "avatars";
+        $avatarcontents = html_writer::span($opts->metadata['useravatar'], 'avatar current');
+        $usertextcontents = $opts->metadata['userfullname'];
+
+        // Other user.
+        if (!empty($opts->metadata['asotheruser'])) {
+            $avatarcontents .= html_writer::span(
+                    $opts->metadata['realuseravatar'],
+                    'avatar realuser'
+            );
+            $usertextcontents = $opts->metadata['realuserfullname'];
+            $usertextcontents .= html_writer::tag(
+                    'span',
+                    get_string(
+                            'loggedinas',
+                            'moodle',
+                            html_writer::span(
+                                    $opts->metadata['userfullname'],
+                                    'value'
+                            )
+                    ),
+                    array('class' => 'meta viewingas')
+            );
+        }
+
+        // Role.
+        if (!empty($opts->metadata['asotherrole'])) {
+            $role = core_text::strtolower(preg_replace('#[ ]+#', '-', trim($opts->metadata['rolename'])));
+            $usertextcontents .= html_writer::span(
+                    $opts->metadata['rolename'],
+                    'meta role role-' . $role
+            );
+        }
+
+        // User login failures.
+        if (!empty($opts->metadata['userloginfail'])) {
+            $usertextcontents .= html_writer::span(
+                    $opts->metadata['userloginfail'],
+                    'meta loginfailures'
+            );
+        }
+
+        // MNet.
+        if (!empty($opts->metadata['asmnetuser'])) {
+            $mnet = strtolower(preg_replace('#[ ]+#', '-', trim($opts->metadata['mnetidprovidername'])));
+            $usertextcontents .= html_writer::span(
+                    $opts->metadata['mnetidprovidername'],
+                    'meta mnet mnet-' . $mnet
+            );
+        }
+        // SAVOIR-ENSAM: Modificiations : switch avatar and login name
+        $returnstr .= html_writer::span(
+                html_writer::span($avatarcontents, $avatarclasses).
+                html_writer::span($usertextcontents, 'usertext mr-1'),
+                'userbutton'
+        );
+        // END SAVOIR-ENSAM
+
+        // Create a divider (well, a filler).
+        $divider = new action_menu_filler();
+        $divider->primary = false;
+
+        $am = new action_menu();
+        $am->set_menu_trigger(
+                $returnstr
+        );
+        $am->set_action_label(get_string('usermenu'));
+        $am->set_alignment(action_menu::TR, action_menu::BR);
+        $am->set_nowrap_on_items();
+        if ($withlinks) {
+            $navitemcount = count($opts->navitems);
+            $idx = 0;
+            foreach ($opts->navitems as $key => $value) {
+
+                switch ($value->itemtype) {
+                    case 'divider':
+                        // If the nav item is a divider, add one and skip link processing.
+                        $am->add($divider);
+                        break;
+
+                    case 'invalid':
+                        // Silently skip invalid entries (should we post a notification?).
+                        break;
+
+                    case 'link':
+                        // Process this as a link item.
+                        $pix = null;
+                        if (isset($value->pix) && !empty($value->pix)) {
+                            $pix = new pix_icon($value->pix, '', null, array('class' => 'iconsmall'));
+                        } else if (isset($value->imgsrc) && !empty($value->imgsrc)) {
+                            $value->title = html_writer::img(
+                                            $value->imgsrc,
+                                            $value->title,
+                                            array('class' => 'iconsmall')
+                                    ) . $value->title;
+                        }
+
+                        $al = new action_menu_link_secondary(
+                                $value->url,
+                                $pix,
+                                $value->title,
+                                array('class' => 'icon')
+                        );
+                        if (!empty($value->titleidentifier)) {
+                            $al->attributes['data-title'] = $value->titleidentifier;
+                        }
+                        $am->add($al);
+                        break;
+                }
+
+                $idx++;
+
+                // Add dividers after the first item and before the last item.
+                if ($idx == 1 || $idx == $navitemcount - 1) {
+                    $am->add($divider);
+                }
+            }
+        }
+
+        return html_writer::div(
+                $this->render($am),
+                $usermenuclasses
+        );
     }
+    /**
+     * Renders a custom block region.
+     * OVERRIDE FOR SAVOIR DASHBOARD : layout block in the center area
+     * Use this method if you want to add an additional block region to the content of the page.
+     * Please note this should only be used in special situations.
+     * We want to leave the theme is control where ever possible!
+     *
+     * This method must use the same method that the theme uses within its layout file.
+     * As such it asks the theme what method it is using.
+     * It can be one of two values, blocks or blocks_for_region (deprecated).
+     *
+     * @param string $regionname The name of the custom region to add.
+     * @return string HTML for the block region.
+     */
+    public function custom_block_region($regionname) {
+        if ($this->page->theme->get_block_render_method() === 'blocks') {
+            global $PAGE;
+            if ($PAGE->pagelayout == 'mydashboard') {
+                return $this->blocks($regionname, array('d-flex', 'flex-wrap', 'justify-content-between')); // Wrap and flex the blocks
+            } else {
+                return $this->blocks($regionname);
+            }
+        } else {
+            return $this->blocks_for_region($regionname);
+        }
+    }
+    /**
+     * Output all the blocks in a particular region.
+     * OVERRIDE FOR SAVOIR DASHBOARD : layout block in the center area
+     * @param string $region the name of a region on this page.
+     * @return string the HTML to be output.
+     */
+    public function blocks_for_region($region) {
+        global $PAGE;
+        $blockcontents = $this->page->blocks->get_content_for_region($region, $this);
+        $blocks = $this->page->blocks->get_blocks_for_region($region);
+        $lastblock = null;
+        $zones = array();
+        foreach ($blocks as $block) {
+            $zones[] = $block->title;
+        }
+        $output = '';
+
+        $oddnumberblocks =  ( count($blockcontents) % 2);
+        foreach ($blockcontents as $index => $bc) {
+            if ($bc instanceof block_contents) {
+                $blockclass = '';
+
+                if ($PAGE->pagelayout == 'mydashboard') {
+                    $blockclass = ($index == (count($blockcontents)-1)
+                            && $oddnumberblocks)?
+                            'db-singleblock':'db-doubleblock';
+                }
+                $output .= $this->block($bc, $region, $blockclass);
+                $lastblock = $bc->title;
+            } else if ($bc instanceof block_move_target) {
+                $output .= $this->block_move_target($bc, $zones, $lastblock, $region);
+            } else {
+                throw new coding_exception('Unexpected type of thing (' . get_class($bc) . ') found in list of block contents.');
+            }
+        }
+        return $output;
+    }
+    /**
+     * Prints a nice side block with an optional header.
+     * OVERRIDE FOR SAVOIR DASHBOARD : layout block in the center area
+     *
+     * @param block_contents $bc HTML for the content
+     * @param string $region the region the block is appearing in.
+     * @return string the HTML to be output.
+     */
+    public function block(block_contents $bc, $region, $additionalclasses='') {
+        $bc = clone($bc); // Avoid messing up the object passed in.
+        $bc->attributes['class'] .= $additionalclasses;
+        return parent::block($bc, $region);
+    }
+
 }
