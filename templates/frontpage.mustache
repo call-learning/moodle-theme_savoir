@@ -46,14 +46,14 @@
 
     {{>theme_savoir/navbar}}
 
-    <div id="page" class="container-fluid">
+    <div id="page" class="d-flex flex-column justify-content-between">
+        {{{ output.course_content_header }}}
         {{{ output.full_header }}}
-        <div id="page-content" class="row">
-            <div id="region-main-box" class="col-12">
+        <div id="page-content" class="d-flex justify-content-end">
+            <div id="region-main-box">
                 <section id="region-main">
                     <div class="card">
                         <div class="card-body">
-                            {{{ output.course_content_header }}}
                             {{{ output.main_content }}}
                             {{{ output.activity_navigation }}}
                             {{{ output.course_content_footer }}}

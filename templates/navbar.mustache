@@ -20,19 +20,30 @@
 <nav class="fixed-top navbar navbar-dark navbar-expand moodle-has-zindex" aria-label="{{#str}}sitemenubar, admin{{/str}}">
 
     {{^ output.should_display_sandwitch_menu }}
-        <div class="d-inline-block mr-3 pl-3 logo">
-            <a href="{{{ config.wwwroot }}}" class="navbar-brand has-logo">
-         <span class="logo d-none d-sm-inline">
-            <img src="{{output.get_logo_url}}" alt="{{sitename}}">
-         </span>
-            </a>
+        <div class="d-inline-block mr-3 pl-3 pr-0 mr-0 logo">
+            <div class="d-flex">
+                    <a href="{{{ config.wwwroot }}}" class="navbar-brand has-logo m-auto">
+                        <div class="mx-auto d-none d-sm-block">
+                            <img src="{{output.get_logo_url}}" alt="{{sitename}}">
+                        </div>
+                        <div class="mx-auto d-sm-none">
+                            <img src="{{output.get_compact_logo_url}}" alt="{{sitename}}">
+                        </div>
+                    </a>
+            </div>
         </div>
     {{/ output.should_display_sandwitch_menu }}
     {{# output.should_display_sandwitch_menu }}
         <div data-region="drawer-toggle" class="d-inline-block mr-3">
             <button aria-expanded="{{#navdraweropen}}true{{/navdraweropen}}{{^navdraweropen}}false{{/navdraweropen}}" aria-controls="nav-drawer" type="button"
-                    class="btn nav-link float-sm-left mr-1 btn-light bg-gray" data-action="toggle-drawer" data-side="left" data-preference="drawer-open-nav">
-                <img class='drawer-img' src="{{output.get_logo_url}}" alt="{{sitename}}"><span class="sr-only">{{#str}}sidepanel, core{{/str}}</span></button>
+                    class="btn nav-link float-sm-left btn-primary " data-action="toggle-drawer" data-side="left" data-preference="drawer-open-nav">
+                <span class="mx-auto d-none d-sm-block">
+                    <img class='drawer-img' src="{{output.get_logo_url}}" alt="{{sitename}}">
+                </span>
+                <span class="mx-auto d-sm-none">
+                    <img class='drawer-img' src="{{output.get_compact_logo_url}}" alt="{{sitename}}">
+                </span>
+                <span class="sr-only">{{#str}}sidepanel, core{{/str}}</span></button>
         </div>
     {{/ output.should_display_sandwitch_menu }}
 

@@ -50,34 +50,34 @@ $headings-font-weight: 300 !default;
 
 /** Check other navbar definitions such as padding, etc... */
 
-$navbar-dark-color:                 $white !default;
-$navbar-dark-hover-color:           rgba($white, .80) !default;
-$navbar-dark-active-color:          $white !default;
-$navbar-dark-disabled-color:        rgba($white, .25) !default;
-$navbar-dark-toggler-icon-bg:       str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23") !default;
-$navbar-dark-toggler-border-color:  rgba($white, .1) !default;
+$navbar-dark-color: $white !default;
+$navbar-dark-hover-color: darken($navbar-dark-color, 10%) !default;
+$navbar-dark-active-color: darken($navbar-dark-color, 10%) !default;
+$navbar-dark-disabled-color: darken($navbar-dark-color, 30%) !default;
+$navbar-dark-toggler-icon-bg: str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"), "#", "%23") !default;
+$navbar-dark-toggler-border-color: darken($navbar-dark-color, 10%) !default;
 
 // Dropdowns
 //
 // Dropdown menu container and contents.
-$dropdown-bg:                       $savoir-lightergrey !default;
-$dropdown-border-color:             rgba($black, .15) !default;
-$dropdown-divider-bg:               $gray-200 !default;
-$dropdown-box-shadow:               0 .5rem 1rem rgba($black, .175) !default;
+$dropdown-bg: $savoir-lightergrey !default;
+$dropdown-border-color: rgba($black, .15) !default;
+$dropdown-divider-bg: $gray-200 !default;
+$dropdown-box-shadow: 0 .5rem 1rem rgba($black, .175) !default;
 
-$dropdown-link-color:               $white !default;
-$dropdown-link-hover-color:         rgba($dropdown-link-color, .1) !default;
-$dropdown-link-hover-bg:            rgba($dropdown-bg, .1) !default;
+$dropdown-link-color: $white !default;
+$dropdown-link-hover-color: lighten($dropdown-link-color, 10%) !default;
+$dropdown-link-hover-bg: darken($dropdown-bg, 10%) !default;
 
-$dropdown-link-active-color:        rgba($dropdown-link-color, .1) !default;
-$dropdown-link-active-bg:           rgba($dropdown-bg, .1) !default;
+$dropdown-link-active-color: lighten($dropdown-link-color, 10%) !default;
+$dropdown-link-active-bg: darken($dropdown-bg, 10%) !default;
 
-$dropdown-link-disabled-color:      $gray-600 !default;
+$dropdown-link-disabled-color: saturate($dropdown-link-color, 30%) !default;
 
-$dropdown-item-padding-y:           .25rem !default;
-$dropdown-item-padding-x:           1.5rem !default;
+$dropdown-item-padding-y: .25rem !default;
+$dropdown-item-padding-x: 1.5rem !default;
 
-$dropdown-header-color:             $gray-600 !default;
+$dropdown-header-color: $gray-600 !default;
 
 
 // Breadcrumbs

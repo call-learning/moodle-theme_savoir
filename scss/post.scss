@@ -1,6 +1,26 @@
 @charset "UTF-8";
 /* stylelint-disable color-hex-length */
 
+/* Utilities */
+
+/* see: https://css-tricks.com/books/volume-i/scale-typography-screen-size/ */
+@function calculate-dynamic-font-size($min-size-em, $max-size-em) {
+  @return calc(#{$min-size-em} - #{$max-size-em/1em - $min-size-em/1em} * (100vw - #{map-get($grid-breakpoints, "sm")}) / #{ map-get($grid-breakpoints, "lg")/1px - map-get($grid-breakpoints, "sm")/1px});
+}
+/*
+ We keep this for an eventual uThere is a bug with Moodle PostCSS processor, that prevent using complex expression in calc expressions so we have
+ to thread carefully https://tracker.moodle.org/browse/MDL-61879
+*/
+
+/*
+  Fixes
+ */
+
+.dropdown-item a {
+  display: block;
+  width: 100%;
+  color: $dropdown-link-color;
+}
 /*
  * Navigation bar colors and layout.
  */
@@ -10,22 +30,120 @@
 
   div.logo {
     background-color: $primary;
+    width: $drawer-width;
+    height: $navbar-height; // For FFX
   }
+
   .savoir-site-name {
     font-weight: bolder;
     color: white;
   }
-  .usermenu a.dropdown-toggle, .usermenu .login a {
-    color: $navbar-dark-active-color;
 
-    @include hover-focus {
+  .usermenu {
+    a.dropdown-toggle,  .login a {
       color: $navbar-dark-active-color;
+
+      @include hover-focus {
+        color: $navbar-dark-active-color;
+      }
+    }
+    .dropdown-menu {
+      width: 100%;
+    }
+  }
+/*  .dropdown.nav-item.show {
+    background: $dropdown-bg;
+  }
+*/
+}
+
+[data-region="drawer-toggle"] {
+  width: $drawer-width;
+  @media (max-width: map-get($grid-breakpoints, "md")) {
+    width: auto;
+  }
+  .drawer-img {
+    max-height: 35px; /* To be consistent with front page logo size */
+  }
+  button {
+    padding: 7px;
+    border: none;
+    width: 100%;
+    &:focus {
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
     }
   }
 }
-[data-region="drawer-toggle"] {
-  width: $drawer-width;
-  .drawer-img {
-    max-height: $navbar-brand-height;
+
+[data-region="drawer"] {
+  padding-left: initial;
+  padding-right: initial;
+  background-color: $primary;
+
+  .list-group-item {
+    background-color: $primary;
+    color: white;
+    border: none;
+  }
+  .list-group-item.active {
+    background-color: darken($primary, 10%);
+  }
+  z-index: $zindex-navbar-fixed + 1; // Avoid the drop shadow
+}
+
+/* Front page layout */
+#page-site-index {
+  #page-wrapper {
+    background-image: linear-gradient(298deg, #a12365, #ff8d00)
+  }
+
+  .card {
+    border: none;
+    background: none;
+
+    .site-frontpage-slogan {
+      max-width: 20em;
+      text-align: center;
+    }
+
+    .site-frontpage-title {
+      font-size: 4vw;
+      @media (max-width: map-get($grid-breakpoints, "md")) {
+        font-size: xx-large;
+      }
+      font-weight: bold;
+    }
+
+    .connect-button {
+      border-radius: 3px;
+      border: solid 2px var(--white);
+      font-size: x-large;
+      font-weight: 600;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      text-align: center;
+      font-variant: small-caps;
+      padding: 0.5em 4em;
+      @media (max-width: map-get($grid-breakpoints, "md")) {
+        padding: 0.25em 2em;
+      }
+
+
+    }
+
+    min-height: initial;
+  }
+
+  color: white;
+
+  a {
+    color: white;
+    @include hover-focus {
+      color: white;
+    }
   }
 }

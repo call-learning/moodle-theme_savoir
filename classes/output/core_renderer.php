@@ -40,7 +40,7 @@ class savoir_custom_menu extends custom_menu {
     public function export_for_template(renderer_base $output) {
         global $CFG;
         $context = parent::export_for_template($output);
-        if (strpos($this->text,self::ENSAM_ROOT_URL) !== false) {
+        if (strpos($this->text, self::ENSAM_ROOT_URL) !== false) {
             $context->text = preg_replace("/^(\w+)/", '<span class="savoir-site-name">${1}</span>', $context->text);
         }
         $context->haschildren = !empty($this->children) && (count($this->children) > 0);
@@ -64,52 +64,42 @@ class savoir_custom_menu extends custom_menu {
 class core_renderer extends \theme_boost\output\core_renderer {
 
     /**
-     * Wrapper for header elements.
+     * Wrapper for header elements. Add elements for Frontpage (title, slogan, login button)
      *
      * @return string HTML to display the main header.
      */
     public function full_header() {
         global $PAGE;
-
-        $html = html_writer::start_tag('header', array('id' => 'page-header', 'class' => 'row'));
-        $html .= html_writer::start_div('col-xs-12 p-a-1');
-        $html .= html_writer::start_div('card');
-        $html .= html_writer::start_div('card-block');
-        $html .= html_writer::div($this->context_header_settings_menu(), 'pull-xs-right context-header-settings-menu');
-        $html .= html_writer::start_div('pull-xs-left');
-        $html .= $this->context_header();
-        $html .= html_writer::end_div();
-        $pageheadingbutton = $this->page_heading_button();
-        if (empty($PAGE->layout_options['nonavbar'])) {
-            $html .= html_writer::start_div('clearfix w-100 pull-xs-left', array('id' => 'page-navbar'));
-            $html .= html_writer::tag('div', $this->navbar(), array('class' => 'breadcrumb-nav'));
-            $html .= html_writer::div($pageheadingbutton, 'breadcrumb-button pull-xs-right');
-            $html .= html_writer::end_div();
-        } else if ($pageheadingbutton) {
-            $html .= html_writer::div($pageheadingbutton, 'breadcrumb-button nonavbar pull-xs-right');
-        }
+        $header = new stdClass();
+        $header->settingsmenu = $this->context_header_settings_menu();
+        $header->contextheader = $this->context_header();
+        $header->hasnavbar = empty($PAGE->layout_options['nonavbar']);
+        $header->navbar = $this->navbar();
+        $header->pageheadingbutton = $this->page_heading_button();
+        $header->courseheader = $this->course_header();
+        $template = 'theme_savoir/header';
         if ($this->is_on_frontpage()) {
+            $template = 'theme_savoir/header_fp';
             $options = new stdClass();
-            $options->noclean = true;    // Don't clean Javascripts etc
+            $options->noclean = true;    // Don't clean Javascripts etc.
             $options->overflowdiv = false;
             $context = context_course::instance($this->page->course->id);
             $summary =
-                    file_rewrite_pluginfile_urls($this->page->course->summary, 'pluginfile.php', $context->id, 'course', 'summary',
+                    file_rewrite_pluginfile_urls(
+                            $this->page->course->summary,
+                            'pluginfile.php',
+                            $context->id,
+                            'course',
+                            'summary',
                             null);
             $content = format_text($summary, $this->page->course->summaryformat, $options);
             if (!isloggedin()) {
-                $content .= html_writer::link(get_login_url(), get_string('login'), array('class' => 'connect-button'));
+                $header->loginurl = get_login_url();
             }
-
-            $html .= html_writer::tag('div', $content, array('class' => 'site-frontpage-slogan'));
-        } else {
-            $html .= html_writer::tag('div', $this->course_header(), array('id' => 'course-header'));
+            $header->frontpageslogan = $content;
+            $header->frontpagestitle = $this->page->course->shortname;
         }
-        $html .= html_writer::end_div();
-        $html .= html_writer::end_div();
-        $html .= html_writer::end_div();
-        $html .= html_writer::end_tag('header');
-        return $html;
+        return $this->render_from_template($template, $header);
     }
 
     /**
@@ -160,79 +150,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function should_display_navbar_logo() {
         $logo = $this->get_compact_logo_url();
         return !empty($logo);
-    }
-
-    /**
-     * Construct a user menu, returning HTML that can be echoed out by a
-     * layout file.
-     *
-     * @param stdClass $user A user object, usually $USER.
-     * @param bool $withlinks true if a dropdown should be built.
-     * @return string HTML fragment.
-     */
-    public function user_menu($user = null, $withlinks = null) {
-        global $USER, $CFG;
-        require_once($CFG->dirroot . '/user/lib.php');
-        require_once($CFG->libdir . '/authlib.php');
-
-        if (is_null($user)) {
-            $user = $USER;
-        }
-
-        // Note: this behaviour is intended to match that of core_renderer::login_info,
-        // but should not be considered to be good practice; layout options are
-        // intended to be theme-specific. Please don't copy this snippet anywhere else.
-        if (is_null($withlinks)) {
-            $withlinks = empty($this->page->layout_options['nologinlinks']);
-        }
-
-        // Add a class for when $withlinks is false.
-        $usermenuclasses = 'usermenu';
-        if (!$withlinks) {
-            $usermenuclasses .= ' withoutlinks';
-        }
-
-        $returnstr = "";
-
-        // If during initial install, return the empty return string.
-        if (during_initial_install()) {
-            return $returnstr;
-        }
-
-        $loginpage = $this->is_login_page();
-        $loginurl = get_login_url();
-
-        $signuppage = $this->is_signup_page();
-        $signupurl = "$CFG->wwwroot/login/signup.php";
-
-        if (!signup_is_enabled()) {
-            $signuppage = false;
-        }
-        // If not logged in, show the typical not-logged-in string.
-        if (!isloggedin()) {
-            $loginhtml = \html_writer::span(get_string('login'), 'login-item');
-            $signuphtml = \html_writer::span(get_string('createaccount'), 'login-item');
-
-            if (!$loginpage) {
-                $loginhtml = \html_writer::link($loginurl, $loginhtml);
-            }
-
-            if (!$signuppage) {
-                $signuphtml = \html_writer::link($signupurl, $signuphtml);
-            }
-
-            $returnstr = $signuphtml . $loginhtml;
-            return html_writer::div(
-                    html_writer::span(
-                            $returnstr,
-                            'login'
-                    ),
-                    $usermenuclasses
-            );
-
-        } else {
-            return parent::user_menu($user, $withlinks);
-        }
     }
 
     /*
@@ -324,5 +241,58 @@ class core_renderer extends \theme_boost\output\core_renderer {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Just override default behaviour when user not logged in, so we don't display "You are not logged in"
+     */
+    public function  user_menu($user = null, $withlinks = null)  {
+        global $USER, $CFG;
+        require_once($CFG->dirroot . '/user/lib.php');
+
+        if (is_null($user)) {
+            $user = $USER;
+        }
+
+        // Note: this behaviour is intended to match that of core_renderer::login_info,
+        // but should not be considered to be good practice; layout options are
+        // intended to be theme-specific. Please don't copy this snippet anywhere else.
+        if (is_null($withlinks)) {
+            $withlinks = empty($this->page->layout_options['nologinlinks']);
+        }
+
+        // Add a class for when $withlinks is false.
+        $usermenuclasses = 'usermenu';
+        if (!$withlinks) {
+            $usermenuclasses .= ' withoutlinks';
+        }
+
+        $returnstr = "";
+
+        // If during initial install, return the empty return string.
+        if (during_initial_install()) {
+            return $returnstr;
+        }
+
+        $loginpage = $this->is_login_page();
+        $loginurl = get_login_url();
+        // If not logged in, show the typical not-logged-in string.
+        $loginpage = $this->is_login_page();
+        $loginurl = get_login_url();
+        // If not logged in, show the typical not-logged-in string.
+        if (!isloggedin()) {
+            $returnstr = "";
+            if (!$loginpage) {
+                $returnstr .= " <a href=\"$loginurl\">" . get_string('login') . '</a> ';
+            }
+            return html_writer::div(
+                    html_writer::span(
+                            $returnstr,
+                            'login'
+                    ),
+                    $usermenuclasses
+            );
+        }
+        return parent::user_menu($user, $withlinks);
     }
 }
