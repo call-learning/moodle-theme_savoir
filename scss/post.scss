@@ -124,6 +124,7 @@
   background-color: $primary;
   color: white;
 }
+
 /* Remove box shadow for first card body and on the header */
 
 .card-no-border, #page-header .card-body {
@@ -222,6 +223,9 @@
       @include hover-focus {
         color: $savoir-lightergrey;
       }
+      i.icon {
+        float: right;
+      }
     }
 
     .date {
@@ -229,7 +233,7 @@
       line-height: 1.75;
       color: lighten($savoir-lightergrey, 10%);
 
-       a {
+      a {
         color: lighten($savoir-lightergrey, 10%);
         @include hover-focus {
           color: lighten($savoir-lightergrey, 10%);
@@ -246,7 +250,21 @@
 
     a {
       font-weight: bolder;
+      @include hover-focus {
+        text-decoration: none;
+      }
     }
+  }
+  .calendar-controls {
+    a.arrow_link.previous {
+      float: left;
+    }
+    a.arrow_link.next {
+      float: right;
+    }
+  }
+  .minicalendar {
+    text-align: cgienter;
   }
 }
 
@@ -257,10 +275,12 @@
     h3 {
       font-size: initial;
     }
+
     .card-header {
       background-color: lighten($savoir-darkgrey, 10%);
       padding-top: 0.25em !important;
       padding-bottom: 0.25em !important;
+
       span.date a {
         color: white;
         @include hover-focus {
@@ -273,12 +293,14 @@
 
 /** Topic Collapsible Changes */
 #page-course-view-topcoll {
-  div.sectionhead.toggle  {
+  div.sectionhead.toggle {
     background: none;
+
     &:hover {
       background: none;
     }
   }
+
   h3.sectionname {
     font-size: $h3-font-size;
     font-weight: bolder;
@@ -289,6 +311,7 @@
     color: var(--dark-grey);
     text-align: left;
   }
+
   .tc-small {
     font-size: small;
     font-variant: small-caps;
