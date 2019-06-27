@@ -124,6 +124,14 @@
   background-color: $primary;
   color: white;
 }
+/* Remove box shadow for first card body and on the header */
+
+.card-no-border, #page-header .card-body {
+  border-radius: initial;
+  border: none;
+  border-top: none;
+  box-shadow: none;
+}
 
 /* Front page layout */
 #page-site-index {
@@ -182,7 +190,7 @@
 
 /* Dashboard */
 .blockdb-doubleblock {
-  width: 50%;
+  width: 49%;
 }
 
 .blockdb-singleblock {
@@ -202,5 +210,87 @@
     caption.calendar-controls {
       text-align: center;
     }
+  }
+}
+
+// Upcoming block
+.block_calendar_upcoming {
+  .event {
+    a[data-type='event'] {
+      color: $savoir-darkgrey;
+      font-weight: bold;
+      @include hover-focus {
+        color: $savoir-lightergrey;
+      }
+    }
+
+    .date {
+      font-size: smaller;
+      line-height: 1.75;
+      color: lighten($savoir-lightergrey, 10%);
+
+       a {
+        color: lighten($savoir-lightergrey, 10%);
+        @include hover-focus {
+          color: lighten($savoir-lightergrey, 10%);
+        }
+      }
+    }
+  }
+}
+
+// Calendar block
+.block_calendar_month {
+  .calendar_event_course {
+    background-color: lighten($primary, 50%);
+
+    a {
+      font-weight: bolder;
+    }
+  }
+}
+
+// Calendar page
+
+#page-calendar-view {
+  .calendarwrapper {
+    h3 {
+      font-size: initial;
+    }
+    .card-header {
+      background-color: lighten($savoir-darkgrey, 10%);
+      padding-top: 0.25em !important;
+      padding-bottom: 0.25em !important;
+      span.date a {
+        color: white;
+        @include hover-focus {
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+/** Topic Collapsible Changes */
+#page-course-view-topcoll {
+  div.sectionhead.toggle  {
+    background: none;
+    &:hover {
+      background: none;
+    }
+  }
+  h3.sectionname {
+    font-size: $h3-font-size;
+    font-weight: bolder;
+    font-style: normal;
+    font-variant: small-caps;
+    line-height: 1.71;
+    letter-spacing: normal;
+    color: var(--dark-grey);
+    text-align: left;
+  }
+  .tc-small {
+    font-size: small;
+    font-variant: small-caps;
   }
 }

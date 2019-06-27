@@ -56,3 +56,7 @@ $string['front_page_section_content']  = '<p></p><p>Apprendre avec Savoir, c\'es
 
 /* Legal */
 $string['legal'] = 'Legal';
+
+/* Dashboard */
+$string['dashboardtitle'] = 'Dashboard';
+$string['dashboardtitle_uname'] = 'Dashboard - {$a}';

@@ -22,6 +22,7 @@ use action_menu_link_secondary;
 use block_contents;
 use block_move_target;
 use coding_exception;
+use context_header;
 use context_system;
 use core_text;
 use custom_menu;
@@ -119,6 +120,33 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function context_header($headerinfo = null, $headinglevel = 1) {
         if ($this->is_on_frontpage()) {
             return '';
+        } else if ($this->is_on_dashboard()) {
+            global $DB, $USER, $CFG;
+            require_once($CFG->dirroot . '/user/lib.php');
+            $context = $this->page->context;
+            $heading = null;
+            $imagedata = null;
+            $subheader = null;
+            $userbuttons = null;
+            // The user context currently has images and buttons. Other contexts may follow.
+            $heading = get_string('dashboardtitle', 'theme_savoir');
+            if ($context->contextlevel == CONTEXT_USER) {
+                if (isset($headerinfo['user'])) {
+                    $user = $headerinfo['user'];
+                } else {
+                    // Look up the user information if it is not supplied.
+                    $user = $DB->get_record('user', array('id' => $context->instanceid));
+                }
+                $course = ($this->page->context->contextlevel == CONTEXT_COURSE) ? $this->page->course : null;
+
+                if (user_can_view_profile($user, $course)) {
+                    // Use the user's full name if the heading isn't set.
+                    $heading = $heading = get_string('dashboardtitle_uname', 'theme_savoir', fullname($user));
+                }
+            }
+
+            $contextheader = new context_header($heading, $headinglevel);
+            return $this->render_context_header($contextheader);
         } else {
             return parent::context_header($headerinfo, $headinglevel);
         }
@@ -126,6 +154,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     public function is_on_frontpage() {
         return ($this->page->pagelayout == 'frontpage');
+    }
+
+    public function is_on_dashboard() {
+        return ($this->page->pagelayout == 'mydashboard');
     }
 
     /**
@@ -254,7 +286,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * Just override default behaviour when user not logged in, so we don't display "You are not logged in"
      */
-    public function  user_menu($user = null, $withlinks = null)  {
+    public function user_menu($user = null, $withlinks = null) {
         global $USER, $CFG;
         require_once($CFG->dirroot . '/user/lib.php');
 
@@ -306,7 +338,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (isguestuser()) {
             $returnstr = get_string('loggedinasguest');
             if (!$loginpage && $withlinks) {
-                $returnstr .= " (<a href=\"$loginurl\">".get_string('login').'</a>)';
+                $returnstr .= " (<a href=\"$loginurl\">" . get_string('login') . '</a>)';
             }
 
             return html_writer::div(
@@ -373,7 +405,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         // SAVOIR-ENSAM: Modificiations : switch avatar and login name
         $returnstr .= html_writer::span(
-                html_writer::span($avatarcontents, $avatarclasses).
+                html_writer::span($avatarcontents, $avatarclasses) .
                 html_writer::span($usertextcontents, 'usertext mr-1'),
                 'userbutton'
         );
@@ -445,6 +477,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 $usermenuclasses
         );
     }
+
     /**
      * Renders a custom block region.
      * OVERRIDE FOR SAVOIR DASHBOARD : layout block in the center area
@@ -463,7 +496,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if ($this->page->theme->get_block_render_method() === 'blocks') {
             global $PAGE;
             if ($PAGE->pagelayout == 'mydashboard') {
-                return $this->blocks($regionname, array('d-flex', 'flex-wrap', 'justify-content-between')); // Wrap and flex the blocks
+                return $this->blocks($regionname,
+                        array('d-flex', 'flex-wrap', 'justify-content-between')); // Wrap and flex the blocks
             } else {
                 return $this->blocks($regionname);
             }
@@ -471,9 +505,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
             return $this->blocks_for_region($regionname);
         }
     }
+
     /**
      * Output all the blocks in a particular region.
      * OVERRIDE FOR SAVOIR DASHBOARD : layout block in the center area
+     *
      * @param string $region the name of a region on this page.
      * @return string the HTML to be output.
      */
@@ -488,15 +524,18 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         $output = '';
 
-        $oddnumberblocks =  ( count($blockcontents) % 2);
+        $oddnumberblocks = (count($blockcontents) % 2);
         foreach ($blockcontents as $index => $bc) {
             if ($bc instanceof block_contents) {
                 $blockclass = '';
 
                 if ($PAGE->pagelayout == 'mydashboard') {
-                    $blockclass = ($index == (count($blockcontents)-1)
-                            && $oddnumberblocks)?
-                            'db-singleblock':'db-doubleblock';
+                    $blockclass = ($index == (count($blockcontents) - 1)
+                            && $oddnumberblocks) ?
+                            'db-singleblock' : 'db-doubleblock';
+                    // Then add ml-auto or mr-auto depending on the side of the block
+                    $blockclass .= ' ';
+                    $blockclass .= (($index % 2) ? 'ml-auto' : 'mr-auto');
                 }
                 $output .= $this->block($bc, $region, $blockclass);
                 $lastblock = $bc->title;
@@ -508,6 +547,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         return $output;
     }
+
     /**
      * Prints a nice side block with an optional header.
      * OVERRIDE FOR SAVOIR DASHBOARD : layout block in the center area
@@ -516,7 +556,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @param string $region the region the block is appearing in.
      * @return string the HTML to be output.
      */
-    public function block(block_contents $bc, $region, $additionalclasses='') {
+    public function block(block_contents $bc, $region, $additionalclasses = '') {
         $bc = clone($bc); // Avoid messing up the object passed in.
         $bc->attributes['class'] .= $additionalclasses;
         return parent::block($bc, $region);

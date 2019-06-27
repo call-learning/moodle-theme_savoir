@@ -67,11 +67,9 @@ function theme_savoir_get_main_scss_content(theme_config $theme) {
  * @throws coding_exception
  * @throws dml_exception
  */
-function theme_savoir_process_site_branding()
-{
+function theme_savoir_process_site_branding() {
     theme_reset_all_caches();
 }
-
 
 /**
  * CSS Processor
@@ -86,20 +84,19 @@ function theme_savoir_process_css($css, theme_config $theme) {
     // Get URL for the coverimage front page
     $coverimagfpeurl = $theme->setting_file_url('coverimagefp', 'coverimagefp');
     if (!$coverimagfpeurl) {
-        $coverimagefpurl = $OUTPUT->image_url('coverimagefp','theme');
+        $coverimagefpurl = $OUTPUT->image_url('coverimagefp', 'theme');
     }
 
-    $replacementimages = array (
-        'coverimagefp'=> "background-image: url($coverimagefpurl);",
+    $replacementimages = array(
+            'coverimagefp' => "background-image: url($coverimagefpurl);",
     );
-    foreach( $replacementimages as $type => $csscode ) {
+    foreach ($replacementimages as $type => $csscode) {
         $anchor = "/**setting:$type**/";
         $css = str_replace($anchor, $csscode, $css);
     }
 
     return $css;
 }
-
 
 /**
  * Get SCSS to prepend.
@@ -131,7 +128,6 @@ function theme_savoir_get_pre_scss($theme) {
     return $scss;
 }
 
-
 /**
  * Serves any files associated with the theme settings.
  *
@@ -148,7 +144,7 @@ function theme_savoir_pluginfile($course, $cm, $context, $filearea, $args, $forc
 
     // Check if the files to serve are in the usual setting file area
     $themesettingsfilearea = [
-        'coverimagefp',
+            'coverimagefp',
     ];
 
     if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $themesettingsfilearea)) {
@@ -158,7 +154,6 @@ function theme_savoir_pluginfile($course, $cm, $context, $filearea, $args, $forc
         send_file_not_found();
     }
 }
-
 
 /**
  * Callback to add footer elements.
@@ -170,10 +165,10 @@ function theme_savoir_standard_footer_html() {
     $output = '';
 
     foreach ($additionallinks as $adlink) {
-    	// TODO add static page or use existing pages.
-/*        $url = new moodle_url('/local/staticpage/view.php?page=' . $adlink);
-        $output .= html_writer::div(html_writer::link($url, get_string($adlink, 'theme_savoir')), 'theme_savoir');
-*/
+        // TODO add static page or use existing pages.
+        /*        $url = new moodle_url('/local/staticpage/view.php?page=' . $adlink);
+                $output .= html_writer::div(html_writer::link($url, get_string($adlink, 'theme_savoir')), 'theme_savoir');
+        */
     }
     return $output;
 }
@@ -184,44 +179,78 @@ function theme_savoir_standard_footer_html() {
  * ------------------------------------------------------------------------------------------------
  */
 
+include_once($CFG->dirroot.'/my/lib.php');
 
 /**
-* Setup all frontpage blocks
-* It deletes previous blocks instances so proceed with caution
-* @return bool
-    * @throws dml_exception
-* @throws dml_transaction_exception
-*/
-function setup_frontpage_blocks()
-{
+ * Setup Main System Dashboard (student view)
+ *
+ */
+function setup_system_dashboard() {
     global $DB, $CFG;
     // We want all or nothing here.
     $transaction = $DB->start_delegated_transaction();
+    // Get the MY_PAGE_PRIVATE which is the dashboard (MY_PAGE_PUBLIC is the user profile page).
+    $sysdashpage = $DB->get_record('my_pages', array('userid' => null, 'name' => '__default', 'private' => MY_PAGE_PRIVATE));
+    $syscontext = context_system::instance();
 
-    $context = context_course::instance(SITEID);
-    if ($blocks = $DB->get_records('block_instances',
-        array('parentcontextid' => $context->id, 'pagetypepattern' => 'site-index'))) {
-        foreach ($blocks as $block) {
-            blocks_delete_instance($block);
-        }
-    }
-
-    $DB->delete_records('block_positions', array(
-        'contextid' => $context->id,
-        'pagetype' => 'site-index'
-    ));
+    savoir_utils_delete_dashboard_blocks($syscontext, $sysdashpage);
 
     $defaultblockinstances = [
-        [
-            'blockname' => 'html',
-            'defaultregion' => 'side-pre',
-            'defaultweight' => -9
-        ],
+            [
+                    'blockname' => 'calendar_month',
+                    'defaultregion' => 'content',
+                    'defaultweight' => -1
+            ],
+            [
+                    'blockname' => 'calendar_upcoming',
+                    'defaultregion' => 'content',
+                    'defaultweight' => -2
+            ],
+            [
+                    'blockname' => 'myoverview',
+                    'defaultregion' => 'content',
+                    'defaultweight' => 0
+            ],
     ];
+    savoir_utils_add_blocks($syscontext, 'my-index', $sysdashpage->id, $defaultblockinstances);
+    $transaction->allow_commit();
+    return true;
+}
 
+/**
+ * Delete all blocks from this dashboard
+ *
+ * @param $context
+ * @param $page
+ * @throws dml_exception
+ */
+function savoir_utils_delete_dashboard_blocks($context, $page) {
+    global $DB;
+    if ($blocks = $DB->get_records('block_instances', array('parentcontextid' => $context->id,
+            'pagetypepattern' => 'my-index'))) {
+        foreach ($blocks as $block) {
+            if (is_null($block->subpagepattern) || $block->subpagepattern == $page->id) {
+                blocks_delete_instance($block);
+            }
+        }
+    }
+    $DB->delete_records('block_positions', ['subpage' => $page->id, 'pagetype' => 'my-index', 'contextid' => $context->id]);
+}
+
+/**
+ * Add a block to a page
+ *
+ * @param $context
+ * @param $pagepattern
+ * @param $subpagepattern
+ * @param $newblocks
+ * @throws dml_exception
+ */
+function savoir_utils_add_blocks($context, $pagepattern, $subpageid, $newblocks) {
+    global $DB;
     $availableblocks = $DB->get_records_menu('block', ['visible' => 1], '', 'id,name');
 
-    foreach ($defaultblockinstances as $blockinstance) {
+    foreach ($newblocks as $blockinstance) {
         // Check this block type is installed and enabled before adding.
         if (!in_array($blockinstance['blockname'], $availableblocks)) {
             continue;
@@ -229,8 +258,9 @@ function setup_frontpage_blocks()
 
         // Add common properties.
         $blockinstance['parentcontextid'] = $context->id; // System context.
-        $blockinstance['showinsubcontexts'] = 0;
-        $blockinstance['pagetypepattern'] = 'site-index';
+        $blockinstance['showinsubcontexts'] = empty($blockinstance['showinsubcontexts']) ? 0 : $blockinstance['showinsubcontexts'];
+        $blockinstance['pagetypepattern'] = $pagepattern;
+        $blockinstance['subpagepattern'] = $subpageid;
         if (!empty($blockinstance['data'])) {
             $data = json_decode($blockinstance['data']);
             $blockinstance['configdata'] = base64_encode(serialize($data));
@@ -244,46 +274,83 @@ function setup_frontpage_blocks()
 
         // Ensure context is properly created.
         context_block::instance($biid, MUST_EXIST);
-    }
+        // Then add the block position (we assume it does not already exists).
+        $blockpositions = new \stdClass();
+        $blockpositions->subpage = $subpageid;
+        $blockpositions->contextid = $context->id;
+        $blockpositions->blockinstanceid = $biid;
+        $blockpositions->visible = 1;
+        $blockpositions->pagetype = $pagepattern;
+        $blockpositions->region = empty($blockinstance['defaultregion']) ? 'side-pre' : $blockinstance['defaultregion'];
+        $blockpositions->weight = empty($blockinstance['defaultweight']) ? 0 : $blockinstance['defaultweight'];
 
-    $transaction->allow_commit();
-    return true;
+        $DB->insert_record('block_positions', get_object_vars($blockpositions));
+    }
 
 }
 
-function setup_front_page_section() {
-    global $DB;
-    // Reset string cache
-    get_string_manager()->reset_caches();
-    // Get the titles
-    $title = get_string('front_page_section_title','theme_savoir');
-    $content = get_string('front_page_section_content','theme_savoir');
+/**
+ * Setup all Dashboard blocks for a given student
+ * It deletes previous blocks instances so proceed with caution
+ *
+ * @return bool
+ * @throws dml_exception
+ * @throws dml_transaction_exception
+ */
+function setup_dashboard_blocks($userid=null, $defaultblockinstances = null) {
+    global $DB, $CFG;
+    // We want all or nothing here.
+    $transaction = $DB->start_delegated_transaction();
 
-    $record = $DB->get_record('course_sections',array('course'=> SITEID ));
-    if (!$record) {
-        $record = new stdClass();
-        $record->course = SITEID;
-        $record->section = 1;
+    if (empty($userid)) {
+        $adminuser = get_admin();
+        $userid = $adminuser->id;
     }
-    $record->summmaryformat = 1;
-    $record->sequence = '';
-    $record->visible = 1;
-    $record->availability = '{"op":"&","c":[],"showc":[]}';
-    $record->timemodified = time();
-    $record->name = $title;
-    $record->summary = $content;
-    if (!empty($record->id)) {
-        $DB->update_record('course_sections',$record);
-    } else {
-        $DB->insert_record('course_sections', $record);
+    // Get the MY_PAGE_PRIVATE which is the dashboard (MY_PAGE_PUBLIC is the user profile page).
+    $customiseduserdbpage = $DB->get_record('my_pages', array('userid' => $userid, 'private' => MY_PAGE_PRIVATE));
+    $usercontext = context_user::instance($userid);
+    if (!$customiseduserdbpage) {
+        // Then we must create this page
+        // Clone the basic system page record
+        if (!$systempage = $DB->get_record('my_pages', array('userid' => null, 'private' => MY_PAGE_PRIVATE))) {
+            return false;  // error
+        }
+
+        $customiseduserdbpage = clone($systempage);
+        unset($customiseduserdbpage->id);
+        $customiseduserdbpage->userid = $userid;
+        $customiseduserdbpage->id = $DB->insert_record('my_pages', $customiseduserdbpage);
     }
 
+    savoir_utils_delete_dashboard_blocks($usercontext, $customiseduserdbpage); // If it already exists.?
+    if (!$defaultblockinstances) {
+        $defaultblockinstances = [
+                [
+                        'blockname' => 'calendar_month',
+                        'defaultregion' => 'content',
+                        'defaultweight' => -1
+                ],
+                [
+                        'blockname' => 'calendar_upcoming',
+                        'defaultregion' => 'content',
+                        'defaultweight' => -2
+                ],
+                [
+                        'blockname' => 'badges',
+                        'defaultregion' => 'content',
+                        'defaultweight' => 0
+                ],
+        ];
+    }
+    savoir_utils_add_blocks($usercontext, 'my-index', $customiseduserdbpage->id, $defaultblockinstances);
+    $transaction->allow_commit();
+    return true;
 }
 
 function setup_mobile_css() {
     global $CFG;
     // TODO setup the CSS for savoir
-    set_config('mobilecssurl',$CFG->wwwroot.'/theme/savoir/mobile/savoirmobile.css');
+    set_config('mobilecssurl', $CFG->wwwroot . '/theme/savoir/mobile/savoirmobile.css');
 }
 
 function setup_theme() {

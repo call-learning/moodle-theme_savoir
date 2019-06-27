@@ -42,7 +42,11 @@ $string['sitecopyrightmessage'] = 'SAS Savoir';
 
 /* Front page */
 $string['front_page_section_title']  = 'Welcome to our site / Bienvenue !';
-$string['front_page_section_content']  = '<p></p><p>Apprendre avec Savoir, c\'est ...</p><p></p><ol><li>Une offre de formation pratique et sur mesure par des formateurs expérimentés dans leur spécialités<br></li><li>Des formations adaptées à vos problématiques en communication orale et écrite<br></li><li>Une expertise professionnelle et une pédagogie adaptée<br></li><li>Une plateforme de e-learning à votre disposition pour apprendre à votre rythme !</li></ol><p>Merci de votre confiance.</p><p></p><p><br></p><p>&nbsp;</p><p></p>';
+$string['front_page_section_content']  = 'Bienvenue sur la plateforme pédagogique d\'Arts et Métiers 2018-2019';
 
 /* Legal */
 $string['legal'] = 'Mention légales';
+
+/* Dashboard */
+$string['dashboardtitle'] = 'Tableau de bord';
+$string['dashboardtitle_uname'] = 'Tableau de bord - {$a}';
