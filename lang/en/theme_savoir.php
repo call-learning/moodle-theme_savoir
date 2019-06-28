@@ -60,3 +60,6 @@ $string['legal'] = 'Legal';
 /* Dashboard */
 $string['dashboardtitle'] = 'Dashboard';
 $string['dashboardtitle_uname'] = 'Dashboard - {$a}';
+
+/* Navigation */
+$string['catalog'] = 'Catalogue';

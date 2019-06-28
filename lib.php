@@ -24,7 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Global CSS Processor
  *
@@ -174,12 +173,85 @@ function theme_savoir_standard_footer_html() {
 }
 
 /**
+ * Navigation
+ */
+
+require_once($CFG->libdir . '/navigationlib.php');
+
+class savoir_flat_navigation extends flat_navigation {
+    /**
+     * Build the list of navigation nodes based on the current navigation and settings trees.
+     *
+     */
+    public function initialise() {
+        global $USER, $PAGE, $CFG;
+
+        if (is_siteadmin()) {
+            parent::initialise();
+            return;
+        }
+
+        $course = $PAGE->course;
+        $this->page->navigation->initialise();
+        $studentblocks = [
+                [
+                        'url' => '/my',
+                        'label' => get_string('myhome'),
+                        'key' => 'myhome',
+                        'icon' => array('name' => 'i/dashboard')
+                ],
+                [
+                        'url' => '/theme/savoir/pages/mycourses.php',
+                        'label' => get_string('mycourses'),
+                        'key' => 'mycourses',
+                        'icon' => array('name' => 'i/course')
+                ],
+                [
+                        'url' => '/course/index.php',
+                        'label' => get_string('catalog', 'theme_savoir'),
+                        'key' => 'catalog',
+                        'icon' => array('name' => 'i/catalog', 'component' => 'theme_savoir')
+                ]
+
+        ];
+
+        $isstudent = has_role_from_name($USER->id, 'student');
+        $isteacher = has_role_from_name($USER->id, 'teacher');
+        $iseditingteacher = has_role_from_name($USER->id, 'editingteacher');
+        foreach ($studentblocks as $nl) {
+            $url = new moodle_url($nl['url']);
+            $navlink = navigation_node::create($nl['label'], $url);
+            $flat = new flat_navigation_node($navlink, 0);
+            $flat->set_showdivider(true);
+            $flat->key = $nl['key'];
+            $flat->icon = new pix_icon(
+                    $nl['icon']['name'],
+                    '',
+                    empty($nl['icon']['component']) ? 'moodle' : $nl['icon']['component']);
+            $this->add($flat);
+        }
+        $this->add_help_node();
+    }
+    protected function add_help_node() {
+        /* Here we should add a choice of help courses (two for teachers/admin, one for student, depending on the extend of this
+        user's roles */
+
+    }
+}
+
+function has_role_from_name($userid, $rolestring) {
+    global $DB;
+    $role = $DB->get_record('role', array('shortname' => $rolestring));
+    return user_has_role_assignment($userid, $role->id);
+}
+
+/**
  * ------------------------------------------------------------------------------------------------
  *              Setup
  * ------------------------------------------------------------------------------------------------
  */
 
-include_once($CFG->dirroot.'/my/lib.php');
+require_once($CFG->dirroot . '/my/lib.php');
 
 /**
  * Setup Main System Dashboard (student view)
@@ -297,7 +369,7 @@ function savoir_utils_add_blocks($context, $pagepattern, $subpageid, $newblocks)
  * @throws dml_exception
  * @throws dml_transaction_exception
  */
-function setup_dashboard_blocks($userid=null, $defaultblockinstances = null) {
+function setup_dashboard_blocks($userid = null, $defaultblockinstances = null) {
     global $DB, $CFG;
     // We want all or nothing here.
     $transaction = $DB->start_delegated_transaction();
@@ -336,7 +408,7 @@ function setup_dashboard_blocks($userid=null, $defaultblockinstances = null) {
                         'defaultweight' => -2
                 ],
                 [
-                        'blockname' => 'badges',
+                        'blockname' => 'myoverview',
                         'defaultregion' => 'content',
                         'defaultweight' => 0
                 ],

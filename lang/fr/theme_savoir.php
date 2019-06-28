@@ -50,3 +50,6 @@ $string['legal'] = 'Mention légales';
 /* Dashboard */
 $string['dashboardtitle'] = 'Tableau de bord';
 $string['dashboardtitle_uname'] = 'Tableau de bord - {$a}';
+
+/* Navigation */
+$string['catalog'] = 'Catalogue';

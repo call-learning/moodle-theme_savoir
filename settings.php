@@ -44,3 +44,4 @@ $description = get_string('secondarycolor_desc', 'theme_savoir');
 $setting = new admin_setting_configcolourpicker($name, $title, $description, '#F29400');
 $setting->set_updatedcallback('theme_reset_all_caches');
 $settings->add($setting);
+

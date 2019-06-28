@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 user_preference_allow_ajax_update('drawer-open-nav', PARAM_ALPHA);
 require_once($CFG->libdir . '/behat/lib.php');
+require_once(dirname(__DIR__).'/lib.php');
 
 if (isloggedin()) {
     $navdraweropen = (get_user_preferences('drawer-open-nav', 'true') == 'true');
@@ -51,6 +52,9 @@ $templatecontext = [
     'hasregionmainsettingsmenu' => !empty($regionmainsettingsmenu)
 ];
 
-$templatecontext['flatnavigation'] = $PAGE->flatnav;
+$flatnav = new savoir_flat_navigation($PAGE);
+$flatnav->initialise();
+
+$templatecontext['flatnavigation'] = $flatnav;
 echo $OUTPUT->render_from_template('theme_savoir/columns2', $templatecontext);
 
