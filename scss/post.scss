@@ -339,6 +339,12 @@
     font-size: small;
     font-variant: small-caps;
   }
+  .course-content ul.ctopics li.section .content.sectionhidden {
+    background-color: transparent;
+  }
+  .content.sectionhidden > h3 {
+    font-size: initial;
+  }
 }
 
 /* Mods */
