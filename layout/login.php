@@ -14,21 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
- * Theme plugin version definition.
+ * A login page layout for the boost theme.
  *
- * @package   theme_savoir
- * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @package   theme_boost
+ * @copyright 2016 Damyon Wiese
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+$bodyattributes = $OUTPUT->body_attributes();
 
-$plugin->version   = 2018112102; // This is the version number to increment when changes needing an update are made.
-$plugin->requires  = 2018051706; // Moodle 3.5.
-$plugin->release   = '1.0.0';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->component = 'theme_savoir';
-$plugin->dependencies = [
-    'theme_boost' => '2018051400'
+$templatecontext = [
+    'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
+    'output' => $OUTPUT,
+    'bodyattributes' => $bodyattributes
 ];
+
+echo $OUTPUT->render_from_template('theme_savoir/login', $templatecontext);
+

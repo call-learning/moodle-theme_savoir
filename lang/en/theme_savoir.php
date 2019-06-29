@@ -38,6 +38,13 @@ $string['primarycolor'] = 'Primary (Branding) color';
 $string['primarycolor_desc'] = 'The color used as main color';
 $string['secondarycolor'] = 'Secondary (Branding) color';
 $string['secondarycolor_desc'] = 'The color used as secondary color';
+
+$string['studenthelpcourse'] = 'Student Help Course';
+$string['studenthelpcourse_desc'] = 'Course used as a Student guide';
+
+$string['staffhelpcourse'] = 'Staff Help Course';
+$string['staffhelpcourse_desc'] = 'Course used as a Staff guide';
+
 /* Block positionning */
 $string['region-side-pre'] = "Side Pre";
 $string['region-main'] = "Main";
@@ -63,3 +70,6 @@ $string['dashboardtitle_uname'] = 'Dashboard - {$a}';
 
 /* Navigation */
 $string['catalog'] = 'Catalogue';
+$string['guide'] = 'Guides';
+$string['studentguide'] = 'Student Guide';
+$string['staffguide'] = 'Staff Guide';

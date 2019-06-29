@@ -45,3 +45,22 @@ $setting = new admin_setting_configcolourpicker($name, $title, $description, '#F
 $setting->set_updatedcallback('theme_reset_all_caches');
 $settings->add($setting);
 
+global $DB;
+$sql = "SELECT c.id, "
+        .$DB->sql_concat("c.fullname","':'","c.id")
+        ." as name FROM {course} c WHERE c.idnumber LIKE '%GUIDE_%'";
+$helpcoursechoices =  $DB->get_records_sql_menu($sql);
+
+$name = 'theme_savoir/studenthelpcourse';
+$title = get_string('studenthelpcourse', 'theme_savoir');
+$description = get_string('studenthelpcourse_desc', 'theme_savoir');
+$setting = new admin_setting_configselect($name, $title, $description, '',$helpcoursechoices);
+$settings->add($setting);
+
+
+$name = 'theme_savoir/staffhelpcourse';
+$title = get_string('staffhelpcourse', 'theme_savoir');
+$description = get_string('staffhelpcourse_desc', 'theme_savoir');
+$setting = new admin_setting_configselect($name, $title, $description, '',$helpcoursechoices);
+$settings->add($setting);
+

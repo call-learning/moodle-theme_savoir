@@ -28,10 +28,22 @@ $string['pluginname'] = 'Savoir Moodle Theme';
 $string['choosereadme'] = 'Savoir Moodle Theme est un theme basé sur Boost (utilise Bootstrap 4).';
 
 /* Settings */
-$string['brading_title'] = 'Marque du thème';
+$string['brading_title'] = 'Paramètres du thème';
+$string['brading_title_desc'] = 'Paramètres spécifiques à ce thème';
 
-$string['coverimagefp'] = 'Image de couverture pour la page de garde';
-$string['coverimagefpdesc'] = 'Image de couverture pour la page de garde';
+$string['coverimagefp'] = 'Cover Image for Frontpage';
+$string['coverimagefpdesc'] = 'Cover Image for the front page';
+
+$string['primarycolor'] = 'Primary (Branding) color';
+$string['primarycolor_desc'] = 'The color used as main color';
+$string['secondarycolor'] = 'Secondary (Branding) color';
+$string['secondarycolor_desc'] = 'The color used as secondary color';
+
+$string['studenthelpcourse'] = 'Student Help Course';
+$string['studenthelpcourse_desc'] = 'Course used as a Student guide';
+
+$string['staffhelpcourse'] = 'Staff Help Course';
+$string['staffhelpcourse_desc'] = 'Course used as a Staff guide';
 
 /* Block positionning */
 $string['region-side-pre'] = "Side Pre";
@@ -53,3 +65,6 @@ $string['dashboardtitle_uname'] = 'Tableau de bord - {$a}';
 
 /* Navigation */
 $string['catalog'] = 'Catalogue';
+$string['guide'] = 'Guides';
+$string['studentguide'] = 'Guide de l\'étudiant';
+$string['staffguide'] = 'Guide de l\'enseignant';

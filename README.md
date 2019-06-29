@@ -31,13 +31,18 @@ Il existe un outil pour le faire pour l'admin:
 
     php7.1 cli/setups.php  --name=setup_dashboard_blocks
 
+# Changer les identifiants (idnumber) des cours "Guides"
+
+- Pour le guide étudiant (cours 70) GUIDE_ETUDIANT
+- Pour le guide étudiant (cours 74) GUIDE_ENSEIGNANT
+
+Ils seront listés dans les préférences du thème à partir du moment ou
+leur Course ID commence par "GUIDE_"
+
 # Notes de développpement
 
 
-
-
 TODO:
-- Menu gauche utilisateur (maquette étudiant)
 - Bloc pour liste de cours
 - Page pour liste de cours
 - Topic collapsible (à mettre à jour dans l'install)

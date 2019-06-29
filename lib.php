@@ -188,6 +188,7 @@ class savoir_flat_navigation extends flat_navigation {
 
         if (is_siteadmin()) {
             parent::initialise();
+            $this->add_help_node();
             return;
         }
 
@@ -198,13 +199,13 @@ class savoir_flat_navigation extends flat_navigation {
                         'url' => '/my',
                         'label' => get_string('myhome'),
                         'key' => 'myhome',
-                        'icon' => array('name' => 'i/dashboard')
+                        'icon' => array('name' => 'i/dashboard', 'component' => 'moodle')
                 ],
                 [
                         'url' => '/theme/savoir/pages/mycourses.php',
                         'label' => get_string('mycourses'),
                         'key' => 'mycourses',
-                        'icon' => array('name' => 'i/course')
+                        'icon' => array('name' => 'i/course', 'component' => 'moodle')
                 ],
                 [
                         'url' => '/course/index.php',
@@ -217,25 +218,81 @@ class savoir_flat_navigation extends flat_navigation {
 
         $isstudent = has_role_from_name($USER->id, 'student');
         $isteacher = has_role_from_name($USER->id, 'teacher');
-        $iseditingteacher = has_role_from_name($USER->id, 'editingteacher');
+        $isstaff = has_role_from_name($USER->id, 'manager');
         foreach ($studentblocks as $nl) {
-            $url = new moodle_url($nl['url']);
-            $navlink = navigation_node::create($nl['label'], $url);
+            $navlink = navigation_node::create(
+                    $nl['label'],
+                    new moodle_url($nl['url']),
+                    navigation_node::TYPE_CUSTOM,
+                    null,
+                    $nl['key'],
+                    new pix_icon(
+                            $nl['icon']['name'],
+                            '',
+                            $nl['icon']['component']));
             $flat = new flat_navigation_node($navlink, 0);
-            $flat->set_showdivider(true);
-            $flat->key = $nl['key'];
-            $flat->icon = new pix_icon(
-                    $nl['icon']['name'],
-                    '',
-                    empty($nl['icon']['component']) ? 'moodle' : $nl['icon']['component']);
             $this->add($flat);
+
         }
-        $this->add_help_node();
+        $this->add_help_node($isstudent, $isteacher, $isstaff);
     }
-    protected function add_help_node() {
+
+    protected function add_help_node($istudent = true, $isteacher = true, $isstaff = true) {
+        $studentcourseid = get_config('theme_savoir', 'studenthelpcourse');
+        $studentcourseid = $studentcourseid ? $studentcourseid : SITEID;
+        $studentguideurl = new moodle_url('/course/view.php', array('id' => $studentcourseid));
+        $staffcourseid = get_config('theme_savoir', 'staffhelpcourse');
+        $staffcourseid = $staffcourseid ? $staffcourseid : SITEID;
+        $staffguideurl = new moodle_url('/course/view.php', array('id' => $staffcourseid));
+
         /* Here we should add a choice of help courses (two for teachers/admin, one for student, depending on the extend of this
         user's roles */
 
+        $navlink = navigation_node::create(
+                get_string('guide','theme_savoir'),
+                null,
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'helpmenu',
+                new pix_icon(
+                        'i/info',
+                        '',
+                        'moodle'));
+        $flat = new flat_navigation_node($navlink, 0);
+        $this->add($flat);
+
+        $navlink = navigation_node::create(
+                get_string('studentguide', 'theme_savoir'),
+                $studentguideurl,
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'studentguide');
+        $flat = new flat_navigation_node($navlink, 1);
+        $this->add($flat);
+
+        if ($isteacher || $isstaff) {
+            $navlink = navigation_node::create(
+                    get_string('staffguide', 'theme_savoir'),
+                    $staffguideurl,
+                    navigation_node::TYPE_CUSTOM,
+                    null,
+                    'staffguide');
+            $flat = new flat_navigation_node($navlink, 1);
+            $this->add($flat);
+        }
+    }
+
+    protected function add_node($url, $label, $key, $iconname, $iconcomponent = 'moodle', $indent = 0) {
+
+        $navlink = navigation_node::create($label, $url);
+        $flat = new flat_navigation_node($navlink, $indent);
+        $flat->set_showdivider(true);
+        $flat->key = $key;
+        $flat->icon = new pix_icon(
+                $iconname,
+                '',
+                empty($iconcomponent) ? 'moodle' : $iconcomponent);
+        $this->add($flat);
     }
 }
 
