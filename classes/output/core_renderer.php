@@ -318,9 +318,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $loginurl = get_login_url();
         // If not logged in, show the typical not-logged-in string.
         if (!isloggedin()) {
-            // SAVOIR-ENSAM: Modificiations : do not display prompt
+            // SAVOIR-ENSAM: Modificiations : do not display prompt.
             $returnstr = "";
-            // SAVOIR-ENSAM: Modificiations
+            // SAVOIR-ENSAM: Modificiations.
             if (!$loginpage) {
                 $returnstr .= " (<a href=\"$loginurl\">" . get_string('login') . '</a>)';
             }
@@ -403,13 +403,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
                     'meta mnet mnet-' . $mnet
             );
         }
-        // SAVOIR-ENSAM: Modificiations : switch avatar and login name
+        // SAVOIR-ENSAM: Modificiations : switch avatar and login name.
         $returnstr .= html_writer::span(
                 html_writer::span($avatarcontents, $avatarclasses) .
                 html_writer::span($usertextcontents, 'usertext mr-1'),
                 'userbutton'
         );
-        // END SAVOIR-ENSAM
+        // END SAVOIR-ENSAM.
 
         // Create a divider (well, a filler).
         $divider = new action_menu_filler();
@@ -422,6 +422,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $am->set_action_label(get_string('usermenu'));
         $am->set_alignment(action_menu::TR, action_menu::BR);
         $am->set_nowrap_on_items();
+
+        // SAVOIR-ENSAM: Modificiations : filter out unwanted menu for student
+        // Filter out the dashboard menu.
+        $FILTER_FOR_ALL_USERS =  ['mymoodle,admin','messages,message'];
+        $this->filter_action_menu($opts->navitems, $FILTER_FOR_ALL_USERS);
+        if (!has_role_from_name($USER->id, 'teacher') && !has_role_from_name($USER->id, 'editingteacher')) {
+            $this->filter_action_menu($opts->navitems, ['grades,grades']);
+        }
+        // END SAVOIR-ENSAM.
         if ($withlinks) {
             $navitemcount = count($opts->navitems);
             $idx = 0;
@@ -477,7 +486,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 $usermenuclasses
         );
     }
-
+    private function filter_action_menu(&$navigationlinks, $filternamesarray) {
+        $navigationlinks =  array_filter($navigationlinks, function($menu) use ($filternamesarray) {
+            return !in_array($menu->titleidentifier, $filternamesarray);
+        });
+    }
     /**
      * Renders a custom block region.
      * OVERRIDE FOR SAVOIR DASHBOARD : layout block in the center area
@@ -533,7 +546,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                     $blockclass = ($index == (count($blockcontents) - 1)
                             && $oddnumberblocks) ?
                             'db-singleblock' : 'db-doubleblock';
-                    // Then add ml-auto or mr-auto depending on the side of the block
+                    // Then add ml-auto or mr-auto depending on the side of the block.
                     $blockclass .= ' ';
                     $blockclass .= (($index % 2) ? 'ml-auto' : 'mr-auto');
                 }

@@ -62,7 +62,7 @@ $navbar-dark-toggler-border-color: darken($navbar-dark-color, 10%) !default;
 // Dropdown menu container and contents.
 $dropdown-bg: $savoir-lightergrey !default;
 $dropdown-border-color: rgba($black, .15) !default;
-$dropdown-divider-bg: $gray-200 !default;
+$dropdown-divider-bg: $dropdown-bg !default;
 $dropdown-box-shadow: 0 .5rem 1rem rgba($black, .175) !default;
 
 $dropdown-link-color: $white !default;
