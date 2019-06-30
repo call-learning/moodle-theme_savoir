@@ -53,3 +53,6 @@ A vérifier:
 - Voir logo couleur et pixicon 
 - Debrayage pour admin/superadmin
 - Dashboard par utilisateur (commment affecter à différent groupes)
+
+BUG MINEURS à corriger:
+- Petit scroll sur la page de garde (probablement dû au footer)
