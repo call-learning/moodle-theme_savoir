@@ -36,10 +36,14 @@
 .btn {
   border-radius: 3px;
 }
+
 #page-footer {
   box-shadow: 0px -5px 2px rgba(0, 0, 0, 0.15);
 }
 
+#block-region-side-pre {
+  padding-top: 1.25em;
+}
 
 /*
  * Navigation bar colors and layout.
@@ -155,6 +159,7 @@
     background-repeat: no-repeat;
     background-position: center;
   }
+
   #page-wrapper::after {
     content: initial;
     min-height: initial;
@@ -210,10 +215,12 @@
         padding: 0.25em 2em;
       }
     }
+
     min-height: initial;
   }
+
   #page {
-    min-height:100vh;
+    min-height: 100vh;
   }
 }
 
@@ -251,6 +258,7 @@
       @include hover-focus {
         color: $savoir-lightergrey;
       }
+
       i.icon {
         float: right;
       }
@@ -283,14 +291,17 @@
       }
     }
   }
+
   .calendar-controls {
     a.arrow_link.previous {
       float: left;
     }
+
     a.arrow_link.next {
       float: right;
     }
   }
+
   .minicalendar {
     text-align: cgienter;
   }
@@ -344,15 +355,26 @@
     font-size: small;
     font-variant: small-caps;
   }
+
   .course-content ul.ctopics li.section .content.sectionhidden {
     background-color: transparent;
   }
+
   .content.sectionhidden > h3 {
     font-size: initial;
   }
 }
 
 /* Mods */
+
+/** General navigation */
+.activity-navigation {
+  border: none;
+  border-top: 3px solid $primary;
+  border-radius: 3px;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
 
 /*Quiz*/
 .que {
@@ -362,16 +384,19 @@
     background-color: white;
     border-top: 3px solid $primary;
   }
+
   .info {
-    background-color: saturate(lighten($secondary,50%),80%);
+    background-color: saturate(lighten($secondary, 50%), 80%);
     border-radius: 3px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.15);
     border-top: 3px solid $primary;
   }
+
   .submitbtns {
     margin: 0 0 0 8.5em;
   }
 }
+
 /** Hack material design icons - TODO add the full MD integration */
 [data-region="drawer"] {
   .icon > svg {

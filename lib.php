@@ -303,6 +303,51 @@ function has_role_from_name($userid, $rolestring) {
 }
 
 /**
+ * A shortcut to get all values for a two column layout like templates
+ *
+ * Note: we need to pass the $output as a variable as the global $OUTPUT is not set correctly
+ * (see https://moodle.org/mod/forum/discuss.php?d=336651)
+ * @param $output
+ * @return array
+ * @throws coding_exception
+ */
+function get_context_two_columns_layout($output){
+    global $CFG, $PAGE, $SITE;
+
+    user_preference_allow_ajax_update('drawer-open-nav', PARAM_ALPHA);
+    require_once($CFG->libdir . '/behat/lib.php');
+
+    if (isloggedin()) {
+        $navdraweropen = (get_user_preferences('drawer-open-nav', 'true') == 'true');
+    } else {
+        $navdraweropen = false;
+    }
+    $extraclasses = [];
+    if ($navdraweropen) {
+        $extraclasses[] = 'drawer-open-left';
+    }
+    $bodyattributes = $output->body_attributes($extraclasses);
+    $blockshtml = $output->blocks('side-pre');
+    $hasblocks = strpos($blockshtml, 'data-block=') !== false;
+    $regionmainsettingsmenu = $output->region_main_settings_menu();
+    $templatecontext = [
+            'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
+            'output' => $output,
+            'sidepreblocks' => $blockshtml,
+            'hasblocks' => $hasblocks,
+            'bodyattributes' => $bodyattributes,
+            'navdraweropen' => $navdraweropen,
+            'regionmainsettingsmenu' => $regionmainsettingsmenu,
+            'hasregionmainsettingsmenu' => !empty($regionmainsettingsmenu)
+    ];
+
+    $flatnav = new savoir_flat_navigation($PAGE);
+    $flatnav->initialise();
+
+    $templatecontext['flatnavigation'] = $flatnav;
+    return $templatecontext;
+}
+/**
  * ------------------------------------------------------------------------------------------------
  *              Setup
  * ------------------------------------------------------------------------------------------------
