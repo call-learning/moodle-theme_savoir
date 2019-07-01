@@ -266,7 +266,11 @@ class savoir_flat_navigation extends flat_navigation {
                 $studentguideurl,
                 navigation_node::TYPE_CUSTOM,
                 null,
-                'studentguide');
+                'studentguide',
+                new pix_icon(
+                        'i/info',
+                        '',
+                        'moodle'));
         $flat = new flat_navigation_node($navlink, 1);
         $this->add($flat);
 
@@ -276,7 +280,11 @@ class savoir_flat_navigation extends flat_navigation {
                     $staffguideurl,
                     navigation_node::TYPE_CUSTOM,
                     null,
-                    'staffguide');
+                    'staffguide',
+                    new pix_icon(
+                            'i/info',
+                            '',
+                            'moodle'));
             $flat = new flat_navigation_node($navlink, 1);
             $this->add($flat);
         }

@@ -162,6 +162,7 @@
     background-size: auto;
     background-repeat: no-repeat;
     background-position: center;
+    overflow: hidden; /*Avoid unwanted scroll*/
   }
 
   #page-wrapper::after {
