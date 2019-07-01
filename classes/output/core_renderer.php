@@ -149,11 +149,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     protected function extract_toolbaritems($currentnode, $itemstoextractfrommenu, &$extracteditems) {
-        foreach($currentnode->children as $child) {
-            if (in_array($child->key, $itemstoextractfrommenu, true)) {
-                $extracteditems[] = $child;
+        if ($currentnode) {
+            foreach ($currentnode->children as $child) {
+                if (in_array($child->key, $itemstoextractfrommenu, true)) {
+                    $extracteditems[] = $child;
+                }
+                $this->extract_toolbaritems($child, $itemstoextractfrommenu, $extracteditems);
             }
-            $this->extract_toolbaritems($child, $itemstoextractfrommenu, $extracteditems);
         }
     }
     public function is_on_frontpage() {
