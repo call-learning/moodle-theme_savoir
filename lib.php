@@ -235,6 +235,7 @@ class savoir_flat_navigation extends flat_navigation {
 
         }
         $this->add_help_node($isstudent, $isteacher, $isstaff);
+        $this->add_other_nodes($isstudent, $isteacher, $isstaff);
     }
 
     protected function add_help_node($istudent = true, $isteacher = true, $isstaff = true) {
@@ -249,7 +250,7 @@ class savoir_flat_navigation extends flat_navigation {
         user's roles */
 
         $navlink = navigation_node::create(
-                get_string('guide','theme_savoir'),
+                get_string('guide', 'theme_savoir'),
                 null,
                 navigation_node::TYPE_CUSTOM,
                 null,
@@ -290,6 +291,29 @@ class savoir_flat_navigation extends flat_navigation {
         }
     }
 
+    protected function add_other_nodes($istudent = true, $isteacher = true, $isstaff = true) {
+        global $PAGE;
+        // Add-a-block in editing mode.
+        if (isset($this->page->theme->addblockposition) &&
+                $this->page->theme->addblockposition == BLOCK_ADDBLOCK_POSITION_FLATNAV &&
+                $PAGE->user_is_editing() && $PAGE->user_can_edit_blocks() &&
+                ($addable = $PAGE->blocks->get_addable_blocks())) {
+            $url = new moodle_url($PAGE->url, ['bui_addblock' => '', 'sesskey' => sesskey()]);
+            $addablock = navigation_node::create(get_string('addblock'), $url);
+            $flat = new flat_navigation_node($addablock, 0);
+            $flat->set_showdivider(true);
+            $flat->key = 'addblock';
+            $flat->icon = new pix_icon('i/addblock', '');
+            $this->add($flat);
+            $blocks = [];
+            foreach ($addable as $block) {
+                $blocks[] = $block->name;
+            }
+            $params = array('blocks' => $blocks, 'url' => '?' . $url->get_query_string(false));
+            $PAGE->requires->js_call_amd('core/addblockmodal', 'init', array($params));
+        }
+    }
+
     protected function add_node($url, $label, $key, $iconname, $iconcomponent = 'moodle', $indent = 0) {
 
         $navlink = navigation_node::create($label, $url);
@@ -315,11 +339,12 @@ function has_role_from_name($userid, $rolestring) {
  *
  * Note: we need to pass the $output as a variable as the global $OUTPUT is not set correctly
  * (see https://moodle.org/mod/forum/discuss.php?d=336651)
+ *
  * @param $output
  * @return array
  * @throws coding_exception
  */
-function get_context_two_columns_layout($output){
+function get_context_two_columns_layout($output) {
     global $CFG, $PAGE, $SITE;
 
     user_preference_allow_ajax_update('drawer-open-nav', PARAM_ALPHA);
@@ -355,6 +380,7 @@ function get_context_two_columns_layout($output){
     $templatecontext['flatnavigation'] = $flatnav;
     return $templatecontext;
 }
+
 /**
  * ------------------------------------------------------------------------------------------------
  *              Setup
