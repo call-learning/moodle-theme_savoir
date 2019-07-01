@@ -41,18 +41,16 @@ leur Course ID commence par "GUIDE_"
 
 # Notes de développpement
 
-
 TODO:
 - Bloc pour liste de cours
 - Page pour liste de cours
 - Topic collapsible (à mettre à jour dans l'install)
+- Gérer logo couleur + pixicons
+- Script affectation global dashboard
 
-A vérifier:
+A vérifier (fonctionnement):
 - Setting pour des couleurs dominantes (primary, secondary)
 - Logo appartient au settings globaux
-- Voir logo couleur et pixicon 
-- Debrayage pour admin/superadmin
-- Dashboard par utilisateur (commment affecter à différent groupes)
 
 BUG MINEURS à corriger:
 - Petit scroll sur la page de garde (probablement dû au footer)
