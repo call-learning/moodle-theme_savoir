@@ -408,6 +408,70 @@
   }
 }
 
+.path-mod-quiz #mod_quiz_navblock {
+  .btn-secondary {
+    font-size: smaller; /* Text was too big for the side pre size*/
+  }
+
+  span.qnbutton, .qnbutton {
+    .thispageholder {
+      border: none;
+      border-radius: unset;
+    }
+    &.thispage .thispageholder {
+      border: 2px solid black;
+    }
+
+    &.notyetanswered .trafficlight,
+    &.invalidanswer .trafficlight,
+    &.notyetanswered,
+    &.invalidanswer{
+      background-color: lighten($savoir-lightergrey,10%);
+    }
+
+    &.correct .trafficlight,
+    &.correct {
+      background-color: darken($success,20%);
+    }
+
+    &.blocked .trafficlight,
+    &.blocked {
+      background-color: $input-bg-disabled;
+    }
+
+    &.notanswered .trafficlight,
+    &.incorrect .trafficlight,
+    &.notanswered, &.incorrect {
+      background-color: darken($warning,20%);
+    }
+
+    &.partiallycorrect .trafficlight,
+    &.partiallycorrect {
+      background-color: darken($danger,20%);
+    }
+
+    &.complete .trafficlight,
+    &.answersaved .trafficlight,
+    &.requiresgrading .trafficlight,
+    &.complete,
+    &.answersaved,
+    &.requiresgrading
+    {
+      background-color: darken($info,10%);
+    }
+    color: white;
+    background: lighten($savoir-lightergrey,10%);
+  }
+
+  .endtestlink {
+    @extend .btn;
+    @extend .btn-outline-primary;
+    position: fixed;
+    top: $navbar-height;
+  }
+}
+
+
 /** Hack material design icons - TODO add the full MD integration */
 [data-region="drawer"] {
   .icon > svg {
