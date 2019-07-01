@@ -22,7 +22,7 @@ define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/clilib.php');
-include_once(__DIR__ . '/../lib.php');
+include_once(__DIR__ . '/../locallib.php');
 
 $usage = "Run different setup script for testing purpose
 

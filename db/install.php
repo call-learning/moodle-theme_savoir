@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/theme/savoir/lib.php');
+require_once($CFG->dirroot.'/theme/savoir/locallib.php');
 
 /**
  * Theme install

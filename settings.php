@@ -64,3 +64,11 @@ if ($helpcoursechoices) {
     $settings->add($setting);
 
 }
+require_once($CFG->dirroot.'/theme/savoir/locallib.php');
+$options = get_course_menu_toolbaritems();
+
+$name = 'theme_savoir/coursemenuhandytoolbar';
+$title = get_string('coursemenuhandytoolbar', 'theme_savoir');
+$description = get_string('coursemenuhandytoolbar_desc', 'theme_savoir');
+$setting = new admin_setting_configmultiselect($name, $title, $description, [], $options);
+$settings->add($setting);

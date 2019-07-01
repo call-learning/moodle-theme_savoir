@@ -16,6 +16,7 @@
 
 namespace theme_savoir\output;
 
+use action_link;
 use action_menu;
 use action_menu_filler;
 use action_menu_link_secondary;
@@ -28,6 +29,7 @@ use core_text;
 use custom_menu;
 use html_writer;
 use moodle_url;
+use navigation_node;
 use pix_icon;
 use renderer_base;
 use stdClass;
@@ -81,6 +83,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         global $PAGE;
         $header = new stdClass();
         $header->settingsmenu = $this->context_header_settings_menu();
+        $header->handytoolbar = $this->context_handy_toolbar();
         $header->contextheader = $this->context_header();
         $header->hasnavbar = empty($PAGE->layout_options['nonavbar']);
         $header->navbar = $this->navbar();
@@ -111,47 +114,48 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return $this->render_from_template($template, $header);
     }
 
+
+
     /**
      * This is an optional menu that can be added to a layout by a theme. It contains the
      * menu for the course administration, only on the course main page.
      *
      * @return string
      */
-    public function context_header($headerinfo = null, $headinglevel = 1) {
-        if ($this->is_on_frontpage()) {
-            return '';
-        } else if ($this->is_on_dashboard()) {
-            global $DB, $USER, $CFG;
-            require_once($CFG->dirroot . '/user/lib.php');
-            $context = $this->page->context;
-            $heading = null;
-            $imagedata = null;
-            $subheader = null;
-            $userbuttons = null;
-            // The user context currently has images and buttons. Other contexts may follow.
-            $heading = get_string('dashboardtitle', 'theme_savoir');
-            if ($context->contextlevel == CONTEXT_USER) {
-                if (isset($headerinfo['user'])) {
-                    $user = $headerinfo['user'];
-                } else {
-                    // Look up the user information if it is not supplied.
-                    $user = $DB->get_record('user', array('id' => $context->instanceid));
-                }
-                $course = ($this->page->context->contextlevel == CONTEXT_COURSE) ? $this->page->course : null;
+    public function context_handy_toolbar() {
+        $rendered = "";
+        $context = $this->page->context;
 
-                if (user_can_view_profile($user, $course)) {
-                    // Use the user's full name if the heading isn't set.
-                    $heading = $heading = get_string('dashboardtitle_uname', 'theme_savoir', fullname($user));
-                }
+        $items = $this->page->navbar->get_items();
+        $currentnode = end($items);
+
+        // We are on the course home page.
+        if (($context->contextlevel == CONTEXT_COURSE) &&
+                !empty($currentnode) &&
+                ($currentnode->type == navigation_node::TYPE_COURSE || $currentnode->type == navigation_node::TYPE_SECTION)) {
+            $settingsnode = $this->page->settingsnav->find('courseadmin', navigation_node::TYPE_COURSE);
+
+            $itemstoextractfrommenu = explode(',',get_config('theme_savoir','coursemenuhandytoolbar'));
+            if ($itemstoextractfrommenu) {
+                $extracteditems = [];
+                $this->extract_toolbaritems($settingsnode, $itemstoextractfrommenu, $extracteditems);
+                $context = new stdClass();
+                $context->items = $extracteditems;
+                $rendered = $this->render_from_template('theme_savoir/handy_toolbar', $context);
             }
-
-            $contextheader = new context_header($heading, $headinglevel);
-            return $this->render_context_header($contextheader);
-        } else {
-            return parent::context_header($headerinfo, $headinglevel);
         }
+
+        return $rendered;
     }
 
+    protected function extract_toolbaritems($currentnode, $itemstoextractfrommenu, &$extracteditems) {
+        foreach($currentnode->children as $child) {
+            if (in_array($child->key, $itemstoextractfrommenu, true)) {
+                $extracteditems[] = $child;
+            }
+            $this->extract_toolbaritems($child, $itemstoextractfrommenu, $extracteditems);
+        }
+    }
     public function is_on_frontpage() {
         return ($this->page->pagelayout == 'frontpage');
     }

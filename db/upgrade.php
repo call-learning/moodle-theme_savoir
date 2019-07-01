@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/theme/savoir/lib.php');
+require_once($CFG->dirroot.'/theme/savoir/locallib.php');
 
 /**
  * Theme upgrade
@@ -31,7 +31,6 @@ function xmldb_theme_savoir_upgrade($oldversion) {
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
     if ($oldversion < 2018051401) {
-        setup_frontpage_blocks();
         setup_theme();
         upgrade_plugin_savepoint(true, 2018051401, 'theme', 'savoir');
     }

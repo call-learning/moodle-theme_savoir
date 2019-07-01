@@ -45,6 +45,9 @@ $string['studenthelpcourse_desc'] = 'Course used as a Student guide';
 $string['staffhelpcourse'] = 'Staff Help Course';
 $string['staffhelpcourse_desc'] = 'Course used as a Staff guide';
 
+$string['coursemenuhandytoolbar'] = 'Barre d\'outils de cours';
+$string['coursemenuhandytoolbar_desc'] = 'Barre d\'outils de cours';
+
 /* Block positionning */
 $string['region-side-pre'] = "Side Pre";
 $string['region-main'] = "Main";
