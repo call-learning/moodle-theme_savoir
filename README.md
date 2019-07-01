@@ -48,9 +48,11 @@ TODO:
 - Gérer logo couleur + pixicons
 - Script affectation global dashboard
 
+
 A vérifier (fonctionnement):
 - Setting pour des couleurs dominantes (primary, secondary)
 - Logo appartient au settings globaux
 
 BUG MINEURS à corriger:
 - Petit scroll sur la page de garde (probablement dû au footer)
+

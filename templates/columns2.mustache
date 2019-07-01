@@ -81,6 +81,14 @@
                         </div>
                     </div>
                 </section>
+                <!-- Here we need to add this block event if we make it display none at some point
+                as some async calendar function can depend on it (see calendar view page and a similar
+                 issue as https://tracker.moodle.org/browse/MDL-63481 -->
+                {{#hasblocks}}
+                    <section data-region="blocks-column" class="d-print-none">
+                        {{{ sidepreblocks }}}
+                    </section>
+                {{/hasblocks}}
             </div>
         </div>
     </div>
