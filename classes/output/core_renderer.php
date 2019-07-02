@@ -138,7 +138,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $itemstoextractfrommenu = explode(',',get_config('theme_savoir','coursemenuhandytoolbar'));
             if ($itemstoextractfrommenu) {
                 $extracteditems = [];
-                $this->extract_toolbaritems($settingsnode, $itemstoextractfrommenu, $extracteditems);
+                $this->extract_toolbaritems($settingsnode, '/'.$settingsnode->key, $itemstoextractfrommenu, $extracteditems);
                 $context = new stdClass();
                 $context->items = $extracteditems;
                 $rendered = $this->render_from_template('theme_savoir/handy_toolbar', $context);
@@ -148,13 +148,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return $rendered;
     }
 
-    protected function extract_toolbaritems($currentnode, $itemstoextractfrommenu, &$extracteditems) {
+    protected function extract_toolbaritems($currentnode, $currentpath, $itemstoextractfrommenu, &$extracteditems) {
         if ($currentnode) {
             foreach ($currentnode->children as $child) {
-                if (in_array($child->key, $itemstoextractfrommenu, true)) {
+                if (in_array($currentpath.'/'.$child->key, $itemstoextractfrommenu, true)) {
                     $extracteditems[] = $child;
                 }
-                $this->extract_toolbaritems($child, $itemstoextractfrommenu, $extracteditems);
+                $this->extract_toolbaritems($child, $currentpath.'/'.$child->key, $itemstoextractfrommenu, $extracteditems);
             }
         }
     }

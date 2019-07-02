@@ -36,7 +36,11 @@ defined('MOODLE_INTERNAL') || die();
  * @return array
  * @throws coding_exception
  */
-function get_course_menu_toolbaritems($page = null, $currentitem = null) {
+function get_course_menu_toolbaritems($page = null, $currentitem = null, $currentpath='') {
+    // Add default items which won't be in the list as we are basing our search on SITEID (see enrol_add_course_navigation)
+    $items = array('/courseadmin/users/review'=>get_string('enrolledusers', 'enrol'),
+            '/courseadmin/users/manageinstances'=>get_string('enrolmentinstances', 'enrol'),
+            '/courseadmin/users/override'=> get_string('permissions', 'role'));
     if (!$page) {
         global $CFG;
         $page = new moodle_page();
@@ -60,9 +64,13 @@ function get_course_menu_toolbaritems($page = null, $currentitem = null) {
         $pagenav->initialise();
         $currentitem = $pagenav->find('courseadmin', navigation_node::TYPE_COURSE);
     }
-    $items = array($currentitem->key => $currentitem->text);
-    foreach ($currentitem->children as $child) {
-        $items += get_course_menu_toolbaritems($page, $child);
+    if ($currentitem) {
+        if ($currentitem->action) {
+            $items += array($currentpath . '/' . $currentitem->key => $currentitem->text);
+        }
+        foreach ($currentitem->children as $child) {
+            $items += get_course_menu_toolbaritems($page, $child, $currentpath . '/' . $currentitem->key );
+        }
     }
     return $items;
 }
