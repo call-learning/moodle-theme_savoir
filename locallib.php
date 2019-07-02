@@ -108,7 +108,7 @@ function setup_system_dashboard() {
                     'defaultweight' => -2
             ],
             [
-                    'blockname' => 'myoverview',
+                    'blockname' => 'savoir_mycourses',
                     'defaultregion' => 'content',
                     'defaultweight' => 0
             ],
@@ -237,7 +237,7 @@ function setup_dashboard_blocks($userid = null, $defaultblockinstances = null) {
                         'defaultweight' => -2
                 ],
                 [
-                        'blockname' => 'myoverview',
+                        'blockname' => 'savoir_mycourses',
                         'defaultregion' => 'content',
                         'defaultweight' => 0
                 ],

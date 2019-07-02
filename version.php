@@ -32,4 +32,5 @@ $plugin->component = 'theme_savoir';
 $plugin->dependencies = [
     'theme_boost' => '2018051400',
     'block_savoir_mycourses' => '2018051706',
+    'format_topcoll' => '2018052303'
 ];
