@@ -15,22 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Theme plugin version definition.
+ * Event observers for Theme Savoir
  *
  * @package   theme_savoir
  * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-$plugin->version   = 2018112105; // This is the version number to increment when changes needing an update are made.
-$plugin->requires  = 2018051706; // Moodle 3.5.
-$plugin->release   = '1.0.0';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->component = 'theme_savoir';
-$plugin->dependencies = [
-    'theme_boost' => '2018051400',
-    'block_savoir_mycourses' => '2018051706',
-    'format_topcoll' => '2018052303'
+$observers = [
+    [
+        'eventname'   => '\core\event\user_loggedin',
+        'callback'    => 'theme_savoir_observer::user_loggedin',
+    ],
 ];
