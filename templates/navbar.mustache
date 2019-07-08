@@ -16,6 +16,7 @@
 }}
 {{!
     Page navbar.
+    SAVOIR: Change dark theme into light theme
 }}
 <nav class="fixed-top navbar navbar-dark navbar-expand moodle-has-zindex" aria-label="{{#str}}sitemenubar, admin{{/str}}">
 
@@ -38,9 +39,11 @@
             <button aria-expanded="{{#navdraweropen}}true{{/navdraweropen}}{{^navdraweropen}}false{{/navdraweropen}}" aria-controls="nav-drawer" type="button"
                     class="btn nav-link float-sm-left btn-primary " data-action="toggle-drawer" data-side="left" data-preference="drawer-open-nav">
                 <span class="mx-auto d-none d-sm-block">
+                    {{#pix}}i/menubars{{/pix}}<span class="sr-only">{{#str}}sidepanel, core{{/str}}</span>
                     <img class='drawer-img' src="{{output.get_logo_url}}" alt="{{sitename}}">
                 </span>
                 <span class="mx-auto d-sm-none">
+                    {{#pix}}i/menubars{{/pix}}<span class="sr-only">{{#str}}sidepanel, core{{/str}}</span>
                     <img class='drawer-img' src="{{output.get_compact_logo_url}}" alt="{{sitename}}">
                 </span>
                 <span class="sr-only">{{#str}}sidepanel, core{{/str}}</span></button>
