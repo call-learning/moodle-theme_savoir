@@ -20,9 +20,9 @@
 <div class="course-syllabus" id="syllabusContent-{{courseid}}">
     <div class="card">
         {{#syllabustitle}}
-        <div class="card-header" id="courseSyllabusHeader-{{courseid}}">
+        <div class="card-header d-flex justify-content-between" id="courseSyllabusHeader-{{courseid}}">
             <span class="title">{{ syllabustitle }}</span>
-            <button class="btn btn-link"
+            <button class="btn btn-link align-self-start p-0"
                     type="button"
                     data-toggle="collapse"
                     data-target="#syllabusContentCollapsible-{{courseid}}"
@@ -30,12 +30,11 @@
                     aria-controls="syllabusContentCollapsible-{{courseid}}"
                     aria-label="{{# str }} collapse {{/ str }}">
                 {{# pix }} i/collapsed, theme_savoir {{/ pix }}
-
             </button>
         </div>
         {{/syllabustitle}}
         <div id="syllabusContentCollapsible-{{courseid}}" class="collapse show" aria-labelledby="courseSyllabusHeader-{{courseid}}" data-parent="#syllabusContent-{{courseid}}">
-            <div class="card-body">
+            <div class="card-body p-0">
                 {{{ content }}}
             </div>
         </div>

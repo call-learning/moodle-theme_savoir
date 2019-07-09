@@ -517,3 +517,40 @@
   border-radius: 3px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.15);
 }
+
+/* Catalog **/
+.course_category_tree .category>.info {
+  border-bottom: 2px solid $gray-500;
+  border-radius: 3px;
+  padding-bottom: 0.5em;
+  margin-bottom: 1.5em;
+}
+.category {
+  .categoryname {
+    padding-left: 1em;
+    a {
+      color: black;
+
+      @include hover-focus {
+        color: $gray-700;
+      }
+    }
+  }
+  .coursebox {
+    border-left: 3px solid $primary;
+    border-radius: 3px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.15);
+  }
+  .courses {
+    .coursebox {
+      border-left: 3px solid $primary;
+      border-radius: 3px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.15);
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+    .coursebox.even {
+      background-color: transparent;
+    }
+  }
+}
