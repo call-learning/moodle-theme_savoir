@@ -47,7 +47,6 @@ $THEME->csspostprocess = 'theme_savoir_process_css'; // Make sure we replace log
 
 $THEME->prescsscallback = 'theme_savoir_get_pre_scss'; // Color scheme
 
-
 $THEME->layouts = [
     // Most backwards compatible layout without the blocks - this is the layout used by default.
     'base' => array(

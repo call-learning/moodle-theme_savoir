@@ -71,3 +71,6 @@ $string['catalog'] = 'Catalogue';
 $string['guide'] = 'Guides';
 $string['studentguide'] = 'Guide de l\'étudiant';
 $string['staffguide'] = 'Guide de l\'enseignant';
+
+/* Course */
+$string['coursesyllabus'] = 'Syllabus';

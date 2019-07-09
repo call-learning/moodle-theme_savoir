@@ -381,3 +381,12 @@ function get_context_two_columns_layout($output) {
     return $templatecontext;
 }
 
+/**
+ * Get additional icon mapping for font-awesome and this theme.
+ */
+function theme_savoir_get_fontawesome_icon_map() {
+    return [
+            'theme_savoir:i/minus' => 'fa-minus',
+            'theme_savoir:i/collapsed' => 'fa-chevron-down',
+    ];
+}

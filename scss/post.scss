@@ -484,3 +484,36 @@
     fill: white;
   }
 }
+
+/** Course Syllabus **/
+.course-syllabus {
+
+  .card-header {
+    background : none;
+    button {
+      font-variant: all-small-caps;
+      font-size: x-large;
+    }
+    border: none;
+    box-shadow: none;
+    .title {
+      color: black;
+      font-size: larger;
+      font-weight: bold;
+    }
+  }
+  .card-body {
+    border: none;
+    box-shadow: none;
+
+  }
+  h4 {
+    color: $primary;
+    font-size: medium;
+    font-weight: bold;
+    line-height: 2em;
+  }
+  border-left: 3px solid $primary;
+  border-radius: 3px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.15);
+}
