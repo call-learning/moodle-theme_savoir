@@ -78,4 +78,5 @@ $string['studentguide'] = 'Student Guide';
 $string['staffguide'] = 'Staff Guide';
 
 /* Course */
-$string['coursesyllabus'] = 'Syllabus';
+$string['coursesyllabustitle'] = 'Summary';
+$string['viewcourse'] = 'View Course';

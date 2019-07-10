@@ -387,6 +387,7 @@ function get_context_two_columns_layout($output) {
 function theme_savoir_get_fontawesome_icon_map() {
     return [
             'theme_savoir:i/minus' => 'fa-minus',
-            'theme_savoir:i/collapsed' => 'fa-chevron-down',
+            'theme_savoir:t/expanded' => 'fa-chevron-down',
+            'theme_savoir:t/collapsed' => 'fa-chevron-right',
     ];
 }

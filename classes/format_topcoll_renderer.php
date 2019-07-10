@@ -29,7 +29,7 @@ if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
     include_once($CFG->dirroot . "/course/format/topcoll/renderer.php");
 
     class theme_savoir_format_topcoll_renderer extends format_topcoll_renderer {
-        use \theme_savoir\course_renderer_trait;
+        use \theme_savoir\format_renderer_trait;
 
         /**
          * Output the html for a multiple section page and make sure we output the section 0

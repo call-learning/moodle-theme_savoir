@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . "/course/format/topics/renderer.php");
 class theme_savoir_format_topics_renderer extends format_topics_renderer {
-    use \theme_savoir\course_renderer_trait;
+    use \theme_savoir\format_renderer_trait;
     /**
      * Output the html for a multiple section page
      *

@@ -30,13 +30,13 @@ use moodle_url;
 
 defined('MOODLE_INTERNAL') || die;
 
-trait course_renderer_trait {
+trait format_renderer_trait {
     public function get_section_0_content($section) {
         $tcontext = new \stdClass();
         $course = $section->modinfo->get_course();
         $tcontext->courseid = $course->id;
-        $tcontext->syllabustitle = get_string('coursesyllabus','theme_savoir');
-        if ($section->summary) {
+        $tcontext->syllabustitle = get_string('coursesyllabustitle','theme_savoir');
+        if ($section->summary || $section->name) {
             $tcontext->content = parent::format_summary_text($section);
             $tcontext->content = $this->section_header($section, $course, false, 0);
 
