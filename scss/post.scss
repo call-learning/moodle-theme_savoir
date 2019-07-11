@@ -230,7 +230,6 @@ body {
       letter-spacing: 1.5pt;
       text-align: center;
       font-variant: small-caps;
-      margin-top: 2em;
       color: white;
       padding: 0.5em 2em;
       @media (max-width: map-get($grid-breakpoints, "md")) {
@@ -248,6 +247,18 @@ body {
 
   #page {
     min-height: 100vh;
+  }
+
+  #page-content {
+    .section .activity .modtype_label .label {
+      div {
+        padding-right: 0;
+      }
+    }
+
+    .section .label .contentwithoutlink {
+      padding-right: 0;
+    }
   }
 }
 
