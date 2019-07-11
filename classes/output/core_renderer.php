@@ -110,6 +110,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
             $header->frontpageslogan = $content;
             $header->frontpagestitle = $this->page->course->shortname;
+            $header->alertmessage = format_text(get_config('theme_savoir','fpmessage'),FORMAT_HTML);
+            $header->alertenabled = get_config('theme_savoir','fpmessageenabled');
         } else if ($this->is_on_page_with_description()) {
             $header->pageslogan = get_string(preg_replace('/^theme-savoir-pages-/', '', $this->page->pagetype, 1) . '-description', 'theme_savoir');
             $header->bgimageurl = $this->image_url('genericbackground', 'theme_savoir');;
@@ -199,6 +201,27 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         return $compactlogourl;
     }
+
+    /**
+     * Returns the URL for the favicon.
+     *
+     * @since Moodle 2.5.1 2.6
+     * @return string The favicon URL
+     */
+    public function favicon() {
+        $favicon = get_config('theme_savoir', 'favicon');
+        if (empty($favicon)) {
+            return $this->image_url('favicon', 'theme');
+        }
+        return moodle_url::make_pluginfile_url(
+                context_system::instance()->id,
+                'theme_savoir',
+                'favicon',
+                0 ,
+                theme_get_revision(),
+                $favicon)->out();
+    }
+
 
     public function should_display_navbar_logo() {
         $logo = $this->get_compact_logo_url();
@@ -589,5 +612,4 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $bc->attributes['class'] .= $additionalclasses;
         return parent::block($bc, $region);
     }
-
 }

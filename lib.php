@@ -144,6 +144,7 @@ function theme_savoir_pluginfile($course, $cm, $context, $filearea, $args, $forc
     // Check if the files to serve are in the usual setting file area
     $themesettingsfilearea = [
             'coverimagefp',
+            'favicon'
     ];
 
     if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $themesettingsfilearea)) {

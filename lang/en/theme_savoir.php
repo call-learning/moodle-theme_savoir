@@ -34,6 +34,9 @@ $string['brading_title_desc'] = 'Theme Branding title, displayed in various part
 $string['coverimagefp'] = 'Cover Image for Frontpage';
 $string['coverimagefpdesc'] = 'Cover Image for the front page';
 
+$string['favicon'] = 'Favicon';
+$string['favicondesc'] = 'Favicon';
+
 $string['primarycolor'] = 'Primary (Branding) color';
 $string['primarycolor_desc'] = 'The color used as main color';
 $string['secondarycolor'] = 'Secondary (Branding) color';
@@ -47,6 +50,13 @@ $string['staffhelpcourse_desc'] = 'Course used as a Staff guide';
 
 $string['coursemenuhandytoolbar'] = 'Course Menu Toolbar';
 $string['coursemenuhandytoolbar_desc'] = 'Course Menu Toolbar';
+
+$string['fpmessage'] = 'Front Page alert message';
+$string['fpmessage_desc'] = 'Front Page alert message';
+
+$string['fpmessageenabled'] = 'Enable / Disable the front page message';
+$string['fpmessageenabled_desc'] = 'Enable / Disable the front page message';
+
 
 /* Block positionning */
 $string['region-side-pre'] = "Side Pre";

@@ -23,6 +23,15 @@ $setting = new admin_setting_heading($name, $heading, $description);
 $settings->add($setting);
 
 // Cover image for front-page file setting.
+$name = 'theme_savoir/favicon';
+$title = new lang_string('favicon', 'theme_savoir');
+$description = new lang_string('favicondesc', 'theme_savoir');
+$opts = array('accepted_types' => array('.ico'));
+$setting = new admin_setting_configstoredfile($name, $title, $description, 'favicon', 0, $opts);
+$setting->set_updatedcallback('theme_savoir_process_site_branding');
+$settings->add($setting);
+
+// Cover image for front-page file setting.
 $name = 'theme_savoir/coverimagefp';
 $title = new lang_string('coverimagefp', 'theme_savoir');
 $description = new lang_string('coverimagefpdesc', 'theme_savoir');
@@ -71,4 +80,19 @@ $name = 'theme_savoir/coursemenuhandytoolbar';
 $title = get_string('coursemenuhandytoolbar', 'theme_savoir');
 $description = get_string('coursemenuhandytoolbar_desc', 'theme_savoir');
 $setting = new admin_setting_configmultiselect($name, $title, $description, [], $options);
+$settings->add($setting);
+
+
+// Frontpage message (alert)
+$name = 'theme_savoir/fpmessage';
+$title = new lang_string('fpmessage', 'theme_savoir');
+$description = new lang_string('fpmessage_desc', 'theme_savoir');
+$setting = new admin_setting_confightmleditor($name, $title, $description, '');
+$settings->add($setting);
+
+
+$name = 'theme_savoir/fpmessageenabled';
+$title = new lang_string('fpmessageenabled', 'theme_savoir');
+$description = new lang_string('fpmessageenabled_desc', 'theme_savoir');
+$setting = new admin_setting_configcheckbox($name, $title, $description, '0');
 $settings->add($setting);

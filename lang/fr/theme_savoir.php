@@ -34,6 +34,9 @@ $string['brading_title_desc'] = 'Paramètres spécifiques à ce thème';
 $string['coverimagefp'] = 'Cover Image for Frontpage';
 $string['coverimagefpdesc'] = 'Cover Image for the front page';
 
+$string['favicon'] = 'Favicon';
+$string['favicondesc'] = 'Favicon';
+
 $string['primarycolor'] = 'Primary (Branding) color';
 $string['primarycolor_desc'] = 'The color used as main color';
 $string['secondarycolor'] = 'Secondary (Branding) color';
@@ -47,6 +50,12 @@ $string['staffhelpcourse_desc'] = 'Course used as a Staff guide';
 
 $string['coursemenuhandytoolbar'] = 'Barre d\'outils de cours';
 $string['coursemenuhandytoolbar_desc'] = 'Barre d\'outils de cours';
+
+$string['fpmessage'] = 'Message d\'alerte à afficher sur la page de garde';
+$string['fpmessage_desc'] = 'Message d\'alerte à afficher sur la page de garde';
+
+$string['fpmessageenabled'] = 'Montre/Cache le message sur la page de garde';
+$string['fpmessageenabled_desc'] = 'Montre/Cache le message sur la page de garde';
 
 /* Block positionning */
 $string['region-side-pre'] = "Side Pre";
