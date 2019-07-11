@@ -609,3 +609,110 @@
     line-height: 2em;
   }
 }
+
+/* Free / Open Course Catalog */
+.free-course-list {
+  .courses-view-course-category > .card-header {
+    color: black;
+    font-weight: bold;
+    background: white;
+  }
+
+  .courses-view-course-category > .card-body {
+    border-top: none;
+    box-shadow: none;
+  }
+  .courses-view-course-item > .card-img-top {
+    border-top: 3px solid $primary;
+  }
+  .courses-view-course-item > .card-body {
+    border-top: none;
+  }
+
+  .courses-view-course-item {
+    min-height: 400px;
+  }
+  .myoverviewimg {
+    height: 150px;
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+  }
+  a.coursecard {
+    color : black;
+    @include hover-focus {
+      color : black;
+      text-decoration: none;
+    }
+  }
+  .course-title-area  {
+    .icon-container {
+      height: 70px;
+      width: 70px;
+    }
+    .icon {
+      height: 70px;
+      width: 70px;
+      background-color: $primary;
+      border-radius: 50%;
+      position: relative;
+      i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: 0;
+        transform: translate(-63%,-50%);
+        color: #fff;
+        height: 45px;
+        width: 45px;
+        font-size: 45px;
+      }
+    }
+
+    .title {
+      color: black;
+      font-weight: bolder;
+    }
+    .dimmed {
+      .title {
+        color: $gray-500;
+      }
+      .icon {
+        background-color: lighten($secondary,30%),
+      }
+    }
+  }
+  .teacher-list {
+    color: $gray-500;
+  }
+}
+
+#page-theme-savoir-pages-opencatalog {
+  @media (max-width: map-get($grid-breakpoints, "md")) {
+    .courses-view-course-category > .card-header,
+    .courses-view-course-category > .card-body {
+      padding-left: initial;
+      padding-right: initial;
+    }
+    #region-main > .card > .card-body {
+      padding-left : 0.25em;
+      padding-right : 0.25em;
+    }
+  }
+}
+.page-header-with-description {
+  min-height: 300px;
+  color: white;
+  .page-desc-title {
+    font-size: xx-large;
+  }
+  .page-desc-slogan {
+    margin-left : 3em;
+    margin-right : 3em;
+  }
+}
+
+
+/** Hiding features / Hacks
+  TODO: Replace with hiding the feature in the template
+*/

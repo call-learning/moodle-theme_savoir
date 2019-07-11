@@ -58,7 +58,7 @@ $string['sitecopyrightmessage'] = 'SAS Savoir';
 /* Front page */
 $string['front_page_section_title']  = 'Welcome to our site / Bienvenue !';
 $string['front_page_section_content']  = 'Bienvenue sur la plateforme pédagogique d\'Arts et Métiers 2018-2019';
-
+$string['front_page_freecourses']= 'Accès aux cours en libre service';
 /* Legal */
 $string['legal'] = 'Mention légales';
 
@@ -75,3 +75,8 @@ $string['staffguide'] = 'Guide de l\'enseignant';
 /* Course */
 $string['coursesyllabustitle'] = 'Résumé';
 $string['viewcourse'] = 'Consulter le cours';
+
+/* Open Catalog/ Free Courses */
+$string['opencatalog'] = 'Ressources en accès libre';
+$string['opencatalog-description'] = 'L\'École Nationale Supérieure des Arts et Métiers propose des cours en ligne, accessibles à tous,
+en libre-service. Voici la liste des cours auxquels vous pouvez accéder, triés par catégorie:';

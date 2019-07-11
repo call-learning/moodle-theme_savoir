@@ -27,7 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . "/course/renderer.php");
 
-use cm_info;
 use context_system;
 use course_in_list;
 use coursecat;
@@ -37,6 +36,7 @@ use lang_string;
 use moodle_url;
 use single_select;
 use stdClass;
+use theme_savoir\utils;
 
 /**
  *Course renderer with specifics for front page and editing mode
@@ -99,32 +99,8 @@ class course_renderer extends \core_course_renderer {
         // display course contacts. See course_in_list::get_course_contacts().
         if ($course->has_course_contacts()) {
             $content .= html_writer::start_tag('span', array('class' => 'teachers'));
-            $contacts = $course->get_course_contacts();
-            $contactbyroles = array_reduce($contacts,
-                    function($c, $i) {
-                        if (empty($c[$i['rolename']])) {
-                            $c[$i['rolename']] = [];
-                        }
-                        $c[$i['rolename']][] = $i;
-                        return $c;
-                    }, array());
-
-            foreach ($contactbyroles as $rolename => $contactlist) {
-                $names = [];
-                foreach($contactlist as $coursecontact) {
-                    $names[] =
-                            html_writer::link(new moodle_url('/user/view.php',
-                                    array('id' => $coursecontact['user']->id, 'course' => SITEID)),
-                                    $coursecontact['username']);
-                }
-                if (count($names)>1) {
-                    $rolename.='s';
-                }
-                $content .= html_writer::tag(
-                        'span',
-                        $rolename . ': ' . implode(', ',$names),
-                        array('class'=>'teachers-list'));
-            }
+            $content .= utils::get_course_contact_list($course);
+            $content .= html_writer::end_tag('span');
         }
 
         // display course category if necessary (for example in search results).

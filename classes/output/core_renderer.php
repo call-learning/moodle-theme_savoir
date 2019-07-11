@@ -110,6 +110,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
             $header->frontpageslogan = $content;
             $header->frontpagestitle = $this->page->course->shortname;
+        } else if ($this->is_on_page_with_description()) {
+            $header->pageslogan = get_string(preg_replace('/^theme-savoir-pages-/', '', $this->page->pagetype, 1) . '-description', 'theme_savoir');
+            $header->bgimageurl = $this->image_url('genericbackground', 'theme_savoir');;
+            $template = 'theme_savoir/header_desc';
         }
         return $this->render_from_template($template, $header);
     }
@@ -166,6 +170,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return ($this->page->pagelayout == 'mydashboard');
     }
 
+    public function is_on_page_with_description() {
+        return ($this->page->pagelayout == 'pagewithdescription');
+    }
     /**
      * Get Logo URL
      * If it has not been overriden by core_admin config, serve the logo in pix
@@ -283,7 +290,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     public function should_display_sandwitch_menu() {
         global $PAGE;
-        if ($PAGE->pagelayout == 'frontpage') {
+        global $USER;
+
+        if ($PAGE->pagelayout == 'frontpage' || !isloggedin() || isguestuser()) {
             return false;
         }
         return true;

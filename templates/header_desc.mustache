@@ -16,13 +16,18 @@
 }}
 {{!
     Page header.
-    SAVOIR: Change header specifically for the frontpage
+    SAVOIR: Add the handytoolbar in course
 }}
-<header id="page-header" class="row">
-    <div class="col-12 pb-3 pt-0">
+<header id="page-header" class="row page-header-with-description">
+    <div class="col-12 pt-3 pb-3" style='background-image: url("{{{bgimageurl}}}")'>
         <div class="card">
-            <div class="card-body pt-0">
+            <div class="card-body">
                 <div class="d-flex">
+                    <div class="w-100 d-flex flex-column">
+                        <div class="page-desc-title align-self-center">{{{contextheader}}}</div>
+                        <div class="page-desc-slogan align-self-center col-md-6">{{pageslogan}}</div>
+                    </div>
+
                     {{#settingsmenu}}
                         <div class="context-header-settings-menu">
                             {{{settingsmenu}}}
@@ -38,38 +43,11 @@
                     <div class="ml-auto d-flex">
                         {{{pageheadingbutton}}}
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-center">
-                    <div class="site-frontpage-title">
-                        {{{frontpagestitle}}}
+                    <div id="course-header">
+                        {{{courseheader}}}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-center">
-                    <div class="site-frontpage-slogan">
-                        {{{frontpageslogan}}}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-center">
-                    {{#loginurl}}<a href="{{loginurl}}" class="connect-button">{{#str}}login{{/str}}</a>{{/loginurl}}
-                </div>
-                <div class="d-flex justify-content-center">
-                    <a href="/theme/savoir/pages/opencatalog.php" >{{#str}}front_page_freecourses, theme_savoir{{/str}}</a>
-                </div>
-            </div>
-        </div>
-
     </div>
 </header>

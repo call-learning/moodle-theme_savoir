@@ -155,5 +155,12 @@ $THEME->layouts = [
         'file' => 'secure.php',
         'regions' => array('side-pre'),
         'defaultregion' => 'side-pre'
-    )
+    ),
+    // The page layout to display an image, title description
+    // taken from the pagetype (i.e. theme-savoir-page-opencatalog-description or <pagetype>-description)
+    'pagewithdescription' => array(
+        'file' => 'columns2.php',
+        'regions' => array('side-pre'),
+        'defaultregion' => 'side-pre'
+    ),
 ];

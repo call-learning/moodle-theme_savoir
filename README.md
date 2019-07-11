@@ -65,6 +65,7 @@ TODO:
 - Ajouter un paramètre pour changer le favicon du thème
 - Script affectation global dashboard
 - Gérer le logo en couleur dans la page de login
+- Ajouter la gestion du message d'alerte
 
 A vérifier (fonctionnement):
 - Setting pour des couleurs dominantes (primary, secondary)
