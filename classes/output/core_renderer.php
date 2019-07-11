@@ -136,7 +136,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $settingsnode = $this->page->settingsnav->find('courseadmin', navigation_node::TYPE_COURSE);
 
             $itemstoextractfrommenu = explode(',',get_config('theme_savoir','coursemenuhandytoolbar'));
-            if ($itemstoextractfrommenu) {
+            if ($itemstoextractfrommenu && $settingsnode) {
                 $extracteditems = [];
                 $this->extract_toolbaritems($settingsnode, '/'.$settingsnode->key, $itemstoextractfrommenu, $extracteditems);
                 $context = new stdClass();
