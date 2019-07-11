@@ -1,0 +1,44 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template theme_savoir/courses-view-course-item
+
+    This template renders the course summary for the open courses/free courses
+
+}}
+<div class="col-md-4 col-sm-1">
+    <a href="{{view_url}}" class="coursecard">
+        <div class="card mb-3 courses-view-course-item">
+
+            <div class="card-img-top myoverviewimg {{classes}}" style='background-image: url("{{{course_image_url}}}");'>
+            </div>
+            <div class="card-body  d-flex flex-column justify-content-between" id="course-info-container-{{id}}">
+                <div class="course-title-area d-flex mb-1 {{^visible}}dimmed{{/visible}}">
+                    <div class="icon-container d-none d-md-block mr-3">
+                        <div class="icon">{{#pix}} i/course {{/pix}}</div>
+                    </div>
+                    <span class="title">{{{fullname}}}</span>
+                </div>
+                <div class="teacher-list">
+                    {{#shortentext}} 60, {{{teachers_list}}}{{/shortentext}}
+
+                </div>
+            </div>
+
+        </div>
+    </a>
+</div>

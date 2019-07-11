@@ -110,6 +110,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
             $header->frontpageslogan = $content;
             $header->frontpagestitle = $this->page->course->shortname;
+            $header->alertmessage = format_text(get_config('theme_savoir','fpmessage'),FORMAT_HTML);
+            $header->alertenabled = get_config('theme_savoir','fpmessageenabled');
+        } else if ($this->is_on_page_with_description()) {
+            $header->pageslogan = get_string(preg_replace('/^theme-savoir-pages-/', '', $this->page->pagetype, 1) . '-description', 'theme_savoir');
+            $header->bgimageurl = $this->image_url('genericbackground', 'theme_savoir');;
+            $template = 'theme_savoir/header_desc';
         }
         return $this->render_from_template($template, $header);
     }
@@ -136,7 +142,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $settingsnode = $this->page->settingsnav->find('courseadmin', navigation_node::TYPE_COURSE);
 
             $itemstoextractfrommenu = explode(',',get_config('theme_savoir','coursemenuhandytoolbar'));
-            if ($itemstoextractfrommenu) {
+            if ($itemstoextractfrommenu && $settingsnode) {
                 $extracteditems = [];
                 $this->extract_toolbaritems($settingsnode, '/'.$settingsnode->key, $itemstoextractfrommenu, $extracteditems);
                 $context = new stdClass();
@@ -166,6 +172,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return ($this->page->pagelayout == 'mydashboard');
     }
 
+    public function is_on_page_with_description() {
+        return ($this->page->pagelayout == 'pagewithdescription');
+    }
     /**
      * Get Logo URL
      * If it has not been overriden by core_admin config, serve the logo in pix
@@ -192,6 +201,27 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
         return $compactlogourl;
     }
+
+    /**
+     * Returns the URL for the favicon.
+     *
+     * @since Moodle 2.5.1 2.6
+     * @return string The favicon URL
+     */
+    public function favicon() {
+        $favicon = get_config('theme_savoir', 'favicon');
+        if (empty($favicon)) {
+            return $this->image_url('favicon', 'theme');
+        }
+        return moodle_url::make_pluginfile_url(
+                context_system::instance()->id,
+                'theme_savoir',
+                'favicon',
+                0 ,
+                theme_get_revision(),
+                $favicon)->out();
+    }
+
 
     public function should_display_navbar_logo() {
         $logo = $this->get_compact_logo_url();
@@ -283,7 +313,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     public function should_display_sandwitch_menu() {
         global $PAGE;
-        if ($PAGE->pagelayout == 'frontpage') {
+        global $USER;
+
+        if ($PAGE->pagelayout == 'frontpage' || !isloggedin() || isguestuser()) {
             return false;
         }
         return true;
@@ -580,5 +612,4 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $bc->attributes['class'] .= $additionalclasses;
         return parent::block($bc, $region);
     }
-
 }

@@ -34,6 +34,9 @@ $string['brading_title_desc'] = 'Theme Branding title, displayed in various part
 $string['coverimagefp'] = 'Cover Image for Frontpage';
 $string['coverimagefpdesc'] = 'Cover Image for the front page';
 
+$string['favicon'] = 'Favicon';
+$string['favicondesc'] = 'Favicon';
+
 $string['primarycolor'] = 'Primary (Branding) color';
 $string['primarycolor_desc'] = 'The color used as main color';
 $string['secondarycolor'] = 'Secondary (Branding) color';
@@ -47,6 +50,13 @@ $string['staffhelpcourse_desc'] = 'Course used as a Staff guide';
 
 $string['coursemenuhandytoolbar'] = 'Course Menu Toolbar';
 $string['coursemenuhandytoolbar_desc'] = 'Course Menu Toolbar';
+
+$string['fpmessage'] = 'Front Page alert message';
+$string['fpmessage_desc'] = 'Front Page alert message';
+
+$string['fpmessageenabled'] = 'Enable / Disable the front page message';
+$string['fpmessageenabled_desc'] = 'Enable / Disable the front page message';
+
 
 /* Block positionning */
 $string['region-side-pre'] = "Side Pre";
@@ -62,7 +72,8 @@ $string['viewcourse'] = 'View Course';
 
 // Front page
 $string['front_page_section_title']  = 'Welcome to our site / Bienvenue !';
-$string['front_page_section_content']  = '<p></p><p>Apprendre avec Savoir, c\'est ...</p><p></p><ol><li>Une offre de formation pratique et sur mesure par des formateurs expérimentés dans leur spécialités<br></li><li>Des formations adaptées à vos problématiques en communication orale et écrite<br></li><li>Une expertise professionnelle et une pédagogie adaptée<br></li><li>Une plateforme de e-learning à votre disposition pour apprendre à votre rythme !</li></ol><p>Merci de votre confiance.</p><p></p><p><br></p><p>&nbsp;</p><p></p>';
+$string['front_page_section_content']  = 'Welcome to Arts et Métiers 2018-2019 Learning Management Platform';
+$string['front_page_freecourses']= 'View free courses';
 
 /* Legal */
 $string['legal'] = 'Legal';
@@ -80,3 +91,8 @@ $string['staffguide'] = 'Staff Guide';
 /* Course */
 $string['coursesyllabustitle'] = 'Summary';
 $string['viewcourse'] = 'View Course';
+
+/* Open Catalog/ Free Courses */
+$string['opencatalog'] = 'Free courses';
+$string['opencatalog-description'] = 'L\'École Nationale Supérieure des Arts et Métiers propose des cours en ligne, accessibles à tous,
+en libre-service. Voici la liste des cours auxquels vous pouvez accéder, triés par catégorie:';

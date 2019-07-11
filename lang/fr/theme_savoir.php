@@ -34,6 +34,9 @@ $string['brading_title_desc'] = 'Paramètres spécifiques à ce thème';
 $string['coverimagefp'] = 'Cover Image for Frontpage';
 $string['coverimagefpdesc'] = 'Cover Image for the front page';
 
+$string['favicon'] = 'Favicon';
+$string['favicondesc'] = 'Favicon';
+
 $string['primarycolor'] = 'Primary (Branding) color';
 $string['primarycolor_desc'] = 'The color used as main color';
 $string['secondarycolor'] = 'Secondary (Branding) color';
@@ -48,6 +51,12 @@ $string['staffhelpcourse_desc'] = 'Course used as a Staff guide';
 $string['coursemenuhandytoolbar'] = 'Barre d\'outils de cours';
 $string['coursemenuhandytoolbar_desc'] = 'Barre d\'outils de cours';
 
+$string['fpmessage'] = 'Message d\'alerte à afficher sur la page de garde';
+$string['fpmessage_desc'] = 'Message d\'alerte à afficher sur la page de garde';
+
+$string['fpmessageenabled'] = 'Montre/Cache le message sur la page de garde';
+$string['fpmessageenabled_desc'] = 'Montre/Cache le message sur la page de garde';
+
 /* Block positionning */
 $string['region-side-pre'] = "Side Pre";
 $string['region-main'] = "Main";
@@ -58,7 +67,7 @@ $string['sitecopyrightmessage'] = 'SAS Savoir';
 /* Front page */
 $string['front_page_section_title']  = 'Welcome to our site / Bienvenue !';
 $string['front_page_section_content']  = 'Bienvenue sur la plateforme pédagogique d\'Arts et Métiers 2018-2019';
-
+$string['front_page_freecourses']= 'Accès aux cours en libre service';
 /* Legal */
 $string['legal'] = 'Mention légales';
 
@@ -75,3 +84,8 @@ $string['staffguide'] = 'Guide de l\'enseignant';
 /* Course */
 $string['coursesyllabustitle'] = 'Résumé';
 $string['viewcourse'] = 'Consulter le cours';
+
+/* Open Catalog/ Free Courses */
+$string['opencatalog'] = 'Ressources en accès libre';
+$string['opencatalog-description'] = 'L\'École Nationale Supérieure des Arts et Métiers propose des cours en ligne, accessibles à tous,
+en libre-service. Voici la liste des cours auxquels vous pouvez accéder, triés par catégorie:';

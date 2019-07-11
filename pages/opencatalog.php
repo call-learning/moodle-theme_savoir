@@ -15,22 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Theme plugin version definition.
+ * Open Catalog
  *
  * @package   theme_savoir
  * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once('../../../config.php');
 
-defined('MOODLE_INTERNAL') || die;
+$PAGE->set_context(context_system::instance());
+$PAGE->set_url('/theme/savoir/pages/opencatalog.php');
+$PAGE->set_pagelayout('pagewithdescription');
 
-$plugin->version   = 2018112107; // This is the version number to increment when changes needing an update are made.
-$plugin->requires  = 2018051706; // Moodle 3.5.
-$plugin->release   = '1.0.0';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->component = 'theme_savoir';
-$plugin->dependencies = [
-    'theme_boost' => '2018051400',
-    'block_savoir_mycourses' => '2018051706',
-    'format_topcoll' => '2018052303'
-];
+$PAGE->set_title(get_string('opencatalog', 'theme_savoir'));
+$PAGE->set_heading(get_string('opencatalog','theme_savoir'));
+echo $OUTPUT->header();
+
+$renderable = new theme_savoir\freecourse\freecourse_list_renderable();
+$renderer = $PAGE->get_renderer('core');
+echo $renderer->render_from_template(
+        'theme_savoir/freecourse-list', $renderable->export_for_template($renderer));;
+
+echo $OUTPUT->footer();

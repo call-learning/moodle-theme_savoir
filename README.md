@@ -7,7 +7,7 @@ pour la version 3.5 (version 2018052303)
 - Block block_savoir_mycourses (https://gitlab.com/Lmedavid/m_savoir_mycourses_block): nouveau bloc pour lister les cours. Est utilisé dans ce thème.
 
 ## Changer les menus
-Ou ? Réglages du thème: Administration du site / Présentation / Thèmes / Réglages thème
+Où ? Réglages du thème: Administration du site / Présentation / Thèmes / Réglages thème
 
 Aller dans Administration du site / Présentation / Thèmes / Réglages thème (admin/settings.php?section=themesettings)
 et changer Éléments du menu personnalisé (custommenuitems) en:
@@ -18,7 +18,7 @@ et changer Éléments du menu personnalisé (custommenuitems) en:
 
 # Changer la page de garde
 
-Ou ? Page de garde, mode édition.
+Où ? Page de garde, mode édition.
 
  - Aller dans la page de garde du site (<url>/?redirect=0) en tant qu'Admin (https://savoir.ensam.eu/?redirect=0)
 et changer la description du cours en "Bienvenu sur la plateforme...."
@@ -26,7 +26,7 @@ et changer la description du cours en "Bienvenu sur la plateforme...."
  - Ne pas trop rajouter d'information car la page doit rester quasiment vide
 
 # Changer son tableau de bord par défaut
-Ou ? Script CLI.
+Où ? Script CLI.
 
 Cela permet d'avoir son tableau de bord étudiant en place:
 
@@ -42,7 +42,7 @@ En attendant on peut paramétrer son tableau de bord pour faire des effets.
 
 # Changer les identifiants (idnumber) des cours "Guides"
 
-Ou ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
+Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
 
 Les guides sont repérés par leur Identifiant unique de cours. Ils seront listés dans les préférences du thème à partir du moment ou
 leur Course ID commence par "GUIDE_"
@@ -50,10 +50,17 @@ leur Course ID commence par "GUIDE_"
 - Pour le guide étudiant (cours 70) GUIDE_ETUDIANT
 - Pour le guide étudiant (cours 74) GUIDE_ENSEIGNANT
 
+# Enlever la messagerie
 
+Où?  Administration du Site / Fonction Avancées
+
+Pour cacher l'icône de message, il vaut mieux aller dans "Fonction Avancées" (admin/settings.php?section=optionalsubsystems) 
+et décocher "Activer la messagerie"
+
+ 
 # Sortir des menus du cours
 
-Ou ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
+Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
 
 La barre d'outils de cours permet de 'sortir' des menus du menu déroulant d'édition de cours.
 Pour cela aller dans les paramètres du thème et sélectionner le menu à "sortir".
@@ -62,12 +69,15 @@ Ce menu sera représenté sous forme de bouton en haut de la page d'édition d'u
 # Notes de développpement
 
 TODO:
-- Ajouter un paramètre pour changer le favicon du thème
+
 - Script affectation global dashboard
 - Gérer le logo en couleur dans la page de login
+- Menu fixe
+- Bloc spécifique enseignant
+- (x) Ajouter la gestion du message d'alerte sur la page de garde
+- (x) Ajouter un paramètre pour changer le favicon du thème
 
-A vérifier (fonctionnement):
-- Setting pour des couleurs dominantes (primary, secondary)
+
 
 
 
