@@ -33,10 +33,6 @@
 }
 
 /* General */
-body {
-  font-family: 'Montserrat', sans-serif;
-}
-
 .btn {
   border-radius: 3px;
 }
@@ -77,13 +73,13 @@ body {
     width: $drawer-width;
     height: $navbar-height; // For FFX
     margin-right: 0 !important;
-  } 
+  }
 
   .custom-savoir-menu {
     li {
       padding-left: 1rem !important;
-      height: $navbar-height; 
-      padding-top: 5px;
+      height: $navbar-height;
+      /* padding-top: 5px;// Changing font to Monserrat*/
 
       &:hover {
         background-color: $savoir-lightergrey;
@@ -107,8 +103,8 @@ body {
 
   .usermenu {
     padding-left: 1rem !important;
-    height: $navbar-height; 
-    padding-top: 7px;
+    height: $navbar-height;
+    /* padding-top: 7px; // Changing font to Monserrat*/
     padding-right: 24px;
 
     &:hover {
@@ -126,7 +122,9 @@ body {
     /* WTF?? */
     .dropdown-menu {
       width: 120%;
-      left: 0;
+      @media (min-width: map-get($grid-breakpoints, "md")) {
+        left: 0;
+      }
     }
 
     .dropdown-divider {
@@ -139,8 +137,8 @@ body {
   }
 
   #nav-message-popover-container, #nav-notification-popover-container {
-    height: $navbar-height; 
-    padding-top: 7px;
+    height: $navbar-height;
+    /* padding-top: 7px; // Changing font to Monserrat*/
     padding-left: .5rem;
     padding-right: .5rem;
   }

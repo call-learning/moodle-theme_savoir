@@ -340,7 +340,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         // Add a class for when $withlinks is false.
-        $usermenuclasses = 'usermenu';
+        $usermenuclasses = 'usermenu d-flex flex-column justify-content-center';
         if (!$withlinks) {
             $usermenuclasses .= ' withoutlinks';
         }
