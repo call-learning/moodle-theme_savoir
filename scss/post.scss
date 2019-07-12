@@ -70,20 +70,51 @@ body {
  */
 .navbar {
   background-color: $savoir-darkgrey;
-  padding-left: initial;
+  padding: 0;
 
   div.logo {
     background-color: $primary;
     width: $drawer-width;
     height: $navbar-height; // For FFX
-  }
+    margin-right: 0 !important;
+  } 
 
-  .savoir-site-name {
-    font-weight: bolder;
-    color: white;
+  .custom-savoir-menu {
+    li {
+      padding-left: 1rem !important;
+      height: $navbar-height; 
+      padding-top: 5px;
+
+      &:hover {
+        background-color: $savoir-lightergrey;
+      }
+
+      .savoir-site-name {
+        font-weight: bolder;
+        color: white;
+      }
+    }
+
+    .dropdown-menu {
+      .dropdown-item {
+        /* Ugly hack to hide the language indicator link */
+        &:last-child {
+          display: none;
+        }
+      }
+    }
   }
 
   .usermenu {
+    padding-left: 1rem !important;
+    height: $navbar-height; 
+    padding-top: 7px;
+    padding-right: 24px;
+
+    &:hover {
+      background-color: $savoir-lightergrey;
+    }
+
     a.dropdown-toggle, .login a {
       color: $navbar-dark-active-color;
 
@@ -92,11 +123,35 @@ body {
       }
     }
 
+    /* WTF?? */
     .dropdown-menu {
-      width: 100%;
+      width: 120%;
+      left: 0;
     }
+
+    .dropdown-divider {
+      display: none;
+    }
+
     .login {
       color: white;
+    }
+  }
+
+  #nav-message-popover-container, #nav-notification-popover-container {
+    height: $navbar-height; 
+    padding-top: 7px;
+    padding-left: .5rem;
+    padding-right: .5rem;
+  }
+
+  .dropdown-menu {
+    padding-top: 0;
+    padding-bottom: 0;
+    border: none;
+
+    .dropdown-item {
+      padding: 1rem;
     }
   }
 
@@ -138,6 +193,10 @@ body {
     background-color: $primary;
     color: white;
     border: none;
+
+    &:hover {
+      background-color: $savoir-darkprimary;
+    }
   }
 
   .list-group-item.active {
