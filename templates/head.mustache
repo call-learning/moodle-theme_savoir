@@ -23,6 +23,10 @@
 <head>
     <title>{{{ output.page_title }}}</title>
     <link rel="shortcut icon" href="{{{ output.favicon }}}" />
+    <!-- Normally we would import the font directly in the theme scss, but google fonte have some optimisations that
+        better used this way by loading it directly in the browser (https://docs.moodle.org/37/en/How_to_add_custom_fonts_in_a_theme)
+    -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap" rel="stylesheet">
     {{{ output.standard_head_html }}}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>

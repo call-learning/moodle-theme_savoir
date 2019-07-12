@@ -26,6 +26,7 @@ $cyan: #5bc0de !default;
 
 $primary: #8d2363 !default;
 $secondary: #f29400 !default;
+$savoir-darkprimary: #6e1b4d !default;
 $savoir-darkgrey: #2d2a2b !default;
 $savoir-lightergrey: #544e50 !default;
 
@@ -43,10 +44,12 @@ $enable-rounded: false !default;
 $body-color: $gray-800 !default;
 
 // Fonts
+$font-family-sans-serif: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
 $font-size-base: 0.9375rem !default;
 $headings-font-weight: 300 !default;
 
 // Navbar
+$drawer-width: 240px !default;
 
 /** Check other navbar definitions such as padding, etc... */
 
