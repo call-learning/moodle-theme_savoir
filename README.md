@@ -66,6 +66,55 @@ La barre d'outils de cours permet de 'sortir' des menus du menu déroulant d'éd
 Pour cela aller dans les paramètres du thème et sélectionner le menu à "sortir".
 Ce menu sera représenté sous forme de bouton en haut de la page d'édition d'un cours.
  
+
+# Changer les couleurs de bases
+
+Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
+
+Dans le thème il est possible de choisir une couleur de base (primary/le violet ENSAM) et secondary (orange).
+Il suffit juste de sélectionner la couleur voulue ou de la taper dans le champ texte.
+
+# Changer le favicon et logo
+
+Logo: Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
+Favicon: Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
+
+Dans le thème il est possible de choisir une couleur de base (primary/le violet ENSAM) et secondary (orange).
+Il suffit juste de sélectionner la couleur voulue ou de la taper dans le champ texte.
+
+
+# Afficher un message d'alerte sur la page de garde
+
+Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
+
+Pour afficher un message d'alerte affiché sur la page de garde, il faut remplir le contenu du
+message et ensuite cocher Montre/Cache le message sur la page de garde.
+Le message apparaîtra sur la page de garde, en haut de la page.
+
+# Le catalogue de cours
+
+Le catalogue de cours récupère les informations sur la description du cours. Il faut donc
+remplir le détail du cours avec les informations voulues. Le niveau de titre moyen (h4) est
+stylé pour s'afficher en violet (couleur primaire du site). Le reste du style reste identique
+à ce qui est entré dans l'éditeur html du détail de cours.
+
+# Résumé de cours
+Le résumé de cours est tiré en premier de la description du cours. Si celle-ci est vide, on récupère l'information
+de la section 0. Lors du développement nous avons dû faire face à une incohérence de l'entrée des donnnées, parfois les
+données de résumé sont dans la section 0, parfois dans la description de cours, parfois ni dans l'une ni dans l'autre.
+ 
+A terme il faudra **uniformiser cela en entrant la description/résumé de cours dans la partie description de cours et non dans la section 0.**
+
+# Catalogue de cours "libres"
+
+Les cours en libre service/entrée sont selectionné à partir des plugin d'inscription affectés au cours.
+Il faut que l'accès anonyme (guest) soit ajouté à la liste des accès possible au cours.
+
+Les cours sont classé par catégorie (leur catégorie immédiatement parente), et les catégories
+par ordre alphabétiques. On peut rendre visible/invisible une catégorie pour que les cours ne s'affichent
+pas.
+
+
 # Notes de développpement
 
 TODO:
