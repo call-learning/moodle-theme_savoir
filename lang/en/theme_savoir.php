@@ -79,14 +79,14 @@ $string['front_page_freecourses']= 'View free courses';
 $string['legal'] = 'Legal';
 
 /* Dashboard */
-$string['dashboardtitle'] = 'Home';
-$string['dashboardtitle_uname'] = 'Home - {$a}';
+$string['dashboardtitle'] = 'Dashboard';
+$string['dashboardtitle_uname'] = 'Dashboard - {$a}';
 
 /* Navigation */
-$string['catalog'] = 'Catalog';
-$string['guide'] = 'Help';
-$string['studentguide'] = 'Student';
-$string['staffguide'] = 'Staff';
+$string['catalog'] = 'Catalogue';
+$string['guide'] = 'Guides';
+$string['studentguide'] = 'Student Guide';
+$string['staffguide'] = 'Staff Guide';
 
 /* Course */
 $string['coursesyllabustitle'] = 'Summary';

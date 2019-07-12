@@ -72,14 +72,14 @@ $string['front_page_freecourses']= 'Accès aux cours en libre service';
 $string['legal'] = 'Mention légales';
 
 /* Dashboard */
-$string['dashboardtitle'] = 'Accueil';
-$string['dashboardtitle_uname'] = 'Accueil - {$a}';
+$string['dashboardtitle'] = 'Tableau de bord';
+$string['dashboardtitle_uname'] = 'Tableau de bord - {$a}';
 
 /* Navigation */
 $string['catalog'] = 'Catalogue';
-$string['guide'] = 'Aide';
-$string['studentguide'] = 'Étudiant';
-$string['staffguide'] = 'Enseignant';
+$string['guide'] = 'Guides';
+$string['studentguide'] = 'Guide de l\'étudiant';
+$string['staffguide'] = 'Guide de l\'enseignant';
 
 /* Course */
 $string['coursesyllabustitle'] = 'Résumé';
