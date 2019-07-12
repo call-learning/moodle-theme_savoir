@@ -21,7 +21,7 @@
 <nav class="fixed-top navbar navbar-dark navbar-expand moodle-has-zindex" aria-label="{{#str}}sitemenubar, admin{{/str}}">
 
     {{^ output.should_display_sandwitch_menu }}
-        <div class="d-inline-block mr-3 pl-1 pr-1 mr-0 logo">
+        <div class="d-inline-block pl-1 pr-1 mr-0 logo">
             <div class="d-flex">
                     <a href="{{{ config.wwwroot }}}" class="navbar-brand has-logo m-auto">
                         <div class="mx-auto d-none d-sm-block">
@@ -35,7 +35,7 @@
         </div>
     {{/ output.should_display_sandwitch_menu }}
     {{# output.should_display_sandwitch_menu }}
-        <div data-region="drawer-toggle" class="d-inline-block mr-3">
+        <div data-region="drawer-toggle" class="d-inline-block">
             <button aria-expanded="{{#navdraweropen}}true{{/navdraweropen}}{{^navdraweropen}}false{{/navdraweropen}}" aria-controls="nav-drawer" type="button"
                     class="btn nav-link float-sm-left btn-primary " data-action="toggle-drawer" data-side="left" data-preference="drawer-open-nav">
                 <span class="mx-auto d-none d-sm-block">
