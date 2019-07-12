@@ -735,6 +735,8 @@ body {
     }
   }
   .course-title-area  {
+    display: table !important;
+
     .icon-container {
       height: 70px;
       width: 70px;
@@ -761,7 +763,10 @@ body {
     .title {
       color: black;
       font-weight: bolder;
+      display: table-cell;
+      vertical-align: middle;
     }
+
     .dimmed {
       .title {
         color: $gray-500;
