@@ -200,7 +200,7 @@ class savoir_flat_navigation extends flat_navigation {
                         'url' => '/my',
                         'label' => get_string('myhome'),
                         'key' => 'myhome',
-                        'icon' => array('name' => 'i/dashboard', 'component' => 'moodle')
+                        'icon' => array('name' => 'i/home', 'component' => 'moodle')
                 ],
                 [
                         'url' => '/theme/savoir/pages/mycourses.php',
@@ -270,7 +270,7 @@ class savoir_flat_navigation extends flat_navigation {
                 null,
                 'studentguide',
                 new pix_icon(
-                        'i/info',
+                        'i/user',
                         '',
                         'moodle'));
         $flat = new flat_navigation_node($navlink, 1);
@@ -284,7 +284,7 @@ class savoir_flat_navigation extends flat_navigation {
                     null,
                     'staffguide',
                     new pix_icon(
-                            'i/info',
+                            'i/users',
                             '',
                             'moodle'));
             $flat = new flat_navigation_node($navlink, 1);
