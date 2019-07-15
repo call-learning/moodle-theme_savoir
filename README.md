@@ -1,6 +1,6 @@
 # Installation
 
-## Vérifier les plugin dépendants
+## Vérifier les plugins dépendants
 
 - TopColl (course format: https://github.com/gjb2048/moodle-format_topcoll)
 pour la version 3.5 (version 2018052303)
@@ -39,6 +39,21 @@ Il existe un outil pour le faire pour l'admin:
     
 Pour l'instant nous n'avons pas de script qui permet de changer les dashboard de tous les utilisateurs.
 En attendant on peut paramétrer son tableau de bord pour faire des effets.
+
+Il est maintenant possible d'affecter le tableau de bord classique selon le rôle (pour l'instant enseignant):
+
+Pour afficher la liste des étudiants dont on va changer le tableau de bord:
+
+     php cli/dashboardsetup.php  
+     
+Pour changer le tableau de bord pour les étudiants:
+
+     php cli/dashboardsetup.php --dry-run=0
+     
+Même chose pour les enseignants:
+     
+          php cli/dashboardsetup.php --dry-run=0 --type=teacher  
+  
 
 # Changer les identifiants (idnumber) des cours "Guides"
 
@@ -100,18 +115,18 @@ stylé pour s'afficher en violet (couleur primaire du site). Le reste du style r
 
 # Résumé de cours
 Le résumé de cours est tiré en premier de la description du cours. Si celle-ci est vide, on récupère l'information
-de la section 0. Lors du développement nous avons dû faire face à une incohérence de l'entrée des donnnées, parfois les
+de la section 0. Lors du développement nous avons dû faire face à une incohérence de l'entrée des données, parfois les
 données de résumé sont dans la section 0, parfois dans la description de cours, parfois ni dans l'une ni dans l'autre.
  
 A terme il faudra **uniformiser cela en entrant la description/résumé de cours dans la partie description de cours et non dans la section 0.**
 
 # Catalogue de cours "libres"
 
-Les cours en libre service/entrée sont selectionné à partir des plugin d'inscription affectés au cours.
-Il faut que l'accès anonyme (guest) soit ajouté à la liste des accès possible au cours.
+Les cours en libre service/entrée sont selectionnés à partir des plugins d'inscription affectés au cours.
+Il faut que l'accès anonyme (guest) soit ajoutés à la liste des accès possibles au cours.
 
 Les cours sont classé par catégorie (leur catégorie immédiatement parente), et les catégories
-par ordre alphabétiques. On peut rendre visible/invisible une catégorie pour que les cours ne s'affichent
+par ordre alphabétique. On peut rendre visible/invisible une catégorie pour que les cours ne s'affichent
 pas.
 
 
