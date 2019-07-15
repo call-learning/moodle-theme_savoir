@@ -110,17 +110,16 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
             $header->frontpageslogan = $content;
             $header->frontpagestitle = $this->page->course->shortname;
-            $header->alertmessage = format_text(get_config('theme_savoir','fpmessage'),FORMAT_HTML);
-            $header->alertenabled = get_config('theme_savoir','fpmessageenabled');
+            $header->alertmessage = format_text(get_config('theme_savoir', 'fpmessage'), FORMAT_HTML);
+            $header->alertenabled = get_config('theme_savoir', 'fpmessageenabled');
         } else if ($this->is_on_page_with_description()) {
-            $header->pageslogan = get_string(preg_replace('/^theme-savoir-pages-/', '', $this->page->pagetype, 1) . '-description', 'theme_savoir');
+            $header->pageslogan = get_string(preg_replace('/^theme-savoir-pages-/', '', $this->page->pagetype, 1) . '-description',
+                    'theme_savoir');
             $header->bgimageurl = $this->image_url('genericbackground', 'theme_savoir');;
             $template = 'theme_savoir/header_desc';
         }
         return $this->render_from_template($template, $header);
     }
-
-
 
     /**
      * This is an optional menu that can be added to a layout by a theme. It contains the
@@ -141,10 +140,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 ($currentnode->type == navigation_node::TYPE_COURSE || $currentnode->type == navigation_node::TYPE_SECTION)) {
             $settingsnode = $this->page->settingsnav->find('courseadmin', navigation_node::TYPE_COURSE);
 
-            $itemstoextractfrommenu = explode(',',get_config('theme_savoir','coursemenuhandytoolbar'));
+            $itemstoextractfrommenu = explode(',', get_config('theme_savoir', 'coursemenuhandytoolbar'));
             if ($itemstoextractfrommenu && $settingsnode) {
                 $extracteditems = [];
-                $this->extract_toolbaritems($settingsnode, '/'.$settingsnode->key, $itemstoextractfrommenu, $extracteditems);
+                $this->extract_toolbaritems($settingsnode, '/' . $settingsnode->key, $itemstoextractfrommenu, $extracteditems);
                 $context = new stdClass();
                 $context->items = $extracteditems;
                 $rendered = $this->render_from_template('theme_savoir/handy_toolbar', $context);
@@ -157,13 +156,14 @@ class core_renderer extends \theme_boost\output\core_renderer {
     protected function extract_toolbaritems($currentnode, $currentpath, $itemstoextractfrommenu, &$extracteditems) {
         if ($currentnode) {
             foreach ($currentnode->children as $child) {
-                if (in_array($currentpath.'/'.$child->key, $itemstoextractfrommenu, true)) {
+                if (in_array($currentpath . '/' . $child->key, $itemstoextractfrommenu, true)) {
                     $extracteditems[] = $child;
                 }
-                $this->extract_toolbaritems($child, $currentpath.'/'.$child->key, $itemstoextractfrommenu, $extracteditems);
+                $this->extract_toolbaritems($child, $currentpath . '/' . $child->key, $itemstoextractfrommenu, $extracteditems);
             }
         }
     }
+
     public function is_on_frontpage() {
         return ($this->page->pagelayout == 'frontpage');
     }
@@ -175,6 +175,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
     public function is_on_page_with_description() {
         return ($this->page->pagelayout == 'pagewithdescription');
     }
+
     /**
      * Get Logo URL
      * If it has not been overriden by core_admin config, serve the logo in pix
@@ -205,8 +206,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * Returns the URL for the favicon.
      *
-     * @since Moodle 2.5.1 2.6
      * @return string The favicon URL
+     * @since Moodle 2.5.1 2.6
      */
     public function favicon() {
         $favicon = get_config('theme_savoir', 'favicon');
@@ -217,11 +218,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 context_system::instance()->id,
                 'theme_savoir',
                 'favicon',
-                0 ,
+                0,
                 theme_get_revision(),
                 $favicon)->out();
     }
-
 
     public function should_display_navbar_logo() {
         $logo = $this->get_compact_logo_url();
@@ -313,8 +313,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     public function should_display_sandwitch_menu() {
         global $PAGE;
-        global $USER;
-
         if ($PAGE->pagelayout == 'frontpage' || !isloggedin() || isguestuser()) {
             return false;
         }
@@ -463,7 +461,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
         // SAVOIR-ENSAM: Modificiations : filter out unwanted menu for student
         // Filter out the dashboard menu.
-        $FILTER_FOR_ALL_USERS =  ['mymoodle,admin','messages,message'];
+        $FILTER_FOR_ALL_USERS = ['mymoodle,admin', 'messages,message'];
         $this->filter_action_menu($opts->navitems, $FILTER_FOR_ALL_USERS);
         if (!has_role_from_name($USER->id, 'teacher') && !has_role_from_name($USER->id, 'editingteacher')) {
             $this->filter_action_menu($opts->navitems, ['grades,grades']);
@@ -524,11 +522,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 $usermenuclasses
         );
     }
+
     private function filter_action_menu(&$navigationlinks, $filternamesarray) {
-        $navigationlinks =  array_filter($navigationlinks, function($menu) use ($filternamesarray) {
+        $navigationlinks = array_filter($navigationlinks, function($menu) use ($filternamesarray) {
             return !in_array($menu->titleidentifier, $filternamesarray);
         });
     }
+
     /**
      * Renders a custom block region.
      * OVERRIDE FOR SAVOIR DASHBOARD : layout block in the center area
@@ -612,4 +612,22 @@ class core_renderer extends \theme_boost\output\core_renderer {
         $bc->attributes['class'] .= $additionalclasses;
         return parent::block($bc, $region);
     }
+
+    /**
+     * This renders the navbar but remove the course catalog from the navigation if we are on a public course
+     * Uses bootstrap compatible html.
+     */
+    public function navbar() {
+        $navbar = $this->page->navbar;
+        if (!isloggedin() || isguestuser()) {
+            $items = $navbar->get_items();
+            foreach ($items as $i) {
+                if ($i->type == \navbar::NODETYPE_LEAF && $i->key == 'courses') {
+                    $i->action = new moodle_url('/theme/savoir/pages/opencatalog.php');
+                }
+            }
+        }
+        return $this->render_from_template('core/navbar', $navbar);
+    }
+
 }
