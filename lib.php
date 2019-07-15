@@ -198,7 +198,7 @@ class savoir_flat_navigation extends flat_navigation {
         $studentblocks = [
                 [
                         'url' => '/my',
-                        'label' => get_string('myhome'),
+                        'label' => get_string('dashboardtitle', 'theme_savoir'),
                         'key' => 'myhome',
                         'icon' => array('name' => 'i/home', 'component' => 'moodle')
                 ],
@@ -257,7 +257,7 @@ class savoir_flat_navigation extends flat_navigation {
                 null,
                 'helpmenu',
                 new pix_icon(
-                        'i/info',
+                        'e/help',
                         '',
                         'moodle'));
         $flat = new flat_navigation_node($navlink, 0);
