@@ -258,3 +258,22 @@ function setup_theme() {
     return setup_mobile_css();
 }
 
+
+function setup_syllabus() {
+    global $DB;
+    $SYLLABUS_TEMPLATE  = '<h4>Présentation</h4><p><br></p>
+        <h4>Vos formatrices</h4><p><br></p>
+        <h4>Objectifs pédagogiques</h4><p><br></p>
+        <h4>Programme</h4><p><br></p>
+        <h4>Bibliographie et sitographie</h4><p><br></p>';
+
+    // We want all or nothing here.
+    $transaction = $DB->start_delegated_transaction();
+    $courses = $DB->get_recordset_sql("SELECT id,summary FROM {course} WHERE format IN ('topics','topcoll')");
+    foreach ($courses as $c) {
+        $c->summary = $SYLLABUS_TEMPLATE . $c->summary;
+        $DB->set_field('course','summary',$c->summary,array('id'=>$c->id));
+    }
+    $transaction->allow_commit();
+    return true;
+}

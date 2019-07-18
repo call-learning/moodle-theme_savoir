@@ -129,6 +129,14 @@ Les cours sont classé par catégorie (leur catégorie immédiatement parente), 
 par ordre alphabétique. On peut rendre visible/invisible une catégorie pour que les cours ne s'affichent
 pas.
 
+# Optionnel : Ajouter un syllabus vide
+
+Attention il vaut mieux prendre une sauvegarde de la table mdl_course avant, afin
+de retrouver les syllabus de cours d'avant.
+Lancez la commande suivante pour ajouter un syllabus vide à tous les cours.
+
+    php cli/setups.php --name=setup_syllabus
+    
 
 # Notes de développpement
 

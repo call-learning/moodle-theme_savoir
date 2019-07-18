@@ -51,7 +51,7 @@ if ($options['help']) {
     cli_writeln($usage);
     exit(2);
 }
-$possiblefunctions = array('setup_theme', 'setup_mobile_css','setup_system_dashboard','setup_dashboard_blocks');
+$possiblefunctions = array('setup_theme', 'setup_mobile_css','setup_system_dashboard','setup_dashboard_blocks','setup_syllabus');
 
 if ($options['name'] === null) {
     $options['name'] = $possiblefunctions[0];
