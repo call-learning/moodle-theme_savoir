@@ -261,11 +261,14 @@ function setup_theme() {
 
 function setup_syllabus() {
     global $DB;
-    $SYLLABUS_TEMPLATE  = '<h4>Présentation</h4><p><br></p>
-        <h4>Vos formatrices</h4><p><br></p>
-        <h4>Objectifs pédagogiques</h4><p><br></p>
-        <h4>Programme</h4><p><br></p>
-        <h4>Bibliographie et sitographie</h4><p><br></p>';
+    $SYLLABUS_TEMPLATE  = '<h4>Présentation</h4><p>(équipe pédagogique et cadrage horaire)<br></p>
+        <h4>Objectifs de formation visés</h4><p><br></p>
+        <h4>Prérequis</h4><p><br></p>
+        <h4>Acquis d’apprentissage visé</h4><p><br></p>
+        <h4>Description de l’UE</h4><p><br></p>
+        <h4>Ressources bibliographiques</h4><p><br></p>
+        <h4>Méthodes d’enseignement et moyens pédagogiques</h4><p><br></p>
+        <h4>Modalités d’évaluation</h4><p><br></p>';
 
     // We want all or nothing here.
     $transaction = $DB->start_delegated_transaction();
