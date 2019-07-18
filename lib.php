@@ -186,10 +186,23 @@ class savoir_flat_navigation extends flat_navigation {
      */
     public function initialise() {
         global $USER, $PAGE, $CFG;
+        $isstudent = has_role_from_name($USER->id, 'student');
+        $isteacher = has_role_from_name($USER->id, 'teacher')
+                || has_role_from_name($USER->id, 'editingteacher')
+                || has_role_from_name($USER->id, 'coursecreator');
+        $isstaff = has_role_from_name($USER->id, 'manager');
 
-        if (is_siteadmin()) {
+        if (is_siteadmin() || $isteacher || $isstaff ) {
             parent::initialise();
             $this->add_help_node();
+            if ($isteacher) {
+                $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
+                foreach ($this->getIterator() as $node) {
+                    if ($node->type == navigation_node::TYPE_COURSE) {
+                        $this->remove($node->key, navigation_node::TYPE_COURSE);
+                    }
+                }
+            }
             return;
         }
 
@@ -217,9 +230,7 @@ class savoir_flat_navigation extends flat_navigation {
 
         ];
 
-        $isstudent = has_role_from_name($USER->id, 'student');
-        $isteacher = has_role_from_name($USER->id, 'teacher');
-        $isstaff = has_role_from_name($USER->id, 'manager');
+
         foreach ($studentblocks as $nl) {
             $navlink = navigation_node::create(
                     $nl['label'],
