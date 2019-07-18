@@ -251,12 +251,13 @@ class savoir_flat_navigation extends flat_navigation {
     }
 
     protected function add_help_node($istudent = true, $isteacher = true, $isstaff = true) {
+        global $CFG;
         $studentcourseid = get_config('theme_savoir', 'studenthelpcourse');
         $studentcourseid = $studentcourseid ? $studentcourseid : SITEID;
-        $studentguideurl = new moodle_url('/course/view.php', array('id' => $studentcourseid));
+        $studentguideurl = new moodle_url($CFG->wwwroot.'/course/view.php', array('id' => $studentcourseid));
         $staffcourseid = get_config('theme_savoir', 'staffhelpcourse');
         $staffcourseid = $staffcourseid ? $staffcourseid : SITEID;
-        $staffguideurl = new moodle_url('/course/view.php', array('id' => $staffcourseid));
+        $staffguideurl = new moodle_url($CFG->wwwroot.'/course/view.php', array('id' => $staffcourseid));
 
         /* Here we should add a choice of help courses (two for teachers/admin, one for student, depending on the extend of this
         user's roles */

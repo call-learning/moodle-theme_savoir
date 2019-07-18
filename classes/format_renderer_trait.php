@@ -32,6 +32,7 @@ defined('MOODLE_INTERNAL') || die;
 
 trait format_renderer_trait {
     public function get_section_0_content($section) {
+        global $CFG;
         $tcontext = new \stdClass();
         $course = $section->modinfo->get_course();
         $tcontext->courseid = $course->id;
@@ -76,7 +77,7 @@ trait format_renderer_trait {
             $tcontext->content .= $summary;
 
             if ($isuserediting && has_capability('moodle/course:update', $context)) {
-                $url = new moodle_url('/course/edit.php?', array('id' => $course->id));
+                $url = new moodle_url($CFG->wwwroot.'/course/edit.php?', array('id' => $course->id));
                 $tcontext->content .= html_writer::link($url,
                         $this->output->pix_icon('t/edit', get_string('edit')),
                         array('title' => get_string('editsection', 'moodle'))

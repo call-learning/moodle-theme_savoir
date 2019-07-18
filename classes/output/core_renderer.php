@@ -618,12 +618,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * Uses bootstrap compatible html.
      */
     public function navbar() {
+        global $CFG;
         $navbar = $this->page->navbar;
         if (!isloggedin() || isguestuser()) {
             $items = $navbar->get_items();
             foreach ($items as $i) {
                 if ($i->type == \navbar::NODETYPE_LEAF && $i->key == 'courses') {
-                    $i->action = new moodle_url('/theme/savoir/pages/opencatalog.php');
+                    $i->action = new moodle_url($CFG->wwwroot.'/theme/savoir/pages/opencatalog.php');
                 }
             }
         }

@@ -109,13 +109,13 @@ class course_renderer extends \core_course_renderer {
             if ($cat = coursecat::get($course->category, IGNORE_MISSING)) {
                 $content .= html_writer::start_tag('div', array('class' => 'coursecat'));
                 $content .= get_string('category') . ': ' .
-                        html_writer::link(new moodle_url('/course/index.php', array('categoryid' => $cat->id)),
+                        html_writer::link(new moodle_url($CFG->wwwroot.'/course/index.php', array('categoryid' => $cat->id)),
                                 $cat->get_formatted_name(), array('class' => $cat->visible ? '' : 'dimmed'));
                 $content .= html_writer::end_tag('div'); // .coursecat.
             }
         }
         // Display view course Button.
-        $content .= \html_writer::link(new moodle_url('/course/view.php', array('id' => $course->id)),
+        $content .= \html_writer::link(new moodle_url($CFG->wwwroot.'/course/view.php', array('id' => $course->id)),
                 get_string('viewcourse', 'theme_savoir'),
                 array(
                         'class' => 'btn btn-primary viewcourse',
@@ -143,7 +143,7 @@ class course_renderer extends \core_course_renderer {
 
         if (can_edit_in_category($coursecat->id)) {
             // Add 'Manage' button if user has permissions to edit this category.
-            $managebutton = $this->single_button(new moodle_url('/course/management.php',
+            $managebutton = $this->single_button(new moodle_url($CFG->wwwroot.'/course/management.php',
                     array('categoryid' => $coursecat->id)), get_string('managecourses'), 'get');
             $this->page->set_button($managebutton);
         }
@@ -167,7 +167,7 @@ class course_renderer extends \core_course_renderer {
             // Print the category selector
             if (coursecat::count_all() > 1) {
                 $output .= html_writer::start_tag('div', array('class' => 'categorypicker'));
-                $select = new single_select(new moodle_url('/course/index.php'), 'categoryid',
+                $select = new single_select(new moodle_url($CFG->wwwroot.'/course/index.php'), 'categoryid',
                         coursecat::make_categories_list(), $coursecat->id, null, 'switchcategory');
                 $select->set_label(get_string('categories').':');
                 $output .= $this->render($select);
@@ -190,7 +190,7 @@ class course_renderer extends \core_course_renderer {
         $browse = optional_param('browse', null, PARAM_ALPHA);
         $perpage = optional_param('perpage', $CFG->coursesperpage, PARAM_INT);
         $page = optional_param('page', 0, PARAM_INT);
-        $baseurl = new moodle_url('/course/index.php');
+        $baseurl = new moodle_url($CFG->wwwroot.'/course/index.php');
         if ($coursecat->id) {
             $baseurl->param('categoryid', $coursecat->id);
         }
@@ -227,9 +227,9 @@ class course_renderer extends \core_course_renderer {
         if (has_capability('moodle/course:create', $context)) {
             // Print link to create a new course, for the 1st available category.
             if ($coursecat->id) {
-                $url = new moodle_url('/course/edit.php', array('category' => $coursecat->id, 'returnto' => 'category'));
+                $url = new moodle_url($CFG->wwwroot.'/course/edit.php', array('category' => $coursecat->id, 'returnto' => 'category'));
             } else {
-                $url = new moodle_url('/course/edit.php', array('category' => $CFG->defaultrequestcategory, 'returnto' => 'topcat'));
+                $url = new moodle_url($CFG->wwwroot.'/course/edit.php', array('category' => $CFG->defaultrequestcategory, 'returnto' => 'topcat'));
             }
             $output .= $this->single_button($url, get_string('addnewcourse'), 'get');
         }

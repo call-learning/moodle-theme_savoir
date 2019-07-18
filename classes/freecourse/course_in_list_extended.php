@@ -83,7 +83,8 @@ class course_in_list_extended extends course_in_list {
 
     /** Get view URL */
     public function view_url() {
-        return new \moodle_url('/course/view.php', [
+        global $CFG;
+        return new \moodle_url($CFG->wwwroot.'/course/view.php', [
                 'id' => $this->record->id,
         ]);
     }

@@ -33,7 +33,7 @@ use moodle_url;
  */
 class utils {
     public static function get_course_contact_list($course_in_list, $displaybyrole=true, $ishtml=true) {
-
+        global $CFG;
         $content = '';
         $contacts = $course_in_list->get_course_contacts();
         $contactbyroles = array_reduce($contacts,
@@ -51,7 +51,7 @@ class utils {
                 $currentnameprint = $coursecontact['username'];
                 if ($ishtml) {
                     $names[] =
-                            html_writer::link(new moodle_url('/user/view.php',
+                            html_writer::link(new moodle_url($CFG->wwwroot.'/user/view.php',
                                     array('id' => $coursecontact['user']->id, 'course' => SITEID)),
                                     $currentnameprint);
                 } else {
