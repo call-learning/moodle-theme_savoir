@@ -274,8 +274,10 @@ function setup_syllabus() {
     $transaction = $DB->start_delegated_transaction();
     $courses = $DB->get_recordset_sql("SELECT id,summary FROM {course} WHERE format IN ('topics','topcoll')");
     foreach ($courses as $c) {
-        $c->summary = $SYLLABUS_TEMPLATE . $c->summary;
-        $DB->set_field('course','summary',$c->summary,array('id'=>$c->id));
+        if ($c->id != SITEID) { // Skip Site frontpage
+            $c->summary = $SYLLABUS_TEMPLATE . $c->summary;
+            $DB->set_field('course', 'summary', $c->summary, array('id' => $c->id));
+        }
     }
     $transaction->allow_commit();
     return true;
