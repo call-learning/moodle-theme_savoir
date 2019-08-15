@@ -217,7 +217,7 @@ class savoir_flat_navigation extends flat_navigation {
         $this->page->navigation->initialise();
         if (is_siteadmin() || $isteacher || $isstaff) {
             parent::initialise();
-            if ($isteacher) {
+            if ($isteacher && ! is_siteadmin()) {
                 $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
                 $this->remove('myhome', navigation_node::NODETYPE_BRANCH);
                 $this->remove('home', navigation_node::TYPE_SETTING);
