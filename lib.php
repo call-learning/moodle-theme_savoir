@@ -202,6 +202,23 @@ class savoir_flat_navigation extends flat_navigation {
                         $this->remove($node->key, navigation_node::TYPE_COURSE);
                     }
                 }
+            } else {
+                // Put the menu at the end
+                $coursemenu = $this->find('mycourses', navigation_node::NODETYPE_LEAF);
+                $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
+                $coursemenu->add_class('my_course_menu_item_nav'); // TODO : it does not seem to have an effect
+                $this->add($coursemenu);
+                $coursenodes = array();
+                foreach ($this->getIterator() as $node) {
+                    if ($node->type == navigation_node::TYPE_COURSE) {
+                        $coursenodes[] = $this->find($node->key, navigation_node::TYPE_COURSE);
+                        $this->remove($node->key, navigation_node::TYPE_COURSE);
+                    }
+                }
+                foreach($coursenodes as $cn) {
+                    $this->add($cn);
+                }
+
             }
             return;
         }
