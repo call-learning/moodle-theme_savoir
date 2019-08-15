@@ -67,7 +67,11 @@
 .navbar {
   background-color: $savoir-darkgrey;
   padding: 0;
-
+  .logo-in-navbar {
+    max-height: $navbar-height;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
   div.logo {
     background-color: $primary;
     width: $drawer-width;
@@ -170,9 +174,9 @@
   }
 
   button {
-    padding: 7px;
     border: none;
     width: 100%;
+    height: $navbar-height;
 
     &:focus {
       -webkit-box-shadow: none;

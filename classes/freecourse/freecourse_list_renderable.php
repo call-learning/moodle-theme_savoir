@@ -34,7 +34,7 @@ use templatable;
 /**
  * Class containing data for my overview block.
  *
- * @copyright  2017 Simey Lameze <simey@moodle.com>
+ * @copyright  2019 CALL Learning <laurent@call-learning.fr>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class freecourse_list_renderable implements renderable, templatable {

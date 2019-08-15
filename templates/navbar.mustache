@@ -38,15 +38,14 @@
         <div data-region="drawer-toggle" class="d-inline-block">
             <button aria-expanded="{{#navdraweropen}}true{{/navdraweropen}}{{^navdraweropen}}false{{/navdraweropen}}" aria-controls="nav-drawer" type="button"
                     class="btn nav-link float-sm-left btn-primary " data-action="toggle-drawer" data-side="left" data-preference="drawer-open-nav">
-                <span class="mx-auto d-none d-sm-block">
+                <span class="mx-auto pl-2 pr-2">
                     {{#pix}}i/menubars{{/pix}}<span class="sr-only">{{#str}}sidepanel, core{{/str}}</span>
-                    <img class='drawer-img' src="{{output.get_logo_url}}" alt="{{sitename}}">
-                </span>
-                <span class="mx-auto d-sm-none">
-                    {{#pix}}i/menubars{{/pix}}<span class="sr-only">{{#str}}sidepanel, core{{/str}}</span>
-                    <img class='drawer-img' src="{{output.get_compact_logo_url}}" alt="{{sitename}}">
                 </span>
                 <span class="sr-only">{{#str}}sidepanel, core{{/str}}</span></button>
+        </div>
+        <div>
+            <img class="logo-in-navbar d-none d-md-block pl-1" src="{{output.get_logo_url}}" alt="{{sitename}}">
+            <img class="logo-in-navbar d-none d-sm-block d-md-none  pl-1" src="{{output.get_compact_logo_url}}" alt="{{sitename}}">
         </div>
     {{/ output.should_display_sandwitch_menu }}
 
