@@ -186,17 +186,41 @@ class savoir_flat_navigation extends flat_navigation {
      */
     public function initialise() {
         global $USER, $PAGE, $CFG;
+        $NEW_MENU_ITEMS = [
+                'myhome ' => [
+                        'url' => '/my',
+                        'label' => get_string('dashboardtitle', 'theme_savoir'),
+                        'key' => 'myhome',
+                        'icon' => array('name' => 'i/home', 'component' => 'moodle'),
+                        'beforekey' => ''
+                ],
+                'mycourses' => [
+                        'url' => '/theme/savoir/pages/mycourses.php',
+                        'label' => get_string('mycourses'),
+                        'key' => 'mycourses',
+                        'icon' => array('name' => 'i/course', 'component' => 'moodle'),
+                        'beforekey' => ''
+                ],
+                'catalog' => [
+                        'url' => '/course/index.php',
+                        'label' => get_string('catalog', 'theme_savoir'),
+                        'key' => 'catalog',
+                        'icon' => array('name' => 'i/catalog', 'component' => 'theme_savoir'),
+                        'beforekey' => '',
+                ]
+        ];
         $isstudent = has_role_from_name($USER->id, 'student');
         $isteacher = has_role_from_name($USER->id, 'teacher')
                 || has_role_from_name($USER->id, 'editingteacher')
                 || has_role_from_name($USER->id, 'coursecreator');
         $isstaff = has_role_from_name($USER->id, 'manager');
-
-        if (is_siteadmin() || $isteacher || $isstaff ) {
+        $this->page->navigation->initialise();
+        if (is_siteadmin() || $isteacher || $isstaff) {
             parent::initialise();
-            $this->add_help_node();
             if ($isteacher) {
                 $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
+                $this->remove('myhome', navigation_node::NODETYPE_BRANCH);
+                $this->remove('home', navigation_node::TYPE_SETTING);
                 foreach ($this->getIterator() as $node) {
                     if ($node->type == navigation_node::TYPE_COURSE) {
                         $this->remove($node->key, navigation_node::TYPE_COURSE);
@@ -207,6 +231,7 @@ class savoir_flat_navigation extends flat_navigation {
                 $coursemenu = $this->find('mycourses', navigation_node::NODETYPE_LEAF);
                 $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
                 $coursemenu->add_class('my_course_menu_item_nav'); // TODO : it does not seem to have an effect
+                $this->add_help_node($isstudent, $isteacher, $isstaff);
                 $this->add($coursemenu);
                 $coursenodes = array();
                 foreach ($this->getIterator() as $node) {
@@ -215,66 +240,59 @@ class savoir_flat_navigation extends flat_navigation {
                         $this->remove($node->key, navigation_node::TYPE_COURSE);
                     }
                 }
-                foreach($coursenodes as $cn) {
+                foreach ($coursenodes as $cn) {
                     $this->add($cn);
                 }
-
+                return; // Nothing more for admins
             }
-            return;
-        }
-
-        $course = $PAGE->course;
-        $this->page->navigation->initialise();
-        $studentblocks = [
-                [
-                        'url' => '/my',
-                        'label' => get_string('dashboardtitle', 'theme_savoir'),
-                        'key' => 'myhome',
-                        'icon' => array('name' => 'i/home', 'component' => 'moodle')
-                ],
-                [
-                        'url' => '/theme/savoir/pages/mycourses.php',
-                        'label' => get_string('mycourses'),
-                        'key' => 'mycourses',
-                        'icon' => array('name' => 'i/course', 'component' => 'moodle')
-                ],
-                [
-                        'url' => '/course/index.php',
-                        'label' => get_string('catalog', 'theme_savoir'),
-                        'key' => 'catalog',
-                        'icon' => array('name' => 'i/catalog', 'component' => 'theme_savoir')
-                ]
-
-        ];
-
-
-        foreach ($studentblocks as $nl) {
-            $navlink = navigation_node::create(
-                    $nl['label'],
-                    new moodle_url($nl['url']),
-                    navigation_node::TYPE_CUSTOM,
-                    null,
-                    $nl['key'],
-                    new pix_icon(
-                            $nl['icon']['name'],
-                            '',
-                            $nl['icon']['component']));
-            $flat = new flat_navigation_node($navlink, 0);
-            $this->add($flat);
 
         }
+        $allnodes = [];
+        // We try to add this at the top of the list (for students it will always be at the top)
+        foreach ($this->getIterator() as $node) {
+            $allnodes[] = $this->find($node->key, $node->type);
+            $this->remove($node->key, $node->type);
+        }
+
+        foreach ($NEW_MENU_ITEMS as $nl) {
+            $this->add_node_from_definition($nl, $nl['beforekey']);
+        }
+
+        foreach ($allnodes as $cn) {
+            $this->add($cn);
+        }
+
         $this->add_help_node($isstudent, $isteacher, $isstaff);
         $this->add_other_nodes($isstudent, $isteacher, $isstaff);
+    }
+
+    protected function add_node_from_definition($nodedefinition, $beforekey = null) {
+        $navlink = navigation_node::create(
+                $nodedefinition['label'],
+                new moodle_url($nodedefinition['url']),
+                navigation_node::TYPE_CUSTOM,
+                null,
+                $nodedefinition['key'],
+                new pix_icon(
+                        $nodedefinition['icon']['name'],
+                        '',
+                        $nodedefinition['icon']['component']));
+        $flat = new flat_navigation_node($navlink, 0);
+        if ($beforekey) {
+            $this->add($flat, $beforekey);
+        } else {
+            $this->add($flat);
+        }
     }
 
     protected function add_help_node($istudent = true, $isteacher = true, $isstaff = true) {
         global $CFG;
         $studentcourseid = get_config('theme_savoir', 'studenthelpcourse');
         $studentcourseid = $studentcourseid ? $studentcourseid : SITEID;
-        $studentguideurl = new moodle_url($CFG->wwwroot.'/course/view.php', array('id' => $studentcourseid));
+        $studentguideurl = new moodle_url($CFG->wwwroot . '/course/view.php', array('id' => $studentcourseid));
         $staffcourseid = get_config('theme_savoir', 'staffhelpcourse');
         $staffcourseid = $staffcourseid ? $staffcourseid : SITEID;
-        $staffguideurl = new moodle_url($CFG->wwwroot.'/course/view.php', array('id' => $staffcourseid));
+        $staffguideurl = new moodle_url($CFG->wwwroot . '/course/view.php', array('id' => $staffcourseid));
 
         /* Here we should add a choice of help courses (two for teachers/admin, one for student, depending on the extend of this
         user's roles */
