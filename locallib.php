@@ -24,28 +24,28 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Setting Tools
  */
 
 /**
  * This function is a bit of a hack, it gets all course setting values from a fake front page
+ *
  * @param null $page
  * @param null $currentitem
  * @return array
  * @throws coding_exception
  */
-function get_course_menu_toolbaritems($page = null, $currentitem = null, $currentpath='') {
+function get_course_menu_toolbaritems($page = null, $currentitem = null, $currentpath = '') {
     // Add default items which won't be in the list as we are basing our search on SITEID (see enrol_add_course_navigation)
-    $items = array('/courseadmin/users/review'=>get_string('enrolledusers', 'enrol'),
-            '/courseadmin/users/manageinstances'=>get_string('enrolmentinstances', 'enrol'),
-            '/courseadmin/users/override'=> get_string('permissions', 'role'));
+    $items = array('/courseadmin/users/review' => get_string('enrolledusers', 'enrol'),
+            '/courseadmin/users/manageinstances' => get_string('enrolmentinstances', 'enrol'),
+            '/courseadmin/users/override' => get_string('permissions', 'role'));
     if (!$page) {
         global $CFG;
         $page = new moodle_page();
         $page->set_context(context_course::instance(SITEID));
-        $page->set_url($CFG->wwwroot.'/');
+        $page->set_url($CFG->wwwroot . '/');
         $pagenav = new class($page) extends settings_navigation {
             public function __construct(&$page) {
                 parent::__construct($page);
@@ -56,7 +56,7 @@ function get_course_menu_toolbaritems($page = null, $currentitem = null, $curren
                 /* This is where it also gets very hackish because question_extend_settings_navigation function
                 does not take the $page but gets the global $PAGE */
                 $oldpage = $PAGE;
-                $PAGE=$this->page;
+                $PAGE = $this->page;
                 $this->load_course_settings();
                 $PAGE = $oldpage;
             }
@@ -69,11 +69,12 @@ function get_course_menu_toolbaritems($page = null, $currentitem = null, $curren
             $items += array($currentpath . '/' . $currentitem->key => $currentitem->text);
         }
         foreach ($currentitem->children as $child) {
-            $items += get_course_menu_toolbaritems($page, $child, $currentpath . '/' . $currentitem->key );
+            $items += get_course_menu_toolbaritems($page, $child, $currentpath . '/' . $currentitem->key);
         }
     }
     return $items;
 }
+
 /**
  * ------------------------------------------------------------------------------------------------
  *              Setup
@@ -258,10 +259,9 @@ function setup_theme() {
     return setup_mobile_css();
 }
 
-
 function setup_syllabus() {
     global $DB;
-    $SYLLABUS_TEMPLATE  = '<h4>Présentation</h4><p>(équipe pédagogique et cadrage horaire)<br></p>
+    $SYLLABUS_TEMPLATE = '<h4>Présentation</h4><p>(équipe pédagogique et cadrage horaire)<br></p>
         <h4>Objectifs de formation visés</h4><p><br></p>
         <h4>Prérequis</h4><p><br></p>
         <h4>Acquis d’apprentissage visé</h4><p><br></p>
@@ -275,8 +275,10 @@ function setup_syllabus() {
     $courses = $DB->get_recordset_sql("SELECT id,summary FROM {course} WHERE format IN ('topics','topcoll')");
     foreach ($courses as $c) {
         if ($c->id != SITEID) { // Skip Site frontpage
-            $c->summary = $SYLLABUS_TEMPLATE . $c->summary;
-            $DB->set_field('course', 'summary', $c->summary, array('id' => $c->id));
+            if (strpos($c->summary, '<h4>Présentation</h4>') === false) {
+                $c->summary = $SYLLABUS_TEMPLATE . $c->summary;
+                $DB->set_field('course', 'summary', $c->summary, array('id' => $c->id));
+            }
         }
     }
     $transaction->allow_commit();
