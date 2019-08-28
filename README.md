@@ -44,8 +44,12 @@ Il est maintenant possible d'affecter le tableau de bord classique selon le rôl
 
 Pour afficher la liste des étudiants dont on va changer le tableau de bord:
 
-     php cli/dashboardsetup.php  
-     
+     php cli/dashboardsetup.php
+       
+Ou (pour les enseignants):
+
+    php cli/dashboardsetup.php --type=teacher
+
 Pour changer le tableau de bord pour les étudiants:
 
      php cli/dashboardsetup.php --dry-run=0

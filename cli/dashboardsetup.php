@@ -56,13 +56,50 @@ if ($options['help']) {
 }
 
 $rs = $DB->get_recordset('user', array('confirmed' => 1, 'deleted' => '0'));
+$defaultblockinstances = [
+        [
+                'blockname' => 'calendar_month',
+                'defaultregion' => 'content',
+                'defaultweight' => -1
+        ],
+        [
+                'blockname' => 'calendar_upcoming',
+                'defaultregion' => 'content',
+                'defaultweight' => -2
+        ],
+        [
+                'blockname' => 'savoir_mycourses',
+                'defaultregion' => 'content',
+                'defaultweight' => 0
+        ],
+    ];
+switch($options['type']) {
+    case 'teacher':
+    $defaultblockinstances = [
+            [
+                    'blockname' => 'savoir_mycourses',
+                    'defaultregion' => 'content',
+                    'defaultweight' => 0
+            ],
+        ];
+    break;
+}
+if ($options['dry-run']) {
+    cli_writeln('Dry run option on : use --dry-run=false to really modify the dashboards');
+}
 foreach ($rs as $user) {
+    if ($user->deleted == 1) {
+        continue;
+    }
     if (has_role_from_name($user->id, $options['type'])) {
         if (!$options['dry-run']) {
-            setup_dashboard_blocks($user->id);
+            setup_dashboard_blocks($user->id, $defaultblockinstances);
         }
         $userfullname = fullname($user);
         $targetrole = $options['type'];
-        cli_writeln("User {$userfullname} : reset dashboard to {$targetrole} role");
+        cli_writeln("User ({$user->id}) {$userfullname} : reset dashboard to {$targetrole} role");
     }
+}
+if ($options['dry-run']) {
+    cli_writeln('Dashboards are unmodified, as dry run option is on : use --dry-run=false to really modify the dashboards');
 }
