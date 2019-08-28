@@ -581,12 +581,14 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 $blockclass = '';
 
                 if ($PAGE->pagelayout == 'mydashboard') {
-                    $blockclass = ($index == (count($blockcontents) - 1)
-                            && $oddnumberblocks) ?
-                            'db-singleblock' : 'db-doubleblock';
-                    // Then add ml-auto or mr-auto depending on the side of the block.
-                    $blockclass .= ' ';
-                    $blockclass .= (($index % 2) ? 'ml-auto' : 'mr-auto');
+                    $blockclass = 'db-singleblock';
+                    $currentblocktype = $bc->attributes['data-block'];
+                    if ($currentblocktype == "calendar_month" || $currentblocktype == "calendar_upcoming") {
+                        $blockclass = 'db-doubleblock';
+                        // Then add ml-auto or mr-auto depending on the side of the block.
+                        $blockclass .= ' ';
+                        $blockclass .= (($index % 2) ? ' ml-auto ' : ' mr-auto ');
+                    }
                 }
                 $output .= $this->block($bc, $region, $blockclass);
                 $lastblock = $bc->title;
@@ -609,7 +611,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      */
     public function block(block_contents $bc, $region, $additionalclasses = '') {
         $bc = clone($bc); // Avoid messing up the object passed in.
-        $bc->attributes['class'] .= $additionalclasses;
+        $bc->attributes['class'] .= ' '. $additionalclasses;
         return parent::block($bc, $region);
     }
 

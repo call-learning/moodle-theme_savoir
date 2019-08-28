@@ -339,16 +339,16 @@
 }
 
 /* Dashboard */
-.blockdb-doubleblock {
+.db-doubleblock {
   width: 49%;
 }
 
-.blockdb-singleblock {
+.db-singleblock {
   width: 100%;
 }
 
 @media (max-width: map-get($grid-breakpoints, "md")) {
-  .blockdb-doubleblock {
+  .db-doubleblock {
     width: 100%;
   }
 }
