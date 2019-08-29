@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use theme_savoir\utils;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -31,11 +33,21 @@ class theme_savoir_observer {
 
     /**
      * Make sure that when user logs in the nav bar is open
+     *
      * @param \core\event\user_loggedin $event
      * @throws moodle_exception
      */
     public static function user_loggedin(\core\event\user_loggedin $event) {
         global $CFG, $SESSION;
         set_user_preference('drawer-open-nav', 'true');
+    }
+
+    public static function course_set_syllabus(\core\event\course_created $event) {
+        global $DB;
+        $courseid = $event->objectid;
+        $courserecord = $DB->get_record('course', array('id' => $courseid));
+        if (empty($courserecord->summary)) {
+            utils::set_course_syllabus($courserecord);
+        }
     }
 }

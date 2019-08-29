@@ -22,6 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use theme_savoir\utils;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -37,11 +39,12 @@ defined('MOODLE_INTERNAL') || die();
  * @throws coding_exception
  */
 function get_course_menu_toolbaritems($page = null, $currentitem = null, $currentpath = '') {
+    global $CFG;
     // Add default items which won't be in the list as we are basing our search on SITEID (see enrol_add_course_navigation)
     $items = array('/courseadmin/users/review' => get_string('enrolledusers', 'enrol'),
             '/courseadmin/users/manageinstances' => get_string('enrolmentinstances', 'enrol'),
             '/courseadmin/users/override' => get_string('permissions', 'role'));
-    if (!$page) {
+    if (!$page && empty($CFG->upgraderunning)) {
         global $CFG;
         $page = new moodle_page();
         $page->set_context(context_course::instance(SITEID));
@@ -261,24 +264,13 @@ function setup_theme() {
 
 function setup_syllabus() {
     global $DB;
-    $SYLLABUS_TEMPLATE = '<h4>Présentation</h4><p>(équipe pédagogique et cadrage horaire)<br></p>
-        <h4>Objectifs de formation visés</h4><p><br></p>
-        <h4>Prérequis</h4><p><br></p>
-        <h4>Acquis d’apprentissage visé</h4><p><br></p>
-        <h4>Description de l’UE</h4><p><br></p>
-        <h4>Ressources bibliographiques</h4><p><br></p>
-        <h4>Méthodes d’enseignement et moyens pédagogiques</h4><p><br></p>
-        <h4>Modalités d’évaluation</h4><p><br></p>';
 
     // We want all or nothing here.
     $transaction = $DB->start_delegated_transaction();
     $courses = $DB->get_recordset_sql("SELECT id,summary FROM {course} WHERE format IN ('topics','topcoll')");
     foreach ($courses as $c) {
         if ($c->id != SITEID) { // Skip Site frontpage
-            if (strpos($c->summary, '<h4>Présentation</h4>') === false) {
-                $c->summary = $SYLLABUS_TEMPLATE . $c->summary;
-                $DB->set_field('course', 'summary', $c->summary, array('id' => $c->id));
-            }
+            utils::set_course_syllabus($c);
         }
     }
     $transaction->allow_commit();

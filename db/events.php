@@ -23,8 +23,13 @@
  */
 
 $observers = [
-    [
-        'eventname'   => '\core\event\user_loggedin',
-        'callback'    => 'theme_savoir_observer::user_loggedin',
-    ],
+        [
+                'eventname' => '\core\event\user_loggedin',
+                'callback' => 'theme_savoir_observer::user_loggedin',
+        ],
+        [
+                'eventname' => '\core\event\course_created',
+                'callback' => 'theme_savoir_observer::course_set_syllabus',
+        ],
+
 ];

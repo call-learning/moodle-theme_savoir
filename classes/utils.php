@@ -28,11 +28,12 @@ defined('MOODLE_INTERNAL') || die();
 
 use html_writer;
 use moodle_url;
+
 /**
  * Event observer for Theme Savoir
  */
 class utils {
-    public static function get_course_contact_list($course_in_list, $displaybyrole=true, $ishtml=true) {
+    public static function get_course_contact_list($course_in_list, $displaybyrole = true, $ishtml = true) {
         global $CFG;
         $content = '';
         $contacts = $course_in_list->get_course_contacts();
@@ -47,19 +48,19 @@ class utils {
 
         foreach ($contactbyroles as $rolename => $contactlist) {
             $names = [];
-            foreach($contactlist as $coursecontact) {
+            foreach ($contactlist as $coursecontact) {
                 $currentnameprint = $coursecontact['username'];
                 if ($ishtml) {
                     $names[] =
-                            html_writer::link(new moodle_url($CFG->wwwroot.'/user/view.php',
+                            html_writer::link(new moodle_url($CFG->wwwroot . '/user/view.php',
                                     array('id' => $coursecontact['user']->id, 'course' => SITEID)),
                                     $currentnameprint);
                 } else {
                     $names[] = $currentnameprint;
                 }
             }
-            if (count($names)>1) {
-                $rolename.='s';
+            if (count($names) > 1) {
+                $rolename .= 's';
             }
             if ($displaybyrole) {
                 $roleprint = $rolename . ': ' . implode(', ', $names);
@@ -69,14 +70,33 @@ class utils {
                             $roleprint,
                             array('class' => 'teachers-list'));
                 } else {
-                    $content .=  $roleprint;
+                    $content .= $roleprint;
                 }
             } else {
-                if ($content) $content.= ', ';
+                if ($content) {
+                    $content .= ', ';
+                }
                 $content .= implode(', ', $names);
             }
 
         }
         return $content;
+    }
+
+    const  SYLLABUS_TEMPLATE = '<h4>Présentation</h4><p>(équipe pédagogique et cadrage horaire)<br></p>
+        <h4>Objectifs de formation visés</h4><p><br></p>
+        <h4>Prérequis</h4><p><br></p>
+        <h4>Acquis d’apprentissage visé</h4><p><br></p>
+        <h4>Description de l’UE</h4><p><br></p>
+        <h4>Ressources bibliographiques</h4><p><br></p>
+        <h4>Méthodes d’enseignement et moyens pédagogiques</h4><p><br></p>
+        <h4>Modalités d’évaluation</h4><p><br></p>';
+
+    public static function set_course_syllabus($course) {
+        global $DB;
+        if (strpos($course->summary, '<h4>Présentation</h4>') === false) {
+            $course->summary = static::SYLLABUS_TEMPLATE . $course->summary;
+            $DB->set_field('course', 'summary', $course->summary, array('id' => $course->id));
+        }
     }
 }
