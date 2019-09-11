@@ -76,6 +76,17 @@
   width: 5em;
 }
 
+// Dropdown menu should have a contrasted color in the background (compared to the chosen dropdown color)
+.form-autocomplete-suggestions li[aria-selected=true] {
+  color: $dropdown-link-active-color;
+}
+
+// The dropdown menu
+.dropdown-menu {
+  color: $dropdown-link-active-color;
+}
+
+
 /*
  * Navigation bar colors and layout.
  */
