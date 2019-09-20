@@ -26,15 +26,14 @@
                     type="button"
                     data-toggle="collapse"
                     data-target="#syllabusContentCollapsible-{{courseid}}"
-                    aria-expanded="true"
                     aria-controls="syllabusContentCollapsible-{{courseid}}"
                     aria-label="{{# str }} collapse {{/ str }}">
-                <span class="expanded hidden">{{# pix }} t/expanded, theme_savoir {{/ pix }}</span>
-                <span class="collapsed hidden">{{# pix }} t/collapsed, theme_savoir {{/ pix }}</span>
+                <span class="expanded {{#expanded }}hidden{{/expanded}}">{{# pix }} t/expanded, theme_savoir {{/ pix }}</span>
+                <span class="collapsed {{^expanded }}hidden{{/expanded}}">{{# pix }} t/collapsed, theme_savoir {{/ pix }}</span>
             </button>
         </div>
         {{/syllabustitle}}
-        <div id="syllabusContentCollapsible-{{courseid}}" class="collapse show" aria-labelledby="courseSyllabusHeader-{{courseid}}" data-parent="#syllabusContent-{{courseid}}">
+        <div id="syllabusContentCollapsible-{{courseid}}" class="collapse {{#expanded }}show{{/expanded}}" aria-labelledby="courseSyllabusHeader-{{courseid}}" data-parent="#syllabusContent-{{courseid}}">
             <div class="card-body p-0 syllabus-content">
                 {{{ content }}}
             </div>
@@ -42,6 +41,24 @@
     </div>
 </div>
 {{#js}}
+    // Add courseid to the list
+    $('#syllabusContentCollapsible-{{courseid}}').on('hide.bs.collapse', function() {
+        var csprefname = '{{coursesyllabusprefname}}';
+        if (M.util && csprefname) {
+            var csclosedstatus = [{{csclosedstatus}}];
+            csclosedstatus.push({{courseid}});
+            M.util.set_user_preference(csprefname, csclosedstatus.join(',')) ;
+       }
+    });
+    // Remove course id from the list
+    $('#syllabusContentCollapsible-{{courseid}}').on('show.bs.collapse', function() {
+        var csprefname = '{{coursesyllabusprefname}}';
+        if (M.util && csprefname) {
+            var csclosedstatus = [{{csclosedstatus}}];
+            csclosedstatus = csclosedstatus.filter(function(currentid) { return currentid != {{courseid}}; } );
+            M.util.set_user_preference(csprefname, csclosedstatus.join(',')) ;
+        }
+    });
     $('#syllabusContentCollapsible-{{courseid}}').on('hidden.bs.collapse', function() {
         $('#courseSyllabusHeader-{{courseid}} .expanded').hide();
         $('#courseSyllabusHeader-{{courseid}} .collapsed').show();
@@ -50,5 +67,4 @@
         $('#courseSyllabusHeader-{{courseid}} .expanded').show();
         $('#courseSyllabusHeader-{{courseid}} .collapsed').hide();
     });
-    $('#courseSyllabusHeader-{{courseid}} .expanded').show();
 {{/js}}

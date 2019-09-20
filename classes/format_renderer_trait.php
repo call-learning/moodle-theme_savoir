@@ -88,8 +88,23 @@ trait format_renderer_trait {
         $tcontext->content .= $this->courserenderer->course_section_cm_list($course, $section, 0);
         $tcontext->content .= $this->courserenderer->course_section_add_cm_control($course, 0, 0);
         $tcontext->content .= $this->section_footer();
+        $tcontext->expanded = true;
+        $tcontext->csclosedstatus = "";
+        $tcontext->coursesyllabusprefname =  'coursesSyllabusStatus';
 
-        return $this->render_from_template('theme_savoir/course_syllabus',$tcontext);
+        if (isloggedin() && !isguestuser()) {
+            user_preference_allow_ajax_update($tcontext->coursesyllabusprefname, PARAM_RAW);
+            if (get_user_preferences($tcontext->coursesyllabusprefname)) {
+                $tcontext->csclosedstatus = get_user_preferences($tcontext->coursesyllabusprefname);
+                $currentstatus = explode(',', $tcontext->csclosedstatus);
+                $tcontext->expanded = !in_array($course->id, $currentstatus);
+
+            }
+        } else {
+            // Don't store anything on user prefs
+            $tcontext->coursesyllabusprefname =  '';
+        }
+        return $this->render_from_template('theme_savoir/course_syllabus', $tcontext);
     }
 }
 
