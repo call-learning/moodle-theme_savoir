@@ -215,8 +215,8 @@ class savoir_flat_navigation extends flat_navigation {
                 || has_role_from_name($USER->id, 'coursecreator');
         $isstaff = has_role_from_name($USER->id, 'manager');
         $this->page->navigation->initialise();
+        parent::initialise();
         if (is_siteadmin() || $isteacher || $isstaff) {
-            parent::initialise();
             if ($isteacher && ! is_siteadmin()) {
                 $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
                 $this->remove('myhome', navigation_node::NODETYPE_BRANCH);
@@ -259,7 +259,9 @@ class savoir_flat_navigation extends flat_navigation {
         }
 
         foreach ($allnodes as $cn) {
-            $this->add($cn);
+            if (!empty($CFG->theme_savoir_menu_keep) && in_array($cn->key, $CFG->theme_savoir_menu_keep)) {
+                $this->add($cn);
+            }
         }
 
         $this->add_help_node($isstudent, $isteacher, $isstaff);

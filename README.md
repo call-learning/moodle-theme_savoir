@@ -58,6 +58,21 @@ Même chose pour les enseignants:
      
           php cli/dashboardsetup.php --dry-run=0 --type=teacher  
   
+# Rendre visible certains menu dans le menu de navigation de gauche
+
+Par design nous n'avons gardé que les menus principaux et utiles pour chaque utilisateur.
+Néanmoins il semble que certains menus soit nécessaire maintenant à cause d'une utilisation de fonctionalités
+nouvelles (Badges...).
+
+La configuration de menu supplémentaire se fait en ajoutant ceux-ci dans le fichier config.php.
+
+Par exemple cela rendra visible les menus Badges, Participants et Grades:
+
+``
+$CFG->theme_savoir_menu_keep = ['badgesview','participants','grades'];
+``
+
+
 
 # Changer les identifiants (idnumber) des cours "Guides"
 
