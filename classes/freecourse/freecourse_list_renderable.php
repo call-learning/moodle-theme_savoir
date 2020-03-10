@@ -25,7 +25,6 @@
 namespace theme_savoir\freecourse;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot.'/lib/coursecatlib.php');
 
 use renderable;
 use renderer_base;
@@ -58,17 +57,17 @@ class freecourse_list_renderable implements renderable, templatable {
 
         $selfenrolmentcourseid = $DB->get_fieldset_select('enrol','courseid',"enrol = 'guest' AND status=0");
         $context = new \stdClass();
-        $context->coursesbycategory = []; // List of categories with associated courses
+        $context->coursesbycategory = []; // List of categories with associated courses.
 
         foreach ($selfenrolmentcourseid as $cid) {
            $record = get_course($cid);
            $course = new course_in_list_extended($record);
-            if ($course->is_uservisible()) {
+            if ($course->can_access()) {
                 // Fetch only visible courses that have enrolment as guest.
-                $categoryvisible = true; // Check that we can view the category of this course too
+                $categoryvisible = true; // Check that we can view the category of this course too.
                 if (!array_key_exists($course->category, $context->coursesbycategory)) {
-                    // Create category object if it exists
-                    $category = \coursecat::get($course->category);
+                    // Create category object if it exists.
+                    $category = \core_course_category::get($course->category);
                     $categoryinlist = new \stdClass();
                     $categoryinlist->name = $category->name;
                     $categoryinlist->courses = [];

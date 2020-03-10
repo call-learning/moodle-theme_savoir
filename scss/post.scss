@@ -35,6 +35,14 @@
   margin-top: $navbar-height;
 }
 
+#page-wrapper {
+  height: auto;
+
+  #region-main {
+    background: none;
+    border: none;
+  }
+}
 /* General */
 .btn {
   border-radius: 3px;

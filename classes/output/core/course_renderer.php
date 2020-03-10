@@ -28,6 +28,7 @@ global $CFG;
 require_once($CFG->dirroot . "/course/renderer.php");
 
 use context_system;
+use core_course_category;
 use course_in_list;
 use coursecat;
 use coursecat_helper;
@@ -61,20 +62,19 @@ class course_renderer extends \core_course_renderer {
             return '';
         }
         if ($course instanceof stdClass) {
-            require_once($CFG->libdir . '/coursecatlib.php');
-            $course = new course_in_list($course);
+            $course = new \core_course_list_element($course);
         }
         $content = '';
 
-        // display course summary.
+        // Display course summary.
         if ($course->has_summary()) {
             $content .= html_writer::start_tag('div', array('class' => 'summary syllabus-content'));
             $content .= $chelper->get_course_formatted_summary($course,
                     array('overflowdiv' => true, 'noclean' => true, 'para' => false));
-            $content .= html_writer::end_tag('div'); // .summary
+            $content .= \html_writer::end_tag('div'); // Class .summary .
         }
 
-        // display course overview files.
+        // Display course overview files.
         $contentimages = $contentfiles = '';
         foreach ($course->get_course_overviewfiles() as $file) {
             $isimage = $file->is_valid_image();
@@ -96,14 +96,14 @@ class course_renderer extends \core_course_renderer {
         }
         $content .= $contentimages . $contentfiles;
 
-        // display course contacts. See course_in_list::get_course_contacts().
+        // Display course contacts. See course_in_list::get_course_contacts() .
         if ($course->has_course_contacts()) {
             $content .= html_writer::start_tag('span', array('class' => 'teachers'));
             $content .= utils::get_course_contact_list($course);
             $content .= html_writer::end_tag('span');
         }
 
-        // display course category if necessary (for example in search results).
+        // Display course category if necessary (for example in search results).
         if ($chelper->get_show_courses() == self::COURSECAT_SHOW_COURSES_EXPANDED_WITH_CAT) {
             require_once($CFG->libdir . '/coursecatlib.php');
             if ($cat = coursecat::get($course->category, IGNORE_MISSING)) {
@@ -148,8 +148,8 @@ class course_renderer extends \core_course_renderer {
             $this->page->set_button($managebutton);
         }
         if (!$coursecat->id) {
-            if (coursecat::count_all() == 1) {
-                // There exists only one category in the system, do not display link to it
+            if (core_course_category::is_simple_site()) {
+                // There exists only one category in the system, do not display link to it.
                 $coursecat = coursecat::get_default();
                 $strfulllistofcourses = get_string('fulllistofcourses');
                 $this->page->set_title("$site->shortname: $strfulllistofcourses");
@@ -159,13 +159,13 @@ class course_renderer extends \core_course_renderer {
             }
         } else {
             $title = $site->shortname;
-            if (coursecat::count_all() > 1) {
+            if (core_course_category::count_all() > 1) {
                 $title .= ": ". $coursecat->get_formatted_name();
             }
             $this->page->set_title($title);
 
             // Print the category selector
-            if (coursecat::count_all() > 1) {
+            if (core_course_category::count_all() > 1) {
                 $output .= html_writer::start_tag('div', array('class' => 'categorypicker'));
                 $select = new single_select(new moodle_url($CFG->wwwroot.'/course/index.php'), 'categoryid',
                         coursecat::make_categories_list(), $coursecat->id, null, 'switchcategory');

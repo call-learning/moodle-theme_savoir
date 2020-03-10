@@ -25,7 +25,6 @@
 namespace theme_savoir\freecourse;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot . '/lib/coursecatlib.php');
 
 use context_helper;
 use course_in_list;
@@ -33,7 +32,7 @@ use stdClass;
 use moodle_url;
 use theme_savoir\utils;
 
-class course_in_list_extended extends course_in_list {
+class course_in_list_extended extends \core_course_list_element {
 
     /** @var an url to the course image url or false - stores result of call to init_course_image_url() */
     protected $courseimageurl = null;
