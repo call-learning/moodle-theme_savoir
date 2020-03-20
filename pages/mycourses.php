@@ -37,6 +37,6 @@ echo $OUTPUT->header();
 $renderable = new \block_myoverview\output\main('courses');
 $renderer = $PAGE->get_renderer('core');
 echo $renderer->render_from_template(
-        'block_savoir_mycourses/timeline-view-courses', $renderable->export_for_template($renderer));;
+        'theme_savoir/timeline-view-all-courses', $renderable->export_for_template($renderer));;
 
 echo $OUTPUT->footer();
