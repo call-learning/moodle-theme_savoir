@@ -17,15 +17,20 @@
 /**
  * Topic Renderer override
  * Add the course syllabus/description at the top of the course
+ *
  * @package   theme_savoir
  * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use theme_savoir\format_renderer_trait;
+
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . "/course/format/topics/renderer.php");
+
 class theme_savoir_format_topics_renderer extends format_topics_renderer {
-    use \theme_savoir\format_renderer_trait;
+    use format_renderer_trait;
+
     /**
      * Output the html for a multiple section page
      *
@@ -34,10 +39,10 @@ class theme_savoir_format_topics_renderer extends format_topics_renderer {
      * @param array $mods (argument not used)
      * @param array $modnames (argument not used)
      * @param array $modnamesused (argument not used)
+     * @throws coding_exception
+     * @throws moodle_exception
      */
     public function print_multiple_section_page($course, $sections, $mods, $modnames, $modnamesused) {
-        global $PAGE;
-
         $modinfo = get_fast_modinfo($course);
         $course = course_get_format($course)->get_course();
 
@@ -56,29 +61,29 @@ class theme_savoir_format_topics_renderer extends format_topics_renderer {
 
         foreach ($modinfo->get_section_info_all() as $section => $thissection) {
             if ($section == 0) {
-                // 0-section is displayed a little different then the others
-                if ($thissection->summary or !empty($modinfo->sections[0]) or $PAGE->user_is_editing()) {
-                    // SAVOIR SYLLABUS
+                // 0-section is displayed a little different then the others.
+                if ($thissection->summary or !empty($modinfo->sections[0]) or $this->page->user_is_editing()) {
+                    // SAVOIR SYLLABUS.
                     echo $this->get_section_0_content($thissection);
-                    // SAVOIR SYLLABUS
+                    // SAVOIR SYLLABUS.
                 }
                 continue;
             }
             if ($section > $numsections) {
-                // activities inside this section are 'orphaned', this section will be printed as 'stealth' below
+                // Activities inside this section are 'orphaned', this section will be printed as 'stealth' below.
                 continue;
             }
             // Show the section if the user is permitted to access it, OR if it's not available
             // but there is some available info text which explains the reason & should display,
-            // OR it is hidden but the course has a setting to display hidden sections as unavilable.
+            // OR it is hidden but the course has a setting to display hidden sections as unavailable.
             $showsection = $thissection->uservisible ||
-                    ($thissection->visible && !$thissection->available && !empty($thissection->availableinfo)) ||
-                    (!$thissection->visible && !$course->hiddensections);
+                ($thissection->visible && !$thissection->available && !empty($thissection->availableinfo)) ||
+                (!$thissection->visible && !$course->hiddensections);
             if (!$showsection) {
                 continue;
             }
 
-            if (!$PAGE->user_is_editing() && $course->coursedisplay == COURSE_DISPLAY_MULTIPAGE) {
+            if (!$this->page->user_is_editing() && $course->coursedisplay == COURSE_DISPLAY_MULTIPAGE) {
                 // Display section summary only.
                 echo $this->section_summary($thissection, $course, null);
             } else {
@@ -91,11 +96,11 @@ class theme_savoir_format_topics_renderer extends format_topics_renderer {
             }
         }
 
-        if ($PAGE->user_is_editing() and has_capability('moodle/course:update', $context)) {
+        if ($this->page->user_is_editing() and has_capability('moodle/course:update', $context)) {
             // Print stealth sections if present.
             foreach ($modinfo->get_section_info_all() as $section => $thissection) {
                 if ($section <= $numsections or empty($modinfo->sections[$section])) {
-                    // this is not stealth section or it is empty
+                    // This is not stealth section or it is empty.
                     continue;
                 }
                 echo $this->stealth_section_header($section);

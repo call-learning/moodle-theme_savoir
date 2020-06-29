@@ -64,9 +64,9 @@
         <div id="page-content" class="row">
             <div id="region-main-box" class="col-12">
                 {{#hasregionmainsettingsmenu}}
-                <div id="region-main-settings-menu" class="d-print-none {{#hasblocks}}has-blocks{{/hasblocks}}">
-                    <div> {{{ output.region_main_settings_menu }}} </div>
-                </div>
+                    <div id="region-main-settings-menu" class="d-print-none {{#hasblocks}}has-blocks{{/hasblocks}}">
+                        <div> {{{ output.region_main_settings_menu }}} </div>
+                    </div>
                 {{/hasregionmainsettingsmenu}}
                 <section id="region-main" {{#hasblocks}}class="has-blocks mb-3"{{/hasblocks}}>
                     <div class="card">
@@ -89,7 +89,7 @@
         </div>
         <div class="row">
             <!-- Make sure activity navigation is separated fromt the rest-->
-                {{{ output.activity_navigation }}}
+            {{{ output.activity_navigation }}}
         </div>
     </div>
     {{> theme_savoir/nav-drawer }}
@@ -100,8 +100,8 @@
 </body>
 </html>
 {{#js}}
-require(['theme_boost/loader']);
-require(['theme_boost/drawer'], function(mod) {
+    require(['theme_boost/loader']);
+    require(['theme_boost/drawer'], function(mod) {
     mod.init();
-});
+    });
 {{/js}}

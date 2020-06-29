@@ -27,12 +27,14 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 use context_helper;
+use core_course_list_element;
+use core_geopattern;
 use course_in_list;
 use stdClass;
 use moodle_url;
 use theme_savoir\utils;
 
-class course_in_list_extended extends \core_course_list_element {
+class course_in_list_extended extends core_course_list_element {
 
     /** @var an url to the course image url or false - stores result of call to init_course_image_url() */
     protected $courseimageurl = null;
@@ -83,19 +85,18 @@ class course_in_list_extended extends \core_course_list_element {
     /** Get view URL */
     public function view_url() {
         global $CFG;
-        return new \moodle_url($CFG->wwwroot.'/course/view.php', [
-                'id' => $this->record->id,
+        return new moodle_url($CFG->wwwroot . '/course/view.php', [
+            'id' => $this->record->id,
         ]);
     }
 
     public function teachers_list() {
         return utils::get_course_contact_list($this, false, false);
     }
+
     /**
      * Initialise the courseimageurl field. This file should match the pattern defined by
      * course_in_list_extended::COURSE_IMAGE_FILE_NAME_PREFIX
-     *
-     * @return an image url or false
      */
     protected function init_course_image_url() {
         $files = $this->get_course_overviewfiles();
@@ -104,19 +105,19 @@ class course_in_list_extended extends \core_course_list_element {
             if (pathinfo($f->get_filename(), PATHINFO_FILENAME) == self::COURSE_IMAGE_FILE_NAME_PREFIX) {
                 if ($isimage = $f->is_valid_image()) {
                     $courseimageurl = moodle_url::make_pluginfile_url(
-                            $f->get_contextid(),
-                            'course',
-                            'overviewfiles',
-                            null,
-                            $f->get_filepath(),
-                            $f->get_filename());
+                        $f->get_contextid(),
+                        'course',
+                        'overviewfiles',
+                        null,
+                        $f->get_filepath(),
+                        $f->get_filename());
                     break;
                 }
             }
         }
-        // Use Geo pattern
+        // Use Geo pattern.
         if (!$courseimageurl) {
-            $pattern = new \core_geopattern();
+            $pattern = new core_geopattern();
             $pattern->setColor('#eeeeee');
             $pattern->patternbyid($this->record->id);
             $this->classes = 'coursepattern';

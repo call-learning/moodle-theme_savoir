@@ -23,17 +23,19 @@
  */
 require_once('../../../config.php');
 
+// Make sure that autologinguests is set to true.
+require_login(SITEID, true);
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/theme/savoir/pages/opencatalog.php');
 $PAGE->set_pagelayout('pagewithdescription');
 
 $PAGE->set_title(get_string('opencatalog', 'theme_savoir'));
-$PAGE->set_heading(get_string('opencatalog','theme_savoir'));
-echo $OUTPUT->header();
+$PAGE->set_heading(get_string('opencatalog', 'theme_savoir'));
 
+echo $OUTPUT->header();
 $renderable = new theme_savoir\freecourse\freecourse_list_renderable();
 $renderer = $PAGE->get_renderer('core');
 echo $renderer->render_from_template(
-        'theme_savoir/freecourse-list', $renderable->export_for_template($renderer));;
+    'theme_savoir/freecourse-list', $renderable->export_for_template($renderer));
 
 echo $OUTPUT->footer();

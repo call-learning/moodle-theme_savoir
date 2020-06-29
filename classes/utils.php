@@ -33,18 +33,18 @@ use moodle_url;
  * Event observer for Theme Savoir
  */
 class utils {
-    public static function get_course_contact_list($course_in_list, $displaybyrole = true, $ishtml = true) {
+    public static function get_course_contact_list($coursesinlist, $displaybyrole = true, $ishtml = true) {
         global $CFG;
         $content = '';
-        $contacts = $course_in_list->get_course_contacts();
+        $contacts = $coursesinlist->get_course_contacts();
         $contactbyroles = array_reduce($contacts,
-                function($c, $i) {
-                    if (empty($c[$i['rolename']])) {
-                        $c[$i['rolename']] = [];
-                    }
-                    $c[$i['rolename']][] = $i;
-                    return $c;
-                }, array());
+            function($c, $i) {
+                if (empty($c[$i['rolename']])) {
+                    $c[$i['rolename']] = [];
+                }
+                $c[$i['rolename']][] = $i;
+                return $c;
+            }, array());
 
         foreach ($contactbyroles as $rolename => $contactlist) {
             $names = [];
@@ -52,9 +52,9 @@ class utils {
                 $currentnameprint = $coursecontact['username'];
                 if ($ishtml) {
                     $names[] =
-                            html_writer::link(new moodle_url($CFG->wwwroot . '/user/view.php',
-                                    array('id' => $coursecontact['user']->id, 'course' => SITEID)),
-                                    $currentnameprint);
+                        html_writer::link(new moodle_url($CFG->wwwroot . '/user/view.php',
+                            array('id' => $coursecontact['user']->id, 'course' => SITEID)),
+                            $currentnameprint);
                 } else {
                     $names[] = $currentnameprint;
                 }
@@ -66,9 +66,9 @@ class utils {
                 $roleprint = $rolename . ': ' . implode(', ', $names);
                 if ($ishtml) {
                     $content .= html_writer::tag(
-                            'span',
-                            $roleprint,
-                            array('class' => 'teachers-list'));
+                        'span',
+                        $roleprint,
+                        array('class' => 'teachers-list'));
                 } else {
                     $content .= $roleprint;
                 }

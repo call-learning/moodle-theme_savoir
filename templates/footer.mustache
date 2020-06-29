@@ -19,25 +19,29 @@
     SAVOIR: Add specific link and table style layout
 }}
 <footer id="page-footer" class="py-3 bg-dark text-light">
-    <div class="container d-flex flex-wrap justify-content-between">
-        <div id="course-footer">{{{ output.course_footer }}}</div>
+    <div class="container d-flex flex-wrap">
+        <div id="course-footer" class="w-100">{{{ output.course_footer }}}</div>
+        <div class="w-100">
+            {{{ output.login_info }}}
+        </div>
+        <div class="w-100 pb-2">
+            {{{ output.home_link }}}
+            <nav class="nav navbar-nav d-md-none">
+                {{# output.custom_menu_flat }}
+                    <ul class="list-unstyled pt-3">
+                        {{> theme_boost/custom_menu_footer }}
+                    </ul>
+                {{/ output.custom_menu_flat }}
+            </nav>
+        </div>
 
-        {{{ output.login_info }}}
-
-        {{{ output.home_link }}}
-        <nav class="nav navbar-nav d-md-none">
-            {{# output.custom_menu_flat }}
-                <ul class="list-unstyled pt-3">
-                    {{> theme_boost/custom_menu_footer }}
-                </ul>
-            {{/ output.custom_menu_flat }}
-        </nav>
+        <div class="d-flex flex-column other-links mt-1">
         {{# output.page_doc_link }}
-            <p class="helplink">{{{ output.page_doc_link }}}</p>
+            <p class="helplink mb-0">{{{ output.page_doc_link }}}</p>
         {{/ output.page_doc_link }}
-        <div class="tool_usertours-resettourcontainer"></div>
-
-        {{{ output.standard_footer_html }}}
-        {{{ output.standard_end_of_body_html }}}
+            <div class="tool_usertours-resettourcontainer"></div>
+            {{{ output.standard_footer_html }}}
+            {{{ output.standard_end_of_body_html }}}
+        </div>
     </div>
 </footer>

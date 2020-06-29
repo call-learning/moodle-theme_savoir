@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/theme/savoir/locallib.php');
+require_once($CFG->dirroot . '/theme/savoir/locallib.php');
 
 /**
  * Theme upgrade
@@ -27,8 +27,6 @@ require_once($CFG->dirroot.'/theme/savoir/locallib.php');
  */
 
 function xmldb_theme_savoir_upgrade($oldversion) {
-    global $DB;
-    $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
     if ($oldversion < 2018051401) {
         setup_theme();

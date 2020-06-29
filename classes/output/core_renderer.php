@@ -29,6 +29,7 @@ use core_text;
 use custom_menu;
 use html_writer;
 use moodle_url;
+use navbar;
 use navigation_node;
 use pix_icon;
 use renderer_base;
@@ -49,7 +50,6 @@ class savoir_custom_menu extends custom_menu {
      * @return array
      */
     public function export_for_template(renderer_base $output) {
-        global $CFG;
         $context = parent::export_for_template($output);
         if (strpos($this->text, self::ENSAM_ROOT_URL) !== false) {
             $context->text = preg_replace("/^(\w+)/", '<span class="savoir-site-name">${1}</span>', $context->text);
@@ -80,12 +80,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string HTML to display the main header.
      */
     public function full_header() {
-        global $PAGE;
         $header = new stdClass();
         $header->settingsmenu = $this->context_header_settings_menu();
         $header->handytoolbar = $this->context_handy_toolbar();
         $header->contextheader = $this->context_header();
-        $header->hasnavbar = empty($PAGE->layout_options['nonavbar']);
+        $header->hasnavbar = empty($this->page->layout_options['nonavbar']);
         $header->navbar = $this->navbar();
         $header->pageheadingbutton = $this->page_heading_button();
         $header->courseheader = $this->course_header();
@@ -97,13 +96,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $options->overflowdiv = false;
             $context = context_course::instance($this->page->course->id);
             $summary =
-                    file_rewrite_pluginfile_urls(
-                            $this->page->course->summary,
-                            'pluginfile.php',
-                            $context->id,
-                            'course',
-                            'summary',
-                            null);
+                file_rewrite_pluginfile_urls(
+                    $this->page->course->summary,
+                    'pluginfile.php',
+                    $context->id,
+                    'course',
+                    'summary',
+                    null);
             $content = format_text($summary, $this->page->course->summaryformat, $options);
             if (!isloggedin()) {
                 $header->loginurl = get_login_url();
@@ -114,8 +113,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $header->alertenabled = get_config('theme_savoir', 'fpmessageenabled');
         } else if ($this->is_on_page_with_description()) {
             $header->pageslogan = get_string(preg_replace('/^theme-savoir-pages-/', '', $this->page->pagetype, 1) . '-description',
-                    'theme_savoir');
-            $header->bgimageurl = $this->image_url('genericbackground', 'theme_savoir');;
+                'theme_savoir');
+            $header->bgimageurl = $this->image_url('genericbackground', 'theme_savoir');
             $template = 'theme_savoir/header_desc';
         }
         return $this->render_from_template($template, $header);
@@ -126,6 +125,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * menu for the course administration, only on the course main page.
      *
      * @return string
+     * @throws \dml_exception
+     * @throws \moodle_exception
      */
     public function context_handy_toolbar() {
         $rendered = "";
@@ -136,8 +137,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
         // We are on the course home page.
         if (($context->contextlevel == CONTEXT_COURSE) &&
-                !empty($currentnode) &&
-                ($currentnode->type == navigation_node::TYPE_COURSE || $currentnode->type == navigation_node::TYPE_SECTION)) {
+            !empty($currentnode) &&
+            ($currentnode->type == navigation_node::TYPE_COURSE || $currentnode->type == navigation_node::TYPE_SECTION)) {
             $settingsnode = $this->page->settingsnav->find('courseadmin', navigation_node::TYPE_COURSE);
 
             $itemstoextractfrommenu = explode(',', get_config('theme_savoir', 'coursemenuhandytoolbar'));
@@ -153,6 +154,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return $rendered;
     }
 
+    /**
+     * @param $currentnode
+     * @param $currentpath
+     * @param $itemstoextractfrommenu
+     * @param $extracteditems
+     */
     protected function extract_toolbaritems($currentnode, $currentpath, $itemstoextractfrommenu, &$extracteditems) {
         if ($currentnode) {
             foreach ($currentnode->children as $child) {
@@ -164,14 +171,23 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
     }
 
+    /**
+     * @return bool
+     */
     public function is_on_frontpage() {
         return ($this->page->pagelayout == 'frontpage');
     }
 
+    /**
+     * @return bool
+     */
     public function is_on_dashboard() {
         return ($this->page->pagelayout == 'mydashboard');
     }
 
+    /**
+     * @return bool
+     */
     public function is_on_page_with_description() {
         return ($this->page->pagelayout == 'pagewithdescription');
     }
@@ -181,7 +197,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * If it has not been overriden by core_admin config, serve the logo in pix
      */
     public function get_logo_url($maxwidth = null, $maxheight = 200) {
-        global $OUTPUT;
         $logourl = parent::get_logo_url($maxwidth, $maxheight);
         if (!$logourl) {
             $logourl = $this->image_url('logo', 'theme_savoir');
@@ -195,7 +210,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string
      */
     public function get_compact_logo_url($maxwidth = 100, $maxheight = 100) {
-        global $OUTPUT;
         $compactlogourl = parent::get_compact_logo_url($maxwidth, $maxheight);
         if (!$compactlogourl) {
             $compactlogourl = $this->image_url('logocompact', 'theme_savoir');
@@ -215,12 +229,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
             return $this->image_url('favicon', 'theme');
         }
         return moodle_url::make_pluginfile_url(
-                context_system::instance()->id,
-                'theme_savoir',
-                'favicon',
-                0,
-                theme_get_revision(),
-                $favicon)->out();
+            context_system::instance()->id,
+            'theme_savoir',
+            'favicon',
+            0,
+            theme_get_revision(),
+            $favicon)->out();
     }
 
     public function should_display_navbar_logo() {
@@ -251,7 +265,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * This renderer is needed to enable the Bootstrap style navigation.
      */
     protected function render_custom_menu(custom_menu $menu) {
-        global $CFG;
 
         $langs = get_string_manager()->get_list_of_translations();
         $haslangmenu = $this->lang_menu() != '';
@@ -289,10 +302,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
     protected function is_signup_page() {
         // This is the same hack as for login page. Well...
         return in_array(
-                $this->page->url->out_as_local_url(false, array()),
-                array(
-                        '/login/signup.php'
-                )
+            $this->page->url->out_as_local_url(false, array()),
+            array(
+                '/login/signup.php'
+            )
         );
     }
 
@@ -303,8 +316,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string HTML fragment.
      */
     public function standard_head_html() {
-        global $SITE, $PAGE;
-
         $output = parent::standard_head_html();
         $output .= '<link href=\"https://fonts.googleapis.com/css?family=Roboto|Nova+Mono|Roboto+Mono|Tinos\" rel=\"stylesheet\">';
 
@@ -312,8 +323,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     public function should_display_sandwitch_menu() {
-        global $PAGE;
-        if ($PAGE->pagelayout == 'frontpage' || !isloggedin() || isguestuser()) {
+        if ($this->page->pagelayout == 'frontpage' || !isloggedin() || isguestuser()) {
             return false;
         }
         return true;
@@ -361,11 +371,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
                 $returnstr .= " (<a href=\"$loginurl\">" . get_string('login') . '</a>)';
             }
             return html_writer::div(
-                    html_writer::span(
-                            $returnstr,
-                            'login'
-                    ),
-                    $usermenuclasses
+                html_writer::span(
+                    $returnstr,
+                    'login'
+                ),
+                $usermenuclasses
             );
 
         }
@@ -378,11 +388,11 @@ class core_renderer extends \theme_boost\output\core_renderer {
             }
 
             return html_writer::div(
-                    html_writer::span(
-                            $returnstr,
-                            'login'
-                    ),
-                    $usermenuclasses
+                html_writer::span(
+                    $returnstr,
+                    'login'
+                ),
+                $usermenuclasses
             );
         }
 
@@ -396,21 +406,21 @@ class core_renderer extends \theme_boost\output\core_renderer {
         // Other user.
         if (!empty($opts->metadata['asotheruser'])) {
             $avatarcontents .= html_writer::span(
-                    $opts->metadata['realuseravatar'],
-                    'avatar realuser'
+                $opts->metadata['realuseravatar'],
+                'avatar realuser'
             );
             $usertextcontents = $opts->metadata['realuserfullname'];
             $usertextcontents .= html_writer::tag(
-                    'span',
-                    get_string(
-                            'loggedinas',
-                            'moodle',
-                            html_writer::span(
-                                    $opts->metadata['userfullname'],
-                                    'value'
-                            )
-                    ),
-                    array('class' => 'meta viewingas')
+                'span',
+                get_string(
+                    'loggedinas',
+                    'moodle',
+                    html_writer::span(
+                        $opts->metadata['userfullname'],
+                        'value'
+                    )
+                ),
+                array('class' => 'meta viewingas')
             );
         }
 
@@ -418,16 +428,16 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (!empty($opts->metadata['asotherrole'])) {
             $role = core_text::strtolower(preg_replace('#[ ]+#', '-', trim($opts->metadata['rolename'])));
             $usertextcontents .= html_writer::span(
-                    $opts->metadata['rolename'],
-                    'meta role role-' . $role
+                $opts->metadata['rolename'],
+                'meta role role-' . $role
             );
         }
 
         // User login failures.
         if (!empty($opts->metadata['userloginfail'])) {
             $usertextcontents .= html_writer::span(
-                    $opts->metadata['userloginfail'],
-                    'meta loginfailures'
+                $opts->metadata['userloginfail'],
+                'meta loginfailures'
             );
         }
 
@@ -435,15 +445,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (!empty($opts->metadata['asmnetuser'])) {
             $mnet = strtolower(preg_replace('#[ ]+#', '-', trim($opts->metadata['mnetidprovidername'])));
             $usertextcontents .= html_writer::span(
-                    $opts->metadata['mnetidprovidername'],
-                    'meta mnet mnet-' . $mnet
+                $opts->metadata['mnetidprovidername'],
+                'meta mnet mnet-' . $mnet
             );
         }
         // SAVOIR-ENSAM: Modificiations : switch avatar and login name.
         $returnstr .= html_writer::span(
-                html_writer::span($avatarcontents, $avatarclasses) .
-                html_writer::span($usertextcontents, 'usertext mr-1'),
-                'userbutton'
+            html_writer::span($avatarcontents, $avatarclasses) .
+            html_writer::span($usertextcontents, 'usertext mr-1'),
+            'userbutton'
         );
         // END SAVOIR-ENSAM.
 
@@ -453,7 +463,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
         $am = new action_menu();
         $am->set_menu_trigger(
-                $returnstr
+            $returnstr
         );
         $am->set_action_label(get_string('usermenu'));
         $am->set_alignment(action_menu::TR, action_menu::BR);
@@ -461,8 +471,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
         // SAVOIR-ENSAM: Modificiations : filter out unwanted menu for student
         // Filter out the dashboard menu.
-        $FILTER_FOR_ALL_USERS = ['mymoodle,admin', 'messages,message'];
-        $this->filter_action_menu($opts->navitems, $FILTER_FOR_ALL_USERS);
+        $filtersforallusers = ['mymoodle,admin', 'messages,message'];
+        $this->filter_action_menu($opts->navitems, $filtersforallusers);
         if (!has_role_from_name($USER->id, 'teacher') && !has_role_from_name($USER->id, 'editingteacher')) {
             $this->filter_action_menu($opts->navitems, ['grades,grades']);
         }
@@ -489,17 +499,17 @@ class core_renderer extends \theme_boost\output\core_renderer {
                             $pix = new pix_icon($value->pix, '', null, array('class' => 'iconsmall'));
                         } else if (isset($value->imgsrc) && !empty($value->imgsrc)) {
                             $value->title = html_writer::img(
-                                            $value->imgsrc,
-                                            $value->title,
-                                            array('class' => 'iconsmall')
-                                    ) . $value->title;
+                                    $value->imgsrc,
+                                    $value->title,
+                                    array('class' => 'iconsmall')
+                                ) . $value->title;
                         }
 
                         $al = new action_menu_link_secondary(
-                                $value->url,
-                                $pix,
-                                $value->title,
-                                array('class' => 'icon')
+                            $value->url,
+                            $pix,
+                            $value->title,
+                            array('class' => 'icon')
                         );
                         if (!empty($value->titleidentifier)) {
                             $al->attributes['data-title'] = $value->titleidentifier;
@@ -518,8 +528,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
         }
 
         return html_writer::div(
-                $this->render($am),
-                $usermenuclasses
+            $this->render($am),
+            $usermenuclasses
         );
     }
 
@@ -542,13 +552,13 @@ class core_renderer extends \theme_boost\output\core_renderer {
      *
      * @param string $regionname The name of the custom region to add.
      * @return string HTML for the block region.
+     * @throws coding_exception
      */
     public function custom_block_region($regionname) {
         if ($this->page->theme->get_block_render_method() === 'blocks') {
-            global $PAGE;
-            if ($PAGE->pagelayout == 'mydashboard') {
+            if ($this->page->pagelayout == 'mydashboard') {
                 return $this->blocks($regionname,
-                        array('d-flex', 'flex-wrap', 'justify-content-between')); // Wrap and flex the blocks
+                    array('d-flex', 'flex-wrap', 'justify-content-between')); // Wrap and flex the blocks.
             } else {
                 return $this->blocks($regionname);
             }
@@ -565,7 +575,6 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * @return string the HTML to be output.
      */
     public function blocks_for_region($region) {
-        global $PAGE;
         $blockcontents = $this->page->blocks->get_content_for_region($region, $this);
         $blocks = $this->page->blocks->get_blocks_for_region($region);
         $lastblock = null;
@@ -579,8 +588,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
         foreach ($blockcontents as $index => $bc) {
             if ($bc instanceof block_contents) {
                 $blockclass = '';
-
-                if ($PAGE->pagelayout == 'mydashboard') {
+                if ($this->page->pagelayout == 'mydashboard') {
                     $blockclass = 'db-singleblock';
                     $currentblocktype = $bc->attributes['data-block'];
                     if ($currentblocktype == "calendar_month" || $currentblocktype == "calendar_upcoming") {
@@ -611,7 +619,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      */
     public function block(block_contents $bc, $region, $additionalclasses = '') {
         $bc = clone($bc); // Avoid messing up the object passed in.
-        $bc->attributes['class'] .= ' '. $additionalclasses;
+        $bc->attributes['class'] .= ' ' . $additionalclasses;
         return parent::block($bc, $region);
     }
 
@@ -625,8 +633,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
         if (!isloggedin() || isguestuser()) {
             $items = $navbar->get_items();
             foreach ($items as $i) {
-                if ($i->type == \navbar::NODETYPE_LEAF && $i->key == 'courses') {
-                    $i->action = new moodle_url($CFG->wwwroot.'/theme/savoir/pages/opencatalog.php');
+                if ($i->type == navbar::NODETYPE_LEAF && $i->key == 'courses') {
+                    $i->action = new moodle_url($CFG->wwwroot . '/theme/savoir/pages/opencatalog.php');
                 }
             }
         }

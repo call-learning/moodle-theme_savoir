@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/lib.php');
 
-// see https://docs.moodle.org/dev/Creating_a_theme_based_on_boost
+// See https://docs.moodle.org/dev/Creating_a_theme_based_on_boost.
 $THEME->name = 'savoir';
 $THEME->sheets = [];
 $THEME->editor_sheets = [];
@@ -45,7 +45,7 @@ $THEME->scss = function($theme) {
 $THEME->csspostprocess = 'theme_savoir_process_css'; // Make sure we replace logo/frontpage image URL we have
 // changed them in the settings.
 
-$THEME->prescsscallback = 'theme_savoir_get_pre_scss'; // Color scheme
+$THEME->prescsscallback = 'theme_savoir_get_pre_scss'; // Color scheme.
 
 $THEME->layouts = [
     // Most backwards compatible layout without the blocks - this is the layout used by default.
@@ -157,7 +157,7 @@ $THEME->layouts = [
         'defaultregion' => 'side-pre'
     ),
     // The page layout to display an image, title description
-    // taken from the pagetype (i.e. theme-savoir-page-opencatalog-description or <pagetype>-description)
+    // taken from the pagetype (i.e. theme-savoir-page-opencatalog-description or <pagetype>-description).
     'pagewithdescription' => array(
         'file' => 'columns2.php',
         'regions' => array('side-pre'),

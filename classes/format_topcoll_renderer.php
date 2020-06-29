@@ -23,13 +23,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use theme_savoir\format_renderer_trait;
+
 defined('MOODLE_INTERNAL') || die;
 
 if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
     include_once($CFG->dirroot . "/course/format/topcoll/renderer.php");
 
     class theme_savoir_format_topcoll_renderer extends format_topcoll_renderer {
-        use \theme_savoir\format_renderer_trait;
+        use format_renderer_trait;
 
         /**
          * Output the html for a multiple section page and make sure we output the section 0
@@ -68,9 +70,9 @@ if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
             // General section if non-empty.
             $thissection = $sections[0];
             unset($sections[0]);
-            // SAVOIR: Always display Section 0
+            // SAVOIR: Always display Section 0.
             echo $this->get_section_0_content($thissection);
-            // END SAVOIR
+            // END SAVOIR.
             $shownonetoggle = false;
             $coursenumsections = $this->courseformat->get_last_section_number();
             if ($coursenumsections > 0) {
@@ -108,9 +110,9 @@ if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
                     while ($loopsection <= $coursenumsections) {
                         $nextweekdate = $weekdate - ($weekofseconds);
                         if ((($thissection->uservisible ||
-                                                ($thissection->visible && !$thissection->available &&
-                                                        !empty($thissection->availableinfo))) &&
-                                        ($nextweekdate <= $timenow)) == true) {
+                                    ($thissection->visible && !$thissection->available &&
+                                        !empty($thissection->availableinfo))) &&
+                                ($nextweekdate <= $timenow)) == true) {
                             $numsections++; // Section not shown so do not count in columns calculation.
                         }
                         $weekdate = $nextweekdate;
@@ -177,18 +179,18 @@ if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
                       but there is some available info text which explains the reason & should display. */
                     if (($this->tcsettings['layoutstructure'] != 3) || ($this->userisediting)) {
                         $showsection = $thissection->uservisible ||
-                                ($thissection->visible && !$thissection->available && !empty($thissection->availableinfo));
+                            ($thissection->visible && !$thissection->available && !empty($thissection->availableinfo));
                     } else {
                         $showsection = ($thissection->uservisible ||
-                                        ($thissection->visible && !$thissection->available &&
-                                                !empty($thissection->availableinfo))) &&
-                                ($nextweekdate <= $timenow);
+                                ($thissection->visible && !$thissection->available &&
+                                    !empty($thissection->availableinfo))) &&
+                            ($nextweekdate <= $timenow);
                     }
                     if (($currentsectionfirst == true) && ($showsection == true)) {
                         // Show the section if we were meant to and it is the current section:....
                         $showsection = ($course->marker == $section);
                     } else if (($this->tcsettings['layoutstructure'] == 4) &&
-                            ($course->marker == $section) && (!$this->userisediting)) {
+                        ($course->marker == $section) && (!$this->userisediting)) {
                         $showsection = false; // Do not reshow current section.
                     }
                     if (!$showsection) {
@@ -296,7 +298,8 @@ if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
                         echo $this->section_footer();
                     }
 
-                    // Only check for breaking up the structure with rows if more than one column and when we output all of the sections.
+                    // Only check for breaking up the structure with rows if more than one column
+                    // and when we output all of the sections.
                     if ($canbreak === true) {
                         // Only break in non-mobile themes or using a responsive theme.
                         if ((!$this->formatresponsive) || ($this->mobiletheme === false)) {
@@ -309,7 +312,7 @@ if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
                                 }
 
                                 if (($breaking == true) && ($shownsectioncount >= $breakpoint) &&
-                                        ($columncount < $this->tcsettings['layoutcolumns'])) {
+                                    ($columncount < $this->tcsettings['layoutcolumns'])) {
                                     echo $this->end_section_list();
                                     echo $this->start_toggle_section_list();
                                     $columncount++;
@@ -319,7 +322,8 @@ if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
                             } else {  // Horizontal mode.
                                 if (($breaking == false) && ($showsection == true)) {
                                     $breaking = true;
-                                    // The lowest value here for layoutcolumns is 2 and the maximum for shownsectioncount is 2, so :).
+                                    // The lowest value here for layoutcolumns is 2
+                                    // and the maximum for shownsectioncount is 2, so...
                                     $breakpoint = $this->tcsettings['layoutcolumns'];
                                 }
 
@@ -364,14 +368,14 @@ if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
             // Now initialise the JavaScript.
             $toggles = $this->togglelib->get_toggles();
             $this->page->requires->js_init_call('M.format_topcoll.init', array(
-                    $course->id,
-                    $toggles,
-                    $coursenumsections,
-                    $this->defaulttogglepersistence,
-                    $this->defaultuserpreference,
-                    ((!$this->userisediting) && ($this->tcsettings['onesection'] == 2)),
-                    $shownonetoggle,
-                    $this->userisediting));
+                $course->id,
+                $toggles,
+                $coursenumsections,
+                $this->defaulttogglepersistence,
+                $this->defaultuserpreference,
+                ((!$this->userisediting) && ($this->tcsettings['onesection'] == 2)),
+                $shownonetoggle,
+                $this->userisediting));
             // Make sure the database has the correct state of the toggles if changed by the code.
             // This ensures that a no-change page reload is correct.
             set_user_preference('topcoll_toggle_' . $course->id, $toggles);

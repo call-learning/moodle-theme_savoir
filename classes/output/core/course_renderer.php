@@ -29,6 +29,8 @@ require_once($CFG->dirroot . "/course/renderer.php");
 
 use context_system;
 use core_course_category;
+use core_course_list_element;
+use core_course_renderer;
 use course_in_list;
 use coursecat;
 use coursecat_helper;
@@ -40,13 +42,13 @@ use stdClass;
 use theme_savoir\utils;
 
 /**
- *Course renderer with specifics for front page and editing mode
+ * Course renderer with specifics for front page and editing mode
  *
  * @package theme_savoir
  * @copyright 2013 Sam Hemelryk
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_renderer extends \core_course_renderer {
+class course_renderer extends core_course_renderer {
     /**
      * Returns HTML to display course content (summary, course contacts and optionally category name)
      * SAVOIR: Added a button in the box to view the course and list registered users by roles
@@ -55,6 +57,8 @@ class course_renderer extends \core_course_renderer {
      * @param coursecat_helper $chelper various display options
      * @param stdClass|course_in_list $course
      * @return string
+     * @throws \coding_exception
+     * @throws \moodle_exception
      */
     protected function coursecat_coursebox_content(coursecat_helper $chelper, $course) {
         global $CFG;
@@ -62,7 +66,7 @@ class course_renderer extends \core_course_renderer {
             return '';
         }
         if ($course instanceof stdClass) {
-            $course = new \core_course_list_element($course);
+            $course = new core_course_list_element($course);
         }
         $content = '';
 
@@ -70,8 +74,8 @@ class course_renderer extends \core_course_renderer {
         if ($course->has_summary()) {
             $content .= html_writer::start_tag('div', array('class' => 'summary syllabus-content'));
             $content .= $chelper->get_course_formatted_summary($course,
-                    array('overflowdiv' => true, 'noclean' => true, 'para' => false));
-            $content .= \html_writer::end_tag('div'); // Class .summary .
+                array('overflowdiv' => true, 'noclean' => true, 'para' => false));
+            $content .= html_writer::end_tag('div'); // Class .summary .
         }
 
         // Display course overview files.
@@ -79,19 +83,19 @@ class course_renderer extends \core_course_renderer {
         foreach ($course->get_course_overviewfiles() as $file) {
             $isimage = $file->is_valid_image();
             $url = file_encode_url("$CFG->wwwroot/pluginfile.php",
-                    '/' . $file->get_contextid() . '/' . $file->get_component() . '/' .
-                    $file->get_filearea() . $file->get_filepath() . $file->get_filename(), !$isimage);
+                '/' . $file->get_contextid() . '/' . $file->get_component() . '/' .
+                $file->get_filearea() . $file->get_filepath() . $file->get_filename(), !$isimage);
             if ($isimage) {
                 $contentimages .= html_writer::tag('div',
-                        html_writer::empty_tag('img', array('src' => $url)),
-                        array('class' => 'courseimage'));
+                    html_writer::empty_tag('img', array('src' => $url)),
+                    array('class' => 'courseimage'));
             } else {
                 $image = $this->output->pix_icon(file_file_icon($file, 24), $file->get_filename(), 'moodle');
                 $filename = html_writer::tag('span', $image, array('class' => 'fp-icon')) .
-                        html_writer::tag('span', $file->get_filename(), array('class' => 'fp-filename'));
+                    html_writer::tag('span', $file->get_filename(), array('class' => 'fp-filename'));
                 $contentfiles .= html_writer::tag('span',
-                        html_writer::link($url, $filename),
-                        array('class' => 'coursefile fp-filename-icon'));
+                    html_writer::link($url, $filename),
+                    array('class' => 'coursefile fp-filename-icon'));
             }
         }
         $content .= $contentimages . $contentfiles;
@@ -109,17 +113,17 @@ class course_renderer extends \core_course_renderer {
             if ($cat = coursecat::get($course->category, IGNORE_MISSING)) {
                 $content .= html_writer::start_tag('div', array('class' => 'coursecat'));
                 $content .= get_string('category') . ': ' .
-                        html_writer::link(new moodle_url($CFG->wwwroot.'/course/index.php', array('categoryid' => $cat->id)),
-                                $cat->get_formatted_name(), array('class' => $cat->visible ? '' : 'dimmed'));
-                $content .= html_writer::end_tag('div'); // .coursecat.
+                    html_writer::link(new moodle_url($CFG->wwwroot . '/course/index.php', array('categoryid' => $cat->id)),
+                        $cat->get_formatted_name(), array('class' => $cat->visible ? '' : 'dimmed'));
+                $content .= html_writer::end_tag('div');
             }
         }
         // Display view course Button.
-        $content .= \html_writer::link(new moodle_url($CFG->wwwroot.'/course/view.php', array('id' => $course->id)),
-                get_string('viewcourse', 'theme_savoir'),
-                array(
-                        'class' => 'btn btn-primary viewcourse',
-                ));
+        $content .= html_writer::link(new moodle_url($CFG->wwwroot . '/course/view.php', array('id' => $course->id)),
+            get_string('viewcourse', 'theme_savoir'),
+            array(
+                'class' => 'btn btn-primary viewcourse',
+            ));
         return $content;
     }
 
@@ -129,22 +133,23 @@ class course_renderer extends \core_course_renderer {
      * Invoked from /course/index.php
      *
      * @param int|stdClass|coursecat $category
+     * @return string
      */
     public function course_category($category) {
         global $CFG;
-        require_once($CFG->libdir. '/coursecatlib.php');
+        require_once($CFG->libdir . '/coursecatlib.php');
         $coursecat = coursecat::get(is_object($category) ? $category->id : $category);
         $site = get_site();
         $output = '';
 
-        // Add course search form. (SAVOIR)
+        // Add course search form. (SAVOIR).
         $output .= $this->course_search_form();
-        // END SAVOIR
+        // END SAVOIR.
 
         if (can_edit_in_category($coursecat->id)) {
             // Add 'Manage' button if user has permissions to edit this category.
-            $managebutton = $this->single_button(new moodle_url($CFG->wwwroot.'/course/management.php',
-                    array('categoryid' => $coursecat->id)), get_string('managecourses'), 'get');
+            $managebutton = $this->single_button(new moodle_url($CFG->wwwroot . '/course/management.php',
+                array('categoryid' => $coursecat->id)), get_string('managecourses'), 'get');
             $this->page->set_button($managebutton);
         }
         if (!$coursecat->id) {
@@ -160,37 +165,37 @@ class course_renderer extends \core_course_renderer {
         } else {
             $title = $site->shortname;
             if (core_course_category::count_all() > 1) {
-                $title .= ": ". $coursecat->get_formatted_name();
+                $title .= ": " . $coursecat->get_formatted_name();
             }
             $this->page->set_title($title);
 
-            // Print the category selector
+            // Print the category selector.
             if (core_course_category::count_all() > 1) {
                 $output .= html_writer::start_tag('div', array('class' => 'categorypicker'));
-                $select = new single_select(new moodle_url($CFG->wwwroot.'/course/index.php'), 'categoryid',
-                        coursecat::make_categories_list(), $coursecat->id, null, 'switchcategory');
-                $select->set_label(get_string('categories').':');
+                $select = new single_select(new moodle_url($CFG->wwwroot . '/course/index.php'), 'categoryid',
+                    coursecat::make_categories_list(), $coursecat->id, null, 'switchcategory');
+                $select->set_label(get_string('categories') . ':');
                 $output .= $this->render($select);
-                $output .= html_writer::end_tag('div'); // .categorypicker
+                $output .= html_writer::end_tag('div');
             }
         }
 
-        // Print current category description
+        // Print current category description.
         $chelper = new coursecat_helper();
         if ($description = $chelper->get_category_formatted_description($coursecat)) {
             $output .= $this->box($description, array('class' => 'generalbox info'));
         }
 
-        // Prepare parameters for courses and categories lists in the tree
+        // Prepare parameters for courses and categories lists in the tree.
         $chelper->set_show_courses(self::COURSECAT_SHOW_COURSES_AUTO)
-                ->set_attributes(array('class' => 'category-browse category-browse-'.$coursecat->id));
+            ->set_attributes(array('class' => 'category-browse category-browse-' . $coursecat->id));
 
         $coursedisplayoptions = array();
         $catdisplayoptions = array();
         $browse = optional_param('browse', null, PARAM_ALPHA);
         $perpage = optional_param('perpage', $CFG->coursesperpage, PARAM_INT);
         $page = optional_param('page', 0, PARAM_INT);
-        $baseurl = new moodle_url($CFG->wwwroot.'/course/index.php');
+        $baseurl = new moodle_url($CFG->wwwroot . '/course/index.php');
         if ($coursecat->id) {
             $baseurl->param('categoryid', $coursecat->id);
         }
@@ -212,7 +217,7 @@ class course_renderer extends \core_course_renderer {
             $coursedisplayoptions['viewmoreurl'] = new moodle_url($baseurl, array('browse' => 'courses'));
             $coursedisplayoptions['viewmoretext'] = new lang_string('viewallcourses');
         } else {
-            // we have a category that has both subcategories and courses, display pagination separately
+            // We have a category that has both subcategories and courses, display pagination separately.
             $coursedisplayoptions['viewmoreurl'] = new moodle_url($baseurl, array('browse' => 'courses', 'page' => 1));
             $catdisplayoptions['viewmoreurl'] = new moodle_url($baseurl, array('browse' => 'categories', 'page' => 1));
         }
@@ -221,15 +226,17 @@ class course_renderer extends \core_course_renderer {
         // Display course category tree.
         $output .= $this->coursecat_tree($chelper, $coursecat);
 
-        // Add action buttons
+        // Add action buttons.
         $output .= $this->container_start('buttons');
         $context = get_category_or_system_context($coursecat->id);
         if (has_capability('moodle/course:create', $context)) {
             // Print link to create a new course, for the 1st available category.
             if ($coursecat->id) {
-                $url = new moodle_url($CFG->wwwroot.'/course/edit.php', array('category' => $coursecat->id, 'returnto' => 'category'));
+                $url = new moodle_url($CFG->wwwroot . '/course/edit.php',
+                    array('category' => $coursecat->id, 'returnto' => 'category'));
             } else {
-                $url = new moodle_url($CFG->wwwroot.'/course/edit.php', array('category' => $CFG->defaultrequestcategory, 'returnto' => 'topcat'));
+                $url = new moodle_url($CFG->wwwroot . '/course/edit.php',
+                    array('category' => $CFG->defaultrequestcategory, 'returnto' => 'topcat'));
             }
             $output .= $this->single_button($url, get_string('addnewcourse'), 'get');
         }

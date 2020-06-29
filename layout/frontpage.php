@@ -27,12 +27,12 @@ defined('MOODLE_INTERNAL') || die();
 $bodyattributes = $OUTPUT->body_attributes([]);
 
 $templatecontext = [
-        'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
-        'output' => $OUTPUT,
-        'bodyattributes' => $bodyattributes
+    'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
+    'output' => $OUTPUT,
+    'bodyattributes' => $bodyattributes
 ];
 echo $OUTPUT->render_from_template('theme_savoir/frontpage', $templatecontext);
 
-// Bit of a hack here: we prevent the index page from displaying anything else than we decided to in the template
+// Bit of a hack here: we prevent the index page from displaying anything else than we decided to in the template.
 $CFG->frontpage = '';
 $CFG->frontpageloggedin = '';
