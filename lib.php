@@ -27,9 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Global CSS Processor
  *
- * @param string $css
  * @param theme_config $theme
  * @return string
+ * @throws dml_exception
  */
 function theme_savoir_get_main_scss_content(theme_config $theme) {
     global $CFG;
@@ -80,14 +80,14 @@ function theme_savoir_process_site_branding() {
 function theme_savoir_process_css($css, theme_config $theme) {
     global $OUTPUT;
 
-    // Get URL for the coverimage front page
+    // Get URL for the coverimage front page.
     $coverimagfpeurl = $theme->setting_file_url('coverimagefp', 'coverimagefp');
     if (!$coverimagfpeurl) {
         $coverimagefpurl = $OUTPUT->image_url('coverimagefp', 'theme');
     }
 
     $replacementimages = array(
-            'coverimagefp' => "background-image: url($coverimagefpurl);",
+        'coverimagefp' => "background-image: url($coverimagefpurl);",
     );
     foreach ($replacementimages as $type => $csscode) {
         $anchor = "/**setting:$type**/";
@@ -104,13 +104,11 @@ function theme_savoir_process_css($css, theme_config $theme) {
  * @return array
  */
 function theme_savoir_get_pre_scss($theme) {
-    global $CFG;
-
     $scss = '';
     $configurable = [
         // Config key => [variableName, ...].
-            'primarycolor' => ['primary'],
-            'secondarycolor' => ['secondary'],
+        'primarycolor' => ['primary'],
+        'secondarycolor' => ['secondary'],
     ];
 
     // Prepend variables first.
@@ -141,10 +139,10 @@ function theme_savoir_get_pre_scss($theme) {
  */
 function theme_savoir_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array()) {
 
-    // Check if the files to serve are in the usual setting file area
+    // Check if the files to serve are in the usual setting file area.
     $themesettingsfilearea = [
-            'coverimagefp',
-            'favicon'
+        'coverimagefp',
+        'favicon'
     ];
 
     if ($context->contextlevel == CONTEXT_SYSTEM && in_array($filearea, $themesettingsfilearea)) {
@@ -163,61 +161,59 @@ function theme_savoir_pluginfile($course, $cm, $context, $filearea, $args, $forc
 function theme_savoir_standard_footer_html() {
     $additionallinks = ['legal'];
     $output = '';
-
-    foreach ($additionallinks as $adlink) {
-        // TODO add static page or use existing pages.
-        /*        $url = new moodle_url('/local/staticpage/view.php?page=' . $adlink);
-                $output .= html_writer::div(html_writer::link($url, get_string($adlink, 'theme_savoir')), 'theme_savoir');
-        */
-    }
     return $output;
 }
 
-/**
+/*
  * Navigation
  */
 
 require_once($CFG->libdir . '/navigationlib.php');
 
+/**
+ * Class savoir_flat_navigation
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class savoir_flat_navigation extends flat_navigation {
     /**
      * Build the list of navigation nodes based on the current navigation and settings trees.
-     *
+     * @throws coding_exception
      */
     public function initialise() {
-        global $USER, $PAGE, $CFG;
-        $NEW_MENU_ITEMS = [
-                'myhome ' => [
-                        'url' => '/my',
-                        'label' => get_string('dashboardtitle', 'theme_savoir'),
-                        'key' => 'myhome',
-                        'icon' => array('name' => 'i/home', 'component' => 'moodle'),
-                        'beforekey' => ''
-                ],
-                'mycourses' => [
-                        'url' => '/theme/savoir/pages/mycourses.php',
-                        'label' => get_string('mycourses'),
-                        'key' => 'mycourses',
-                        'icon' => array('name' => 'i/course', 'component' => 'moodle'),
-                        'beforekey' => ''
-                ],
-                'catalog' => [
-                        'url' => '/course/index.php',
-                        'label' => get_string('catalog', 'theme_savoir'),
-                        'key' => 'catalog',
-                        'icon' => array('name' => 'i/catalog', 'component' => 'theme_savoir'),
-                        'beforekey' => '',
-                ]
-        ];
+        global $USER, $CFG;
+        $newmenuitems = array(
+            'myhome ' => [
+                'url' => '/my',
+                'label' => get_string('dashboardtitle', 'theme_savoir'),
+                'key' => 'myhome',
+                'icon' => array('name' => 'i/home', 'component' => 'moodle'),
+                'beforekey' => ''
+            ],
+            'mycourses' => [
+                'url' => '/theme/savoir/pages/mycourses.php',
+                'label' => get_string('mycourses'),
+                'key' => 'mycourses',
+                'icon' => array('name' => 'i/course', 'component' => 'moodle'),
+                'beforekey' => ''
+            ],
+            'catalog' => [
+                'url' => '/course/index.php',
+                'label' => get_string('catalog', 'theme_savoir'),
+                'key' => 'catalog',
+                'icon' => array('name' => 'i/catalog', 'component' => 'theme_savoir'),
+                'beforekey' => '',
+            ]
+        );
         $isstudent = has_role_from_name($USER->id, 'student');
         $isteacher = has_role_from_name($USER->id, 'teacher')
-                || has_role_from_name($USER->id, 'editingteacher')
-                || has_role_from_name($USER->id, 'coursecreator');
+            || has_role_from_name($USER->id, 'editingteacher')
+            || has_role_from_name($USER->id, 'coursecreator');
         $isstaff = has_role_from_name($USER->id, 'manager');
         $this->page->navigation->initialise();
         parent::initialise();
         if (is_siteadmin() || $isteacher || $isstaff) {
-            if ($isteacher && ! is_siteadmin()) {
+            if ($isteacher && !is_siteadmin()) {
                 $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
                 $this->remove('myhome', navigation_node::NODETYPE_BRANCH);
                 $this->remove('home', navigation_node::TYPE_SETTING);
@@ -227,36 +223,37 @@ class savoir_flat_navigation extends flat_navigation {
                     }
                 }
             } else {
-                // Put the menu at the end
+                // Put the menu at the end.
                 $coursemenu = $this->find('mycourses', navigation_node::NODETYPE_LEAF);
-                $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
-		if ($coursemenu != false){
-                	$coursemenu->add_class('my_course_menu_item_nav'); // TODO : it does not seem to have an effect
-	                $this->add($coursemenu);
-		}
-                $this->add_help_node($isstudent, $isteacher, $isstaff);
-                $coursenodes = array();
-                foreach ($this->getIterator() as $node) {
-                    if ($node->type == navigation_node::TYPE_COURSE) {
-                        $coursenodes[] = $this->find($node->key, navigation_node::TYPE_COURSE);
-                        $this->remove($node->key, navigation_node::TYPE_COURSE);
+                if ($coursemenu) {
+                    $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
+                    $coursemenu->add_class('my_course_menu_item_nav'); // TODO : it does not seem to have an effect.
+                    $this->add_help_node($isstudent, $isteacher, $isstaff);
+                    $this->add($coursemenu);
+                    $coursenodes = array();
+                    foreach ($this->getIterator() as $node) {
+                        if ($node->type == navigation_node::TYPE_COURSE) {
+                            $coursenodes[] = $this->find($node->key, navigation_node::TYPE_COURSE);
+                            $this->remove($node->key, navigation_node::TYPE_COURSE);
+                        }
+                    }
+                    foreach ($coursenodes as $cn) {
+                        $this->add($cn);
                     }
                 }
-                foreach ($coursenodes as $cn) {
-                    $this->add($cn);
-                }
-                return; // Nothing more for admins
+
+                return; // Nothing more for admins.
             }
 
         }
         $allnodes = [];
-        // We try to add this at the top of the list (for students it will always be at the top)
+        // We try to add this at the top of the list (for students it will always be at the top).
         foreach ($this->getIterator() as $node) {
             $allnodes[] = $this->find($node->key, $node->type);
             $this->remove($node->key, $node->type);
         }
 
-        foreach ($NEW_MENU_ITEMS as $nl) {
+        foreach ($newmenuitems as $nl) {
             $this->add_node_from_definition($nl, $nl['beforekey']);
         }
 
@@ -270,17 +267,25 @@ class savoir_flat_navigation extends flat_navigation {
         $this->add_other_nodes($isstudent, $isteacher, $isstaff);
     }
 
+    /**
+     * Add node from definition
+     *
+     * @param array $nodedefinition
+     * @param string $beforekey
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
     protected function add_node_from_definition($nodedefinition, $beforekey = null) {
         $navlink = navigation_node::create(
-                $nodedefinition['label'],
-                new moodle_url($nodedefinition['url']),
-                navigation_node::TYPE_CUSTOM,
-                null,
-                $nodedefinition['key'],
-                new pix_icon(
-                        $nodedefinition['icon']['name'],
-                        '',
-                        $nodedefinition['icon']['component']));
+            $nodedefinition['label'],
+            new moodle_url($nodedefinition['url']),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            $nodedefinition['key'],
+            new pix_icon(
+                $nodedefinition['icon']['name'],
+                '',
+                $nodedefinition['icon']['component']));
         $flat = new flat_navigation_node($navlink, 0);
         if ($beforekey) {
             $this->add($flat, $beforekey);
@@ -289,6 +294,16 @@ class savoir_flat_navigation extends flat_navigation {
         }
     }
 
+    /**
+     * Add help node in menu
+     *
+     * @param bool $istudent
+     * @param bool $isteacher
+     * @param bool $isstaff
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     protected function add_help_node($istudent = true, $isteacher = true, $isstaff = true) {
         global $CFG;
         $studentcourseid = get_config('theme_savoir', 'studenthelpcourse');
@@ -302,54 +317,63 @@ class savoir_flat_navigation extends flat_navigation {
         user's roles */
 
         $navlink = navigation_node::create(
-                get_string('guide', 'theme_savoir'),
-                null,
-                navigation_node::TYPE_CUSTOM,
-                null,
-                'helpmenu',
-                new pix_icon(
-                        'e/help',
-                        '',
-                        'moodle'));
+            get_string('guide', 'theme_savoir'),
+            null,
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'helpmenu',
+            new pix_icon(
+                'e/help',
+                '',
+                'moodle'));
         $flat = new flat_navigation_node($navlink, 0);
         $this->add($flat);
 
         $navlink = navigation_node::create(
-                get_string('studentguide', 'theme_savoir'),
-                $studentguideurl,
-                navigation_node::TYPE_CUSTOM,
-                null,
-                'studentguide',
-                new pix_icon(
-                        'i/user',
-                        '',
-                        'moodle'));
+            get_string('studentguide', 'theme_savoir'),
+            $studentguideurl,
+            navigation_node::TYPE_CUSTOM,
+            null,
+            'studentguide',
+            new pix_icon(
+                'i/user',
+                '',
+                'moodle'));
         $flat = new flat_navigation_node($navlink, 1);
         $this->add($flat);
 
         if ($isteacher || $isstaff) {
             $navlink = navigation_node::create(
-                    get_string('staffguide', 'theme_savoir'),
-                    $staffguideurl,
-                    navigation_node::TYPE_CUSTOM,
-                    null,
-                    'staffguide',
-                    new pix_icon(
-                            'i/users',
-                            '',
-                            'moodle'));
+                get_string('staffguide', 'theme_savoir'),
+                $staffguideurl,
+                navigation_node::TYPE_CUSTOM,
+                null,
+                'staffguide',
+                new pix_icon(
+                    'i/users',
+                    '',
+                    'moodle'));
             $flat = new flat_navigation_node($navlink, 1);
             $this->add($flat);
         }
     }
 
+    /**
+     * Add all other nodes
+     *
+     * @param bool $istudent
+     * @param bool $isteacher
+     * @param bool $isstaff
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
     protected function add_other_nodes($istudent = true, $isteacher = true, $isstaff = true) {
         global $PAGE;
         // Add-a-block in editing mode.
         if (isset($this->page->theme->addblockposition) &&
-                $this->page->theme->addblockposition == BLOCK_ADDBLOCK_POSITION_FLATNAV &&
-                $PAGE->user_is_editing() && $PAGE->user_can_edit_blocks() &&
-                ($addable = $PAGE->blocks->get_addable_blocks())) {
+            $this->page->theme->addblockposition == BLOCK_ADDBLOCK_POSITION_FLATNAV &&
+            $PAGE->user_is_editing() && $PAGE->user_can_edit_blocks() &&
+            ($addable = $PAGE->blocks->get_addable_blocks())) {
             $url = new moodle_url($PAGE->url, ['bui_addblock' => '', 'sesskey' => sesskey()]);
             $addablock = navigation_node::create(get_string('addblock'), $url);
             $flat = new flat_navigation_node($addablock, 0);
@@ -366,6 +390,17 @@ class savoir_flat_navigation extends flat_navigation {
         }
     }
 
+    /**
+     * Add a node
+     *
+     * @param moodle_url $url
+     * @param string $label
+     * @param string  $key
+     * @param string $iconname
+     * @param string $iconcomponent
+     * @param int $indent
+     * @throws coding_exception
+     */
     protected function add_node($url, $label, $key, $iconname, $iconcomponent = 'moodle', $indent = 0) {
 
         $navlink = navigation_node::create($label, $url);
@@ -373,13 +408,20 @@ class savoir_flat_navigation extends flat_navigation {
         $flat->set_showdivider(true);
         $flat->key = $key;
         $flat->icon = new pix_icon(
-                $iconname,
-                '',
-                empty($iconcomponent) ? 'moodle' : $iconcomponent);
+            $iconname,
+            '',
+            empty($iconcomponent) ? 'moodle' : $iconcomponent);
         $this->add($flat);
     }
 }
 
+/**
+ * Check if user has a role from its name
+ * @param int $userid
+ * @param string $rolestring
+ * @return bool
+ * @throws dml_exception
+ */
 function has_role_from_name($userid, $rolestring) {
     global $DB;
     $role = $DB->get_record('role', array('shortname' => $rolestring));
@@ -392,7 +434,7 @@ function has_role_from_name($userid, $rolestring) {
  * Note: we need to pass the $output as a variable as the global $OUTPUT is not set correctly
  * (see https://moodle.org/mod/forum/discuss.php?d=336651)
  *
- * @param $output
+ * @param core_renderer $output
  * @return array
  * @throws coding_exception
  */
@@ -416,14 +458,14 @@ function get_context_two_columns_layout($output) {
     $hasblocks = strpos($blockshtml, 'data-block=') !== false;
     $regionmainsettingsmenu = $output->region_main_settings_menu();
     $templatecontext = [
-            'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
-            'output' => $output,
-            'sidepreblocks' => $blockshtml,
-            'hasblocks' => $hasblocks,
-            'bodyattributes' => $bodyattributes,
-            'navdraweropen' => $navdraweropen,
-            'regionmainsettingsmenu' => $regionmainsettingsmenu,
-            'hasregionmainsettingsmenu' => !empty($regionmainsettingsmenu)
+        'sitename' => format_string($SITE->shortname, true, ['context' => context_course::instance(SITEID), "escape" => false]),
+        'output' => $output,
+        'sidepreblocks' => $blockshtml,
+        'hasblocks' => $hasblocks,
+        'bodyattributes' => $bodyattributes,
+        'navdraweropen' => $navdraweropen,
+        'regionmainsettingsmenu' => $regionmainsettingsmenu,
+        'hasregionmainsettingsmenu' => !empty($regionmainsettingsmenu)
     ];
 
     $flatnav = new savoir_flat_navigation($PAGE);
@@ -435,11 +477,12 @@ function get_context_two_columns_layout($output) {
 
 /**
  * Get additional icon mapping for font-awesome and this theme.
+ * @return string[]
  */
 function theme_savoir_get_fontawesome_icon_map() {
     return [
-            'theme_savoir:i/minus' => 'fa-minus',
-            'theme_savoir:t/expanded' => 'fa-chevron-down',
-            'theme_savoir:t/collapsed' => 'fa-chevron-right',
+        'theme_savoir:i/minus' => 'fa-minus',
+        'theme_savoir:t/expanded' => 'fa-chevron-down',
+        'theme_savoir:t/collapsed' => 'fa-chevron-right',
     ];
 }

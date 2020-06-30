@@ -24,13 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2018112111; // This is the version number to increment when changes needing an update are made.
-$plugin->requires  = 2018051706; // Moodle 3.5.
-$plugin->release   = '1.0.0';
-$plugin->maturity  = MATURITY_STABLE;
+$plugin->version = 2020031001; // This is the version number to increment when changes needing an update are made.
+$plugin->requires = 2019111801; // Moodle 3.8.
+$plugin->release = '1.0.0';
+$plugin->maturity = MATURITY_STABLE;
 $plugin->component = 'theme_savoir';
 $plugin->dependencies = [
-    'theme_boost' => '2018051400',
+    'theme_boost' => ANY_VERSION,
     'block_savoir_mycourses' => '2018051706',
-    'format_topcoll' => '2018052302'
+    'format_topcoll' => ANY_VERSION
 ];

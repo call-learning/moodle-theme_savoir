@@ -13,11 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot.'/theme/savoir/locallib.php');
-
 /**
  * Theme upgrade
  *
@@ -26,9 +21,19 @@ require_once($CFG->dirroot.'/theme/savoir/locallib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/theme/savoir/locallib.php');
+
+/**
+ * Theme upgrade
+ *
+ * @param string $oldversion
+ * @return bool
+ * @throws downgrade_exception
+ * @throws upgrade_exception
+ */
 function xmldb_theme_savoir_upgrade($oldversion) {
-    global $DB;
-    $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
     if ($oldversion < 2018051401) {
         setup_theme();

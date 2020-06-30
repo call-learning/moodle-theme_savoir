@@ -23,14 +23,14 @@
     {{^ output.should_display_sandwitch_menu }}
         <div class="d-inline-block mr-3 pl-1 pr-1 mr-0 logo">
             <div class="d-flex">
-                    <a href="{{{ config.wwwroot }}}" class="navbar-brand has-logo m-auto">
-                        <div class="mx-auto d-none d-sm-block">
-                            <img src="{{output.get_logo_url}}" alt="{{sitename}}">
-                        </div>
-                        <div class="mx-auto d-sm-none">
-                            <img src="{{output.get_compact_logo_url}}" alt="{{sitename}}">
-                        </div>
-                    </a>
+                <a href="{{{ config.wwwroot }}}" class="navbar-brand has-logo m-auto">
+                    <div class="mx-auto d-none d-sm-block">
+                        <img src="{{output.get_logo_url}}" alt="{{sitename}}">
+                    </div>
+                    <div class="mx-auto d-sm-none">
+                        <img src="{{output.get_compact_logo_url}}" alt="{{sitename}}">
+                    </div>
+                </a>
             </div>
         </div>
     {{/ output.should_display_sandwitch_menu }}

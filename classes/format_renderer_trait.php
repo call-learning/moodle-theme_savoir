@@ -27,16 +27,24 @@ namespace theme_savoir;
 use context_course;
 use html_writer;
 use moodle_url;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die;
 
 trait format_renderer_trait {
+    /**
+     * Get section 0 content (syllabus)
+     *
+     * @param object $section
+     * @return mixed
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     */
     public function get_section_0_content($section) {
-        global $CFG;
-        $tcontext = new \stdClass();
+        $tcontext = new stdClass();
         $course = $section->modinfo->get_course();
         $tcontext->courseid = $course->id;
-        $tcontext->syllabustitle = get_string('coursesyllabustitle','theme_savoir');
+        $tcontext->syllabustitle = get_string('coursesyllabustitle', 'theme_savoir');
         if ($section->summary || $section->name) {
             $tcontext->content = parent::format_summary_text($section);
             $tcontext->content = $this->section_header($section, $course, false, 0);
@@ -55,13 +63,13 @@ trait format_renderer_trait {
             }
 
             $liattributes = array(
-                    'id' => 'section-' . $section->section,
-                    'class' => 'section main clearfix',
-                    'role' => 'region',
-                    'aria-label' => $tcontext->syllabustitle
+                'id' => 'section-' . $section->section,
+                'class' => 'section main clearfix',
+                'role' => 'region',
+                'aria-label' => $tcontext->syllabustitle
             );
 
-            $tcontext->content =  html_writer::start_tag('li', $liattributes);
+            $tcontext->content = html_writer::start_tag('li', $liattributes);
 
             if ($isuserediting) {
                 $leftcontent = $this->section_left_content($section, $course, false);
@@ -71,16 +79,15 @@ trait format_renderer_trait {
             }
             $tcontext->content .= html_writer::start_tag('div', array('class' => 'content'));
 
-
             $tcontext->content .= $this->section_availability($section);
             $tcontext->content .= html_writer::start_tag('div', array('class' => 'summary'));
             $tcontext->content .= $summary;
 
             if ($isuserediting && has_capability('moodle/course:update', $context)) {
-                $url = new moodle_url($CFG->wwwroot.'/course/edit.php?', array('id' => $course->id));
+                $url = new moodle_url($CFG->wwwroot . '/course/edit.php?', array('id' => $course->id));
                 $tcontext->content .= html_writer::link($url,
-                        $this->output->pix_icon('t/edit', get_string('edit')),
-                        array('title' => get_string('editsection', 'moodle'))
+                    $this->output->pix_icon('t/edit', get_string('edit')),
+                    array('title' => get_string('editsection', 'moodle'))
                 );
             }
             $tcontext->content .= html_writer::end_tag('div');
@@ -90,7 +97,7 @@ trait format_renderer_trait {
         $tcontext->content .= $this->section_footer();
         $tcontext->expanded = true;
         $tcontext->csclosedstatus = "";
-        $tcontext->coursesyllabusprefname =  'coursesSyllabusStatus';
+        $tcontext->coursesyllabusprefname = 'coursesSyllabusStatus';
 
         if (isloggedin() && !isguestuser()) {
             user_preference_allow_ajax_update($tcontext->coursesyllabusprefname, PARAM_RAW);
@@ -101,8 +108,8 @@ trait format_renderer_trait {
 
             }
         } else {
-            // Don't store anything on user prefs
-            $tcontext->coursesyllabusprefname =  '';
+            // Don't store anything on user prefs.
+            $tcontext->coursesyllabusprefname = '';
         }
         return $this->render_from_template('theme_savoir/course_syllabus', $tcontext);
     }

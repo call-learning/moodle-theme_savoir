@@ -28,23 +28,35 @@ defined('MOODLE_INTERNAL') || die();
 
 use html_writer;
 use moodle_url;
+use theme_savoir\freecourse\course_in_list_extended;
 
 /**
  * Event observer for Theme Savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class utils {
-    public static function get_course_contact_list($course_in_list, $displaybyrole = true, $ishtml = true) {
+    /**
+     * Get course contact list (teachers)
+     *
+     * @param course_in_list_extended $coursesinlist
+     * @param bool $displaybyrole
+     * @param bool $ishtml
+     * @return string
+     * @throws \moodle_exception
+     */
+    public static function get_course_contact_list($coursesinlist, $displaybyrole = true, $ishtml = true) {
         global $CFG;
         $content = '';
-        $contacts = $course_in_list->get_course_contacts();
+        $contacts = $coursesinlist->get_course_contacts();
         $contactbyroles = array_reduce($contacts,
-                function($c, $i) {
-                    if (empty($c[$i['rolename']])) {
-                        $c[$i['rolename']] = [];
-                    }
-                    $c[$i['rolename']][] = $i;
-                    return $c;
-                }, array());
+            function($c, $i) {
+                if (empty($c[$i['rolename']])) {
+                    $c[$i['rolename']] = [];
+                }
+                $c[$i['rolename']][] = $i;
+                return $c;
+            }, array());
 
         foreach ($contactbyroles as $rolename => $contactlist) {
             $names = [];
@@ -52,9 +64,9 @@ class utils {
                 $currentnameprint = $coursecontact['username'];
                 if ($ishtml) {
                     $names[] =
-                            html_writer::link(new moodle_url($CFG->wwwroot . '/user/view.php',
-                                    array('id' => $coursecontact['user']->id, 'course' => SITEID)),
-                                    $currentnameprint);
+                        html_writer::link(new moodle_url($CFG->wwwroot . '/user/view.php',
+                            array('id' => $coursecontact['user']->id, 'course' => SITEID)),
+                            $currentnameprint);
                 } else {
                     $names[] = $currentnameprint;
                 }
@@ -66,9 +78,9 @@ class utils {
                 $roleprint = $rolename . ': ' . implode(', ', $names);
                 if ($ishtml) {
                     $content .= html_writer::tag(
-                            'span',
-                            $roleprint,
-                            array('class' => 'teachers-list'));
+                        'span',
+                        $roleprint,
+                        array('class' => 'teachers-list'));
                 } else {
                     $content .= $roleprint;
                 }
@@ -83,6 +95,9 @@ class utils {
         return $content;
     }
 
+    /**
+     * Syllabus template as HTML
+     */
     const  SYLLABUS_TEMPLATE = '<h4>Présentation</h4><p>(équipe pédagogique et cadrage horaire)<br></p>
         <h4>Objectifs de formation visés</h4><p><br></p>
         <h4>Prérequis</h4><p><br></p>
@@ -92,6 +107,12 @@ class utils {
         <h4>Méthodes d’enseignement et moyens pédagogiques</h4><p><br></p>
         <h4>Modalités d’évaluation</h4><p><br></p>';
 
+    /**
+     * Set the syllabus in the given course
+     *
+     * @param object $course
+     * @throws \dml_exception
+     */
     public static function set_course_syllabus($course) {
         global $DB;
         if (strpos($course->summary, '<h4>Présentation</h4>') === false) {

@@ -57,7 +57,6 @@ $string['fpmessage_desc'] = 'Front Page alert message';
 $string['fpmessageenabled'] = 'Enable / Disable the front page message';
 $string['fpmessageenabled_desc'] = 'Enable / Disable the front page message';
 
-
 /* Block positionning */
 $string['region-side-pre'] = "Side Pre";
 $string['region-main'] = "Main";
@@ -65,15 +64,13 @@ $string['region-main'] = "Main";
 /* Copyright footer */
 $string['sitecopyrightmessage'] = 'Savoir (ENSAM)';
 
-
 /* Category page */
 $string['viewcourse'] = 'View Course';
 
-
-// Front page
-$string['front_page_section_title']  = 'Welcome to our site / Bienvenue !';
-$string['front_page_section_content']  = 'Welcome to Arts et Métiers 2018-2019 Learning Management Platform';
-$string['front_page_freecourses']= 'View free courses';
+/* Front page */
+$string['front_page_section_title'] = 'Welcome to our site / Bienvenue !';
+$string['front_page_section_content'] = 'Welcome to Arts et Métiers 2018-2019 Learning Management Platform';
+$string['front_page_freecourses'] = 'View free courses';
 
 /* Legal */
 $string['legal'] = 'Legal';

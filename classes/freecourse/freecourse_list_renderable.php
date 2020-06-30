@@ -25,10 +25,11 @@
 namespace theme_savoir\freecourse;
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot.'/lib/coursecatlib.php');
 
+use core_course_category;
 use renderable;
 use renderer_base;
+use stdClass;
 use templatable;
 
 /**
@@ -50,26 +51,26 @@ class freecourse_list_renderable implements renderable, templatable {
      * Export this data so it can be used as the context for a mustache template.
      * This will export list of course sorted by category
      *
-     * @param \renderer_base $output
+     * @param renderer_base $output
      * @return stdClass
      */
     public function export_for_template(renderer_base $output) {
-        global $DB,$CFG;
+        global $DB;
 
-        $selfenrolmentcourseid = $DB->get_fieldset_select('enrol','courseid',"enrol = 'guest' AND status=0");
-        $context = new \stdClass();
-        $context->coursesbycategory = []; // List of categories with associated courses
+        $selfenrolmentcourseid = $DB->get_fieldset_select('enrol', 'courseid', "enrol = 'guest' AND status=0");
+        $context = new stdClass();
+        $context->coursesbycategory = []; // List of categories with associated courses.
 
         foreach ($selfenrolmentcourseid as $cid) {
-           $record = get_course($cid);
-           $course = new course_in_list_extended($record);
-            if ($course->is_uservisible()) {
+            $record = get_course($cid);
+            $course = new course_in_list_extended($record);
+            if ($course->can_access()) {
                 // Fetch only visible courses that have enrolment as guest.
-                $categoryvisible = true; // Check that we can view the category of this course too
+                $categoryvisible = true; // Check that we can view the category of this course too.
                 if (!array_key_exists($course->category, $context->coursesbycategory)) {
-                    // Create category object if it exists
-                    $category = \coursecat::get($course->category);
-                    $categoryinlist = new \stdClass();
+                    // Create category object if it exists.
+                    $category = core_course_category::get($course->category);
+                    $categoryinlist = new stdClass();
                     $categoryinlist->name = $category->name;
                     $categoryinlist->courses = [];
 
@@ -79,18 +80,18 @@ class freecourse_list_renderable implements renderable, templatable {
                     }
                 }
 
-                    if ($categoryvisible) {
-                        $context->coursesbycategory[$course->category]->courses[] = $course;
-                    }
+                if ($categoryvisible) {
+                    $context->coursesbycategory[$course->category]->courses[] = $course;
+                }
             }
         }
         $context->coursesbycategory = array_values($context->coursesbycategory); // If we don't do that, Mustache
         // interpret this value as a non iterable
-        // Then we sort it by alphabetical order
+        // Then we sort it by alphabetical order.
 
-         usort($context->coursesbycategory, function($a, $b) {
-            return  strcmp($a->name , $b->name);
-         });
+        usort($context->coursesbycategory, function($a, $b) {
+            return strcmp($a->name, $b->name);
+        });
         return $context;
     }
 }

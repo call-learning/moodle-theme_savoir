@@ -65,9 +65,9 @@ $string['region-main'] = "Main";
 $string['sitecopyrightmessage'] = 'SAS Savoir';
 
 /* Front page */
-$string['front_page_section_title']  = 'Welcome to our site / Bienvenue !';
-$string['front_page_section_content']  = 'Bienvenue sur la plateforme pédagogique d\'Arts et Métiers 2018-2019';
-$string['front_page_freecourses']= 'Accès aux cours en libre service';
+$string['front_page_section_title'] = 'Welcome to our site / Bienvenue !';
+$string['front_page_section_content'] = 'Bienvenue sur la plateforme pédagogique d\'Arts et Métiers 2018-2019';
+$string['front_page_freecourses'] = 'Accès aux cours en libre service';
 /* Legal */
 $string['legal'] = 'Mention légales';
 

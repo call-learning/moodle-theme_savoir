@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 user_preference_allow_ajax_update('drawer-open-nav', PARAM_ALPHA);
-require_once(dirname(__DIR__).'/lib.php');
-$templatecontext =  get_context_two_columns_layout($OUTPUT);
+require_once(dirname(__DIR__) . '/lib.php');
+$templatecontext = get_context_two_columns_layout($OUTPUT);
 
 echo $OUTPUT->render_from_template('theme_savoir/columns2', $templatecontext);
 

@@ -13,12 +13,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * Settings
+ *
+ * @package   theme_savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 defined('MOODLE_INTERNAL') || die;// Main settings.
 
 $name = 'theme_savoir/branding_title';
 $heading = new lang_string('brading_title', 'theme_savoir');
-$description = new lang_string('brading_title_desc', 'theme_savoir');;
+$description = new lang_string('brading_title_desc', 'theme_savoir');
 $setting = new admin_setting_heading($name, $heading, $description);
 $settings->add($setting);
 
@@ -56,8 +63,8 @@ $settings->add($setting);
 
 global $DB;
 $sql = "SELECT c.id, "
-        . $DB->sql_concat("c.fullname", "':'", "c.id")
-        . " as name FROM {course} c WHERE c.idnumber LIKE '%GUIDE_%'";
+    . $DB->sql_concat("c.fullname", "':'", "c.id")
+    . " as name FROM {course} c WHERE c.idnumber LIKE '%GUIDE_%'";
 $helpcoursechoices = $DB->get_records_sql_menu($sql);
 if ($helpcoursechoices) {
     $name = 'theme_savoir/studenthelpcourse';
@@ -73,7 +80,7 @@ if ($helpcoursechoices) {
     $settings->add($setting);
 
 }
-require_once($CFG->dirroot.'/theme/savoir/locallib.php');
+require_once($CFG->dirroot . '/theme/savoir/locallib.php');
 $options = get_course_menu_toolbaritems();
 
 $name = 'theme_savoir/coursemenuhandytoolbar';
@@ -82,14 +89,12 @@ $description = get_string('coursemenuhandytoolbar_desc', 'theme_savoir');
 $setting = new admin_setting_configmultiselect($name, $title, $description, [], $options);
 $settings->add($setting);
 
-
-// Frontpage message (alert)
+// Frontpage message (alert).
 $name = 'theme_savoir/fpmessage';
 $title = new lang_string('fpmessage', 'theme_savoir');
 $description = new lang_string('fpmessage_desc', 'theme_savoir');
 $setting = new admin_setting_confightmleditor($name, $title, $description, '');
 $settings->add($setting);
-
 
 $name = 'theme_savoir/fpmessageenabled';
 $title = new lang_string('fpmessageenabled', 'theme_savoir');

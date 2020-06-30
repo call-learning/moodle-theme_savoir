@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * Event observers for Theme Savoir
  *
@@ -22,27 +21,35 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\event\course_created;
+use core\event\user_loggedin;
 use theme_savoir\utils;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * Event observer for Theme Savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class theme_savoir_observer {
 
     /**
      * Make sure that when user logs in the nav bar is open
      *
-     * @param \core\event\user_loggedin $event
+     * @param user_loggedin $event
      * @throws moodle_exception
      */
-    public static function user_loggedin(\core\event\user_loggedin $event) {
-        global $CFG, $SESSION;
+    public static function user_loggedin(user_loggedin $event) {
         set_user_preference('drawer-open-nav', 'true');
     }
 
-    public static function course_set_syllabus(\core\event\course_created $event) {
+    /**
+     * Add syllabus when creating a new course
+     * @param course_created $event
+     * @throws dml_exception
+     */
+    public static function course_set_syllabus(course_created $event) {
         global $DB;
         $courseid = $event->objectid;
         $courserecord = $DB->get_record('course', array('id' => $courseid));

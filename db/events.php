@@ -21,15 +21,15 @@
  * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
 $observers = [
-        [
-                'eventname' => '\core\event\user_loggedin',
-                'callback' => 'theme_savoir_observer::user_loggedin',
-        ],
-        [
-                'eventname' => '\core\event\course_created',
-                'callback' => 'theme_savoir_observer::course_set_syllabus',
-        ],
-
+    [
+        'eventname' => '\core\event\user_loggedin',
+        'callback' => 'theme_savoir_observer::user_loggedin',
+    ],
+    [
+        'eventname' => '\core\event\course_created',
+        'callback' => 'theme_savoir_observer::course_set_syllabus',
+    ],
 ];

@@ -13,6 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * Setup routine for dashboard (CLI)
+ *
+ * @package   theme_savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * CLI script allowing to run internal/ setup functions multiple times
@@ -22,8 +29,8 @@ define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/clilib.php');
-include_once(__DIR__ . '/../lib.php');
-include_once(__DIR__ . '/../locallib.php');
+require_once(__DIR__ . '/../lib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 $usage = "Run dashboard setup script
 
@@ -34,15 +41,15 @@ Usage:
 Options:
     -h --help                   Print this help.
     --type=userrole             Name of the user role that will be used to setup the dashboard
-    --dry-run=<1|0>        If false/0, change dashboard setups for given users, if not just list actions to be done 
+    --dry-run=<1|0>        If false/0, change dashboard setups for given users, if not just list actions to be done
 ";
 
 list($options, $unrecognised) = cli_get_params([
-        'help' => false,
-        'type' => 'student',
-        'dry-run' => true,
+    'help' => false,
+    'type' => 'student',
+    'dry-run' => true,
 ], [
-        'h' => 'help'
+    'h' => 'help'
 ]);
 
 if ($unrecognised) {
@@ -57,32 +64,32 @@ if ($options['help']) {
 
 $rs = $DB->get_recordset('user', array('confirmed' => 1, 'deleted' => '0'));
 $defaultblockinstances = [
-        [
-                'blockname' => 'calendar_month',
-                'defaultregion' => 'content',
-                'defaultweight' => -1
-        ],
-        [
-                'blockname' => 'calendar_upcoming',
-                'defaultregion' => 'content',
-                'defaultweight' => -2
-        ],
-        [
+    [
+        'blockname' => 'calendar_month',
+        'defaultregion' => 'content',
+        'defaultweight' => -1
+    ],
+    [
+        'blockname' => 'calendar_upcoming',
+        'defaultregion' => 'content',
+        'defaultweight' => -2
+    ],
+    [
+        'blockname' => 'savoir_mycourses',
+        'defaultregion' => 'content',
+        'defaultweight' => 0
+    ],
+];
+switch ($options['type']) {
+    case 'teacher':
+        $defaultblockinstances = [
+            [
                 'blockname' => 'savoir_mycourses',
                 'defaultregion' => 'content',
                 'defaultweight' => 0
-        ],
-    ];
-switch($options['type']) {
-    case 'teacher':
-    $defaultblockinstances = [
-            [
-                    'blockname' => 'savoir_mycourses',
-                    'defaultregion' => 'content',
-                    'defaultweight' => 0
             ],
         ];
-    break;
+        break;
 }
 if ($options['dry-run']) {
     cli_writeln('Dry run option on : use --dry-run=false to really modify the dashboards');

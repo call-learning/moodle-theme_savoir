@@ -1,12 +1,22 @@
-# Installation
+Theme Savoir
+==
 
-## Vérifier les plugins dépendants
+[![Build Status](https://travis-ci.org/call-learning/moodle-theme_savoir.svg?branch=master)](https://travis-ci.org/call-learning/moodle-theme_savoir)
+
+
+Installation
+===
+
+Vérifier les plugins dépendants
+===
 
 - TopColl (course format: https://github.com/gjb2048/moodle-format_topcoll)
 pour la version 3.5 (version 2018052303)
 - Block block_savoir_mycourses (https://gitlab.com/Lmedavid/m_savoir_mycourses_block): nouveau bloc pour lister les cours. Est utilisé dans ce thème.
 
-## Changer les menus
+Changer les menus
+===
+
 Où ? Réglages du thème: Administration du site / Présentation / Thèmes / Réglages thème
 
 Aller dans Administration du site / Présentation / Thèmes / Réglages thème (admin/settings.php?section=themesettings)
@@ -16,7 +26,8 @@ et changer Éléments du menu personnalisé (custommenuitems) en:
     Lise.ensam.eu|http://Lise.ensam.eu/|Lise
     ICIFTech.ensam.eu|http://ICIFTech.ensam.eu/|ICIF Tech
 
-# Changer la page de garde
+Changer la page de garde
+===
 
 Où ? Page de garde, mode édition.
 
@@ -25,7 +36,9 @@ et changer la description du cours en "Bienvenu sur la plateforme...."
  - Ajouter un label avec l'adresse de support
  - Ne pas trop rajouter d'information car la page doit rester quasiment vide
 
-# Changer son tableau de bord par défaut
+Changer son tableau de bord par défaut
+===
+
 Où ? Script CLI.
 
 Cela permet d'avoir son tableau de bord étudiant en place:
@@ -58,7 +71,8 @@ Même chose pour les enseignants:
      
           php cli/dashboardsetup.php --dry-run=0 --type=teacher  
   
-# Rendre visible certains menu dans le menu de navigation de gauche
+Rendre visible certains menu dans le menu de navigation de gauche
+===
 
 Par design nous n'avons gardé que les menus principaux et utiles pour chaque utilisateur.
 Néanmoins il semble que certains menus soit nécessaire maintenant à cause d'une utilisation de fonctionalités
@@ -74,7 +88,8 @@ $CFG->theme_savoir_menu_keep = ['badgesview','participants','grades'];
 
 
 
-# Changer les identifiants (idnumber) des cours "Guides"
+Changer les identifiants (idnumber) des cours "Guides"
+===
 
 Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
 
@@ -84,7 +99,8 @@ leur Course ID commence par "GUIDE_"
 - Pour le guide étudiant (cours 70) GUIDE_ETUDIANT
 - Pour le guide étudiant (cours 74) GUIDE_ENSEIGNANT
 
-# Enlever la messagerie
+Enlever la messagerie
+===
 
 Où?  Administration du Site / Fonction Avancées
 
@@ -92,7 +108,8 @@ Pour cacher l'icône de message, il vaut mieux aller dans "Fonction Avancées" (
 et décocher "Activer la messagerie"
 
  
-# Sortir des menus du cours
+Sortir des menus du cours
+===
 
 Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
 
@@ -101,14 +118,19 @@ Pour cela aller dans les paramètres du thème et sélectionner le menu à "sort
 Ce menu sera représenté sous forme de bouton en haut de la page d'édition d'un cours.
  
 
-# Changer les couleurs de bases
+Autre modifications possibles
+==
+
+Changer les couleurs de bases
+===
 
 Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
 
 Dans le thème il est possible de choisir une couleur de base (primary/le violet ENSAM) et secondary (orange).
 Il suffit juste de sélectionner la couleur voulue ou de la taper dans le champ texte.
 
-# Changer le favicon et logo
+Changer le favicon et logo
+===
 
 Logo: Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
 Favicon: Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
@@ -116,8 +138,8 @@ Favicon: Où ? Paramètres du thème: Administration du site / Présentation / T
 Dans le thème il est possible de choisir une couleur de base (primary/le violet ENSAM) et secondary (orange).
 Il suffit juste de sélectionner la couleur voulue ou de la taper dans le champ texte.
 
-
-# Afficher un message d'alerte sur la page de garde
+Afficher un message d'alerte sur la page de garde
+===
 
 Où ? Paramètres du thème: Administration du site / Présentation / Thèmes / Savoir Moodle Theme
 
@@ -125,21 +147,28 @@ Pour afficher un message d'alerte affiché sur la page de garde, il faut remplir
 message et ensuite cocher Montre/Cache le message sur la page de garde.
 Le message apparaîtra sur la page de garde, en haut de la page.
 
-# Le catalogue de cours
+Catalogue et syllabus
+==
+
+Le catalogue de cours
+===
 
 Le catalogue de cours récupère les informations sur la description du cours. Il faut donc
 remplir le détail du cours avec les informations voulues. Le niveau de titre moyen (h4) est
 stylé pour s'afficher en violet (couleur primaire du site). Le reste du style reste identique
 à ce qui est entré dans l'éditeur html du détail de cours.
 
-# Résumé de cours
+Résumé de cours
+===
+
 Le résumé de cours est tiré en premier de la description du cours. Si celle-ci est vide, on récupère l'information
 de la section 0. Lors du développement nous avons dû faire face à une incohérence de l'entrée des données, parfois les
 données de résumé sont dans la section 0, parfois dans la description de cours, parfois ni dans l'une ni dans l'autre.
  
 A terme il faudra **uniformiser cela en entrant la description/résumé de cours dans la partie description de cours et non dans la section 0.**
 
-# Catalogue de cours "libres"
+Catalogue de cours "libres"
+===
 
 Les cours en libre service/entrée sont selectionnés à partir des plugins d'inscription affectés au cours.
 Il faut que l'accès anonyme (guest) soit ajoutés à la liste des accès possibles au cours.
@@ -148,7 +177,8 @@ Les cours sont classé par catégorie (leur catégorie immédiatement parente), 
 par ordre alphabétique. On peut rendre visible/invisible une catégorie pour que les cours ne s'affichent
 pas.
 
-# Optionnel : Ajouter un syllabus vide
+Optionnel : Ajouter un syllabus vide
+===
 
 Attention il vaut mieux prendre une sauvegarde de la table mdl_course avant, afin
 de retrouver les syllabus de cours d'avant.
@@ -157,7 +187,8 @@ Lancez la commande suivante pour ajouter un syllabus vide à tous les cours.
     php cli/setups.php --name=setup_syllabus
     
 
-# Notes de développpement
+Notes de développpement
+==
 
 TODO:
 
@@ -165,8 +196,6 @@ TODO:
 - Gérer le logo en couleur dans la page de login
 - Menu fixe
 - Bloc spécifique enseignant
-- (x) Ajouter la gestion du message d'alerte sur la page de garde
-- (x) Ajouter un paramètre pour changer le favicon du thème
 
 
 

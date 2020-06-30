@@ -13,6 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * Setup routine (CLI)
+ *
+ * @package   theme_savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * CLI script allowing to run internal/ setup functions multiple times
@@ -22,7 +29,7 @@ define('CLI_SCRIPT', true);
 
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/clilib.php');
-include_once(__DIR__ . '/../locallib.php');
+require_once(__DIR__ . '/../locallib.php');
 
 $usage = "Run different setup script for testing purpose
 
@@ -36,10 +43,10 @@ Options:
 ";
 
 list($options, $unrecognised) = cli_get_params([
-        'help' => false,
-        'name' => null,
+    'help' => false,
+    'name' => null,
 ], [
-        'h' => 'help'
+    'h' => 'help'
 ]);
 
 if ($unrecognised) {
@@ -51,7 +58,7 @@ if ($options['help']) {
     cli_writeln($usage);
     exit(2);
 }
-$possiblefunctions = array('setup_theme', 'setup_mobile_css','setup_system_dashboard','setup_dashboard_blocks','setup_syllabus');
+$possiblefunctions = array('setup_theme', 'setup_mobile_css', 'setup_system_dashboard', 'setup_dashboard_blocks', 'setup_syllabus');
 
 if ($options['name'] === null) {
     $options['name'] = $possiblefunctions[0];

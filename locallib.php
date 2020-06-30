@@ -31,39 +31,47 @@ defined('MOODLE_INTERNAL') || die();
  */
 
 /**
+ * Class savoir_settings_navigation
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class savoir_settings_navigation  extends settings_navigation {
+    /**
+     * Intialise the navigation settings for Savoir
+     * @return bool|void
+     */
+    public function initialise() {
+        global $PAGE;
+        /* This is where it also gets very hackish because question_extend_settings_navigation function
+        does not take the $page but gets the global $PAGE */
+        $oldpage = $PAGE;
+        $PAGE = $this->page;
+        $this->load_course_settings();
+        $PAGE = $oldpage;
+    }
+}
+
+/**
  * This function is a bit of a hack, it gets all course setting values from a fake front page
  *
- * @param null $page
- * @param null $currentitem
+ * @param moodle_page $page
+ * @param navigation_node $currentitem
+ * @param string $currentpath
  * @return array
  * @throws coding_exception
  */
 function get_course_menu_toolbaritems($page = null, $currentitem = null, $currentpath = '') {
     global $CFG;
-    // Add default items which won't be in the list as we are basing our search on SITEID (see enrol_add_course_navigation)
+    // Add default items which won't be in the list as we are basing our search on SITEID (see enrol_add_course_navigation).
     $items = array('/courseadmin/users/review' => get_string('enrolledusers', 'enrol'),
-            '/courseadmin/users/manageinstances' => get_string('enrolmentinstances', 'enrol'),
-            '/courseadmin/users/override' => get_string('permissions', 'role'));
+        '/courseadmin/users/manageinstances' => get_string('enrolmentinstances', 'enrol'),
+        '/courseadmin/users/override' => get_string('permissions', 'role'));
     if (!$page && empty($CFG->upgraderunning)) {
         global $CFG;
         $page = new moodle_page();
         $page->set_context(context_course::instance(SITEID));
         $page->set_url($CFG->wwwroot . '/');
-        $pagenav = new class($page) extends settings_navigation {
-            public function __construct(&$page) {
-                parent::__construct($page);
-            }
-
-            public function initialise() {
-                global $PAGE;
-                /* This is where it also gets very hackish because question_extend_settings_navigation function
-                does not take the $page but gets the global $PAGE */
-                $oldpage = $PAGE;
-                $PAGE = $this->page;
-                $this->load_course_settings();
-                $PAGE = $oldpage;
-            }
-        };
+        $pagenav = new savoir_settings_navigation($page);
         $pagenav->initialise();
         $currentitem = $pagenav->find('courseadmin', navigation_node::TYPE_COURSE);
     }
@@ -78,7 +86,7 @@ function get_course_menu_toolbaritems($page = null, $currentitem = null, $curren
     return $items;
 }
 
-/**
+/*
  * ------------------------------------------------------------------------------------------------
  *              Setup
  * ------------------------------------------------------------------------------------------------
@@ -88,10 +96,12 @@ require_once($CFG->dirroot . '/my/lib.php');
 
 /**
  * Setup Main System Dashboard (student view)
- *
+ * @return bool
+ * @throws dml_exception
+ * @throws dml_transaction_exception
  */
 function setup_system_dashboard() {
-    global $DB, $CFG;
+    global $DB;
     // We want all or nothing here.
     $transaction = $DB->start_delegated_transaction();
     // Get the MY_PAGE_PRIVATE which is the dashboard (MY_PAGE_PUBLIC is the user profile page).
@@ -101,21 +111,21 @@ function setup_system_dashboard() {
     savoir_utils_delete_dashboard_blocks($syscontext, $sysdashpage);
 
     $defaultblockinstances = [
-            [
-                    'blockname' => 'calendar_month',
-                    'defaultregion' => 'content',
-                    'defaultweight' => -1
-            ],
-            [
-                    'blockname' => 'calendar_upcoming',
-                    'defaultregion' => 'content',
-                    'defaultweight' => -2
-            ],
-            [
-                    'blockname' => 'savoir_mycourses',
-                    'defaultregion' => 'content',
-                    'defaultweight' => 0
-            ],
+        [
+            'blockname' => 'calendar_month',
+            'defaultregion' => 'content',
+            'defaultweight' => -1
+        ],
+        [
+            'blockname' => 'calendar_upcoming',
+            'defaultregion' => 'content',
+            'defaultweight' => -2
+        ],
+        [
+            'blockname' => 'savoir_mycourses',
+            'defaultregion' => 'content',
+            'defaultweight' => 0
+        ],
     ];
     savoir_utils_add_blocks($syscontext, 'my-index', $sysdashpage->id, $defaultblockinstances);
     $transaction->allow_commit();
@@ -125,14 +135,14 @@ function setup_system_dashboard() {
 /**
  * Delete all blocks from this dashboard
  *
- * @param $context
- * @param $page
+ * @param context $context
+ * @param moodle_page $page
  * @throws dml_exception
  */
 function savoir_utils_delete_dashboard_blocks($context, $page) {
     global $DB;
     if ($blocks = $DB->get_records('block_instances', array('parentcontextid' => $context->id,
-            'pagetypepattern' => 'my-index'))) {
+        'pagetypepattern' => 'my-index'))) {
         foreach ($blocks as $block) {
             if (is_null($block->subpagepattern) || $block->subpagepattern == $page->id) {
                 blocks_delete_instance($block);
@@ -145,10 +155,10 @@ function savoir_utils_delete_dashboard_blocks($context, $page) {
 /**
  * Add a block to a page
  *
- * @param $context
- * @param $pagepattern
- * @param $subpagepattern
- * @param $newblocks
+ * @param context $context
+ * @param string $pagepattern
+ * @param int $subpageid
+ * @param array $newblocks
  * @throws dml_exception
  */
 function savoir_utils_add_blocks($context, $pagepattern, $subpageid, $newblocks) {
@@ -180,7 +190,7 @@ function savoir_utils_add_blocks($context, $pagepattern, $subpageid, $newblocks)
         // Ensure context is properly created.
         context_block::instance($biid, MUST_EXIST);
         // Then add the block position (we assume it does not already exists).
-        $blockpositions = new \stdClass();
+        $blockpositions = new stdClass();
         $blockpositions->subpage = $subpageid;
         $blockpositions->contextid = $context->id;
         $blockpositions->blockinstanceid = $biid;
@@ -198,12 +208,14 @@ function savoir_utils_add_blocks($context, $pagepattern, $subpageid, $newblocks)
  * Setup all Dashboard blocks for a given student
  * It deletes previous blocks instances so proceed with caution
  *
+ * @param int $userid
+ * @param array $defaultblockinstances
  * @return bool
  * @throws dml_exception
  * @throws dml_transaction_exception
  */
 function setup_dashboard_blocks($userid = null, $defaultblockinstances = null) {
-    global $DB, $CFG;
+    global $DB;
     // We want all or nothing here.
     $transaction = $DB->start_delegated_transaction();
 
@@ -216,9 +228,9 @@ function setup_dashboard_blocks($userid = null, $defaultblockinstances = null) {
     $usercontext = context_user::instance($userid);
     if (!$customiseduserdbpage) {
         // Then we must create this page
-        // Clone the basic system page record
+        // Clone the basic system page record.
         if (!$systempage = $DB->get_record('my_pages', array('userid' => null, 'private' => MY_PAGE_PRIVATE))) {
-            return false;  // error
+            return false;  // Error.
         }
 
         $customiseduserdbpage = clone($systempage);
@@ -230,21 +242,21 @@ function setup_dashboard_blocks($userid = null, $defaultblockinstances = null) {
     savoir_utils_delete_dashboard_blocks($usercontext, $customiseduserdbpage); // If it already exists.?
     if (!$defaultblockinstances) {
         $defaultblockinstances = [
-                [
-                        'blockname' => 'calendar_month',
-                        'defaultregion' => 'content',
-                        'defaultweight' => -1
-                ],
-                [
-                        'blockname' => 'calendar_upcoming',
-                        'defaultregion' => 'content',
-                        'defaultweight' => -2
-                ],
-                [
-                        'blockname' => 'savoir_mycourses',
-                        'defaultregion' => 'content',
-                        'defaultweight' => 0
-                ],
+            [
+                'blockname' => 'calendar_month',
+                'defaultregion' => 'content',
+                'defaultweight' => -1
+            ],
+            [
+                'blockname' => 'calendar_upcoming',
+                'defaultregion' => 'content',
+                'defaultweight' => -2
+            ],
+            [
+                'blockname' => 'savoir_mycourses',
+                'defaultregion' => 'content',
+                'defaultweight' => 0
+            ],
         ];
     }
     savoir_utils_add_blocks($usercontext, 'my-index', $customiseduserdbpage->id, $defaultblockinstances);
@@ -252,16 +264,33 @@ function setup_dashboard_blocks($userid = null, $defaultblockinstances = null) {
     return true;
 }
 
+/**
+ * Setup CSS for mobile (work in progress)
+ * @return bool
+ */
 function setup_mobile_css() {
     global $CFG;
-    // TODO setup the CSS for savoir
+    // TODO setup the CSS for savoir.
     set_config('mobilecssurl', $CFG->wwwroot . '/theme/savoir/mobile/savoirmobile.css');
+    return true;
 }
 
+/**
+ * Setup theme at install
+ *
+ * @return bool
+ */
 function setup_theme() {
     return setup_mobile_css();
 }
 
+/**
+ * Used from CLI script to add syllabus in the course
+ *
+ * @return bool
+ * @throws dml_exception
+ * @throws dml_transaction_exception
+ */
 function setup_syllabus() {
     global $DB;
 
@@ -269,7 +298,7 @@ function setup_syllabus() {
     $transaction = $DB->start_delegated_transaction();
     $courses = $DB->get_recordset_sql("SELECT id,summary FROM {course} WHERE format IN ('topics','topcoll')");
     foreach ($courses as $c) {
-        if ($c->id != SITEID) { // Skip Site frontpage
+        if ($c->id != SITEID) { // Skip Site frontpage.
             utils::set_course_syllabus($c);
         }
     }
