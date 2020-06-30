@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * Event observers for Theme Savoir
  *
@@ -30,6 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Event observer for Theme Savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class theme_savoir_observer {
 
@@ -43,6 +44,11 @@ class theme_savoir_observer {
         set_user_preference('drawer-open-nav', 'true');
     }
 
+    /**
+     * Add syllabus when creating a new course
+     * @param course_created $event
+     * @throws dml_exception
+     */
     public static function course_set_syllabus(course_created $event) {
         global $DB;
         $courseid = $event->objectid;

@@ -34,7 +34,7 @@ $PAGE->set_heading(get_string('mycourses'));
 
 echo $OUTPUT->header();
 
-$renderable = new \block_myoverview\output\main('courses');
+$renderable = new \block_savoir_mycourses\output\main('courses');
 $renderer = $PAGE->get_renderer('core');
 echo $renderer->render_from_template(
     'block_savoir_mycourses/timeline-view-courses', $renderable->export_for_template($renderer));

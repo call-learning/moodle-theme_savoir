@@ -34,6 +34,12 @@ use stdClass;
 use moodle_url;
 use theme_savoir\utils;
 
+/**
+ * Class course_in_list_extended
+ *
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class course_in_list_extended extends core_course_list_element {
 
     /** @var an url to the course image url or false - stores result of call to init_course_image_url() */
@@ -42,6 +48,9 @@ class course_in_list_extended extends core_course_list_element {
     /** @var extra classes for this course display - stores result of call to init_course_image_url() */
     protected $classes = "";
 
+    /**
+     * Image prefix for the course attached file
+     */
     const COURSE_IMAGE_FILE_NAME_PREFIX = 'course_image';
 
     /**
@@ -90,6 +99,11 @@ class course_in_list_extended extends core_course_list_element {
         ]);
     }
 
+    /**
+     * Get teacher's list
+     *
+     * @return string
+     */
     public function teachers_list() {
         return utils::get_course_contact_list($this, false, false);
     }

@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * TopColl Renderer override
- * Add the course syllabus/description at the top of the course
+ * TopColl Renderer override - Add the course syllabus/description at the top of the course
  *
  * @package   theme_savoir
  * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
@@ -30,6 +29,13 @@ defined('MOODLE_INTERNAL') || die;
 if (file_exists("$CFG->dirroot/course/format/topcoll/renderer.php")) {
     include_once($CFG->dirroot . "/course/format/topcoll/renderer.php");
 
+    /**
+     * Topic course format renderer override class
+     *
+     * @package   theme_savoir
+     * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+     * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+     */
     class theme_savoir_format_topcoll_renderer extends format_topcoll_renderer {
         use format_renderer_trait;
 

@@ -13,6 +13,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * Core renderer override
+ *
+ * @package   theme_savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace theme_savoir\output;
 
@@ -38,7 +45,17 @@ use context_course;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * Custom menu
+ *
+ * @package theme_savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class savoir_custom_menu extends custom_menu {
+    /**
+     * Root URL for ENSAM site
+     */
     const ENSAM_ROOT_URL = 'ensam.eu';
 
     /**
@@ -155,10 +172,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
-     * @param $currentnode
-     * @param $currentpath
-     * @param $itemstoextractfrommenu
-     * @param $extracteditems
+     * Extract items from course menu
+     *
+     * @param navigation_node $currentnode
+     * @param string $currentpath
+     * @param array $itemstoextractfrommenu
+     * @param array $extracteditems
      */
     protected function extract_toolbaritems($currentnode, $currentpath, $itemstoextractfrommenu, &$extracteditems) {
         if ($currentnode) {
@@ -172,6 +191,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * Are we on frontpage
+     *
      * @return bool
      */
     public function is_on_frontpage() {
@@ -179,6 +200,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * Are we on the dashboard
+     *
      * @return bool
      */
     public function is_on_dashboard() {
@@ -186,6 +209,8 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
 
     /**
+     * Are we on a page with description
+     *
      * @return bool
      */
     public function is_on_page_with_description() {
@@ -195,6 +220,15 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * Get Logo URL
      * If it has not been overriden by core_admin config, serve the logo in pix
+     */
+
+    /**
+     * Get Logo URL
+     * If it has not been overriden by core_admin config, serve the logo in pix
+     *
+     * @param null $maxwidth
+     * @param int $maxheight
+     * @return bool|false|moodle_url
      */
     public function get_logo_url($maxwidth = null, $maxheight = 200) {
         $logourl = parent::get_logo_url($maxwidth, $maxheight);
@@ -207,7 +241,9 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * Get the compact logo URL.
      *
-     * @return string
+     * @param int $maxwidth
+     * @param int $maxheight
+     * @return bool|false|moodle_url
      */
     public function get_compact_logo_url($maxwidth = 100, $maxheight = 100) {
         $compactlogourl = parent::get_compact_logo_url($maxwidth, $maxheight);
@@ -237,15 +273,23 @@ class core_renderer extends \theme_boost\output\core_renderer {
             $favicon)->out();
     }
 
+    /**
+     * Check if we should display navbar logo
+     *
+     * @return bool
+     */
     public function should_display_navbar_logo() {
         $logo = $this->get_compact_logo_url();
         return !empty($logo);
     }
 
-    /*
+    /**
      * Overriding the custom_menu function ensures the custom menu is
      * always shown, even if no menu items are configured in the global
      * theme settings page.
+     * @param string $custommenuitems
+     * @return bool|string
+     * @throws \moodle_exception
      */
     public function custom_menu($custommenuitems = '') {
         global $CFG;
@@ -259,10 +303,20 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return $this->render_custom_menu($custommenu);
     }
 
-    /*
+    /**
      * This renders the bootstrap top menu.
      *
      * This renderer is needed to enable the Bootstrap style navigation.
+     */
+
+    /**
+     * This renders the bootstrap top menu.
+     * This renderer is needed to enable the Bootstrap style navigation.
+     *
+     * @param custom_menu $menu
+     * @return bool|string
+     * @throws \moodle_exception
+     * @throws coding_exception
      */
     protected function render_custom_menu(custom_menu $menu) {
 
@@ -297,6 +351,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      * Check whether the current page is a signup page
      *
      * @return bool
+     * @throws coding_exception
      * @see is_login_page()
      */
     protected function is_signup_page() {
@@ -322,6 +377,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
         return $output;
     }
 
+    /**
+     * Should we display the sandwitch menu ?
+     *
+     * @return bool
+     * @throws coding_exception
+     */
     public function should_display_sandwitch_menu() {
         if ($this->page->pagelayout == 'frontpage' || !isloggedin() || isguestuser()) {
             return false;
@@ -331,6 +392,16 @@ class core_renderer extends \theme_boost\output\core_renderer {
 
     /**
      * Just override default behaviour when user not logged in, so we don't display "You are not logged in"
+     */
+
+    /**
+     * Render user menu
+     *
+     * @param object $user
+     * @param bool $withlinks
+     * @return string
+     * @throws \dml_exception
+     * @throws coding_exception
      */
     public function user_menu($user = null, $withlinks = null) {
         global $USER, $CFG;
@@ -533,6 +604,12 @@ class core_renderer extends \theme_boost\output\core_renderer {
         );
     }
 
+    /**
+     * Filter out non required items
+     *
+     * @param array $navigationlinks
+     * @param array $filternamesarray
+     */
     private function filter_action_menu(&$navigationlinks, $filternamesarray) {
         $navigationlinks = array_filter($navigationlinks, function($menu) use ($filternamesarray) {
             return !in_array($menu->titleidentifier, $filternamesarray);
@@ -573,6 +650,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      *
      * @param string $region the name of a region on this page.
      * @return string the HTML to be output.
+     * @throws coding_exception
      */
     public function blocks_for_region($region) {
         $blockcontents = $this->page->blocks->get_content_for_region($region, $this);
@@ -615,6 +693,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
      *
      * @param block_contents $bc HTML for the content
      * @param string $region the region the block is appearing in.
+     * @param string $additionalclasses additional classes
      * @return string the HTML to be output.
      */
     public function block(block_contents $bc, $region, $additionalclasses = '') {
@@ -626,6 +705,10 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * This renders the navbar but remove the course catalog from the navigation if we are on a public course
      * Uses bootstrap compatible html.
+     *
+     * @return bool|string
+     * @throws \moodle_exception
+     * @throws coding_exception
      */
     public function navbar() {
         global $CFG;

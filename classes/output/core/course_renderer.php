@@ -45,8 +45,8 @@ use theme_savoir\utils;
  * Course renderer with specifics for front page and editing mode
  *
  * @package theme_savoir
- * @copyright 2013 Sam Hemelryk
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course_renderer extends core_course_renderer {
     /**
@@ -109,8 +109,7 @@ class course_renderer extends core_course_renderer {
 
         // Display course category if necessary (for example in search results).
         if ($chelper->get_show_courses() == self::COURSECAT_SHOW_COURSES_EXPANDED_WITH_CAT) {
-            require_once($CFG->libdir . '/coursecatlib.php');
-            if ($cat = coursecat::get($course->category, IGNORE_MISSING)) {
+            if ($cat = core_course_category::get($course->category, IGNORE_MISSING)) {
                 $content .= html_writer::start_tag('div', array('class' => 'coursecat'));
                 $content .= get_string('category') . ': ' .
                     html_writer::link(new moodle_url($CFG->wwwroot . '/course/index.php', array('categoryid' => $cat->id)),
@@ -132,13 +131,12 @@ class course_renderer extends core_course_renderer {
      * SAVOIR: swap course search and course category selector
      * Invoked from /course/index.php
      *
-     * @param int|stdClass|coursecat $category
+     * @param int|stdClass|core_course_category $category
      * @return string
      */
     public function course_category($category) {
         global $CFG;
-        require_once($CFG->libdir . '/coursecatlib.php');
-        $coursecat = coursecat::get(is_object($category) ? $category->id : $category);
+        $coursecat = core_course_category::get(is_object($category) ? $category->id : $category);
         $site = get_site();
         $output = '';
 
@@ -155,7 +153,7 @@ class course_renderer extends core_course_renderer {
         if (!$coursecat->id) {
             if (core_course_category::is_simple_site()) {
                 // There exists only one category in the system, do not display link to it.
-                $coursecat = coursecat::get_default();
+                $coursecat = core_course_category::get_default();
                 $strfulllistofcourses = get_string('fulllistofcourses');
                 $this->page->set_title("$site->shortname: $strfulllistofcourses");
             } else {
@@ -164,16 +162,16 @@ class course_renderer extends core_course_renderer {
             }
         } else {
             $title = $site->shortname;
-            if (core_course_category::count_all() > 1) {
+            if (!core_course_category::is_simple_site()) {
                 $title .= ": " . $coursecat->get_formatted_name();
             }
             $this->page->set_title($title);
 
             // Print the category selector.
-            if (core_course_category::count_all() > 1) {
+            if (!core_course_category::is_simple_site() > 1) {
                 $output .= html_writer::start_tag('div', array('class' => 'categorypicker'));
                 $select = new single_select(new moodle_url($CFG->wwwroot . '/course/index.php'), 'categoryid',
-                    coursecat::make_categories_list(), $coursecat->id, null, 'switchcategory');
+                    core_course_category::make_categories_list(), $coursecat->id, null, 'switchcategory');
                 $select->set_label(get_string('categories') . ':');
                 $output .= $this->render($select);
                 $output .= html_writer::end_tag('div');
@@ -241,7 +239,7 @@ class course_renderer extends core_course_renderer {
             $output .= $this->single_button($url, get_string('addnewcourse'), 'get');
         }
         ob_start();
-        if (coursecat::count_all() == 1) {
+        if (core_course_category::is_simple_site()) {
             print_course_request_buttons(context_system::instance());
         } else {
             print_course_request_buttons($context);

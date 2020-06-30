@@ -32,6 +32,14 @@ use stdClass;
 defined('MOODLE_INTERNAL') || die;
 
 trait format_renderer_trait {
+    /**
+     * Get section 0 content (syllabus)
+     *
+     * @param object $section
+     * @return mixed
+     * @throws \coding_exception
+     * @throws \moodle_exception
+     */
     public function get_section_0_content($section) {
         $tcontext = new stdClass();
         $course = $section->modinfo->get_course();

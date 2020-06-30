@@ -1,5 +1,5 @@
 @theme @javascript @theme_savoir
-Feature: Front page links and navigation
+Feature: Navigation bar elements are dependant on the role of the user
 
   Background:
     And the following config values are set as admin:
@@ -20,27 +20,24 @@ Feature: Front page links and navigation
       | student | C1     | student        |
       | student | C3     | student        |
       | teacher | C1     | editingteacher |
+      | admin | C1     | editingteacher |
+    And the following "activities" exist:
+      | activity | course | idnumber | name               | intro              |
+      | assign   | C1     | assign1  | Assignment1        | Assignment 1 intro |
+      | quiz     | C1     | quiz1    | Quiz 1 description | Quiz 1 intro       |
 
-  Scenario: Without being logged in I should see a link to free courses and a drop down list
-  for other menu
-    Given I am on site homepage
-    Then I should see "Log in"
-    # Site full name
-    And I should see "Acceptance test site"
-    And I should see "View free courses"
-    When I follow "View free courses"
-    Then I should not see "Course 1"
-    And I should see "Free courses"
 
-  Scenario: If a course allows guest in, it should be on the free course list
-    Given I log in as "admin"
-    And I am on "Course 1" course homepage
-    And I navigate to "Users > Enrolment methods" in current page administration
-    And I click on "Edit" "link" in the "Guest access" "table_row"
-    And I set the following fields to these values:
-      | Allow guest access | Yes |
-    And I press "Save changes"
-    And I log out
-    And I am on site homepage
-    And I follow "View free courses"
+  Scenario: As an teacher I should see my courses
+    Given I log in as "teacher"
+    Then  I should see "My courses" in the "#nav-drawer" "css_element"
+    When I follow "My courses"
     Then I should see "Course 1"
+    Then I should see "No upcoming activities due"
+
+  Scenario: As an student I should see my courses
+    Given I log in as "student"
+    Then  I should see "My courses" in the "#nav-drawer" "css_element"
+    When I follow "My courses"
+    Then I should see "Course 1"
+    Then I should see "Course 3"
+

@@ -27,9 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Global CSS Processor
  *
- * @param string $css
  * @param theme_config $theme
  * @return string
+ * @throws dml_exception
  */
 function theme_savoir_get_main_scss_content(theme_config $theme) {
     global $CFG;
@@ -170,10 +170,15 @@ function theme_savoir_standard_footer_html() {
 
 require_once($CFG->libdir . '/navigationlib.php');
 
+/**
+ * Class savoir_flat_navigation
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class savoir_flat_navigation extends flat_navigation {
     /**
      * Build the list of navigation nodes based on the current navigation and settings trees.
-     *
+     * @throws coding_exception
      */
     public function initialise() {
         global $USER, $CFG;
@@ -220,20 +225,23 @@ class savoir_flat_navigation extends flat_navigation {
             } else {
                 // Put the menu at the end.
                 $coursemenu = $this->find('mycourses', navigation_node::NODETYPE_LEAF);
-                $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
-                $coursemenu->add_class('my_course_menu_item_nav'); // TODO : it does not seem to have an effect.
-                $this->add_help_node($isstudent, $isteacher, $isstaff);
-                $this->add($coursemenu);
-                $coursenodes = array();
-                foreach ($this->getIterator() as $node) {
-                    if ($node->type == navigation_node::TYPE_COURSE) {
-                        $coursenodes[] = $this->find($node->key, navigation_node::TYPE_COURSE);
-                        $this->remove($node->key, navigation_node::TYPE_COURSE);
+                if ($coursemenu) {
+                    $this->remove('mycourses', navigation_node::NODETYPE_LEAF);
+                    $coursemenu->add_class('my_course_menu_item_nav'); // TODO : it does not seem to have an effect.
+                    $this->add_help_node($isstudent, $isteacher, $isstaff);
+                    $this->add($coursemenu);
+                    $coursenodes = array();
+                    foreach ($this->getIterator() as $node) {
+                        if ($node->type == navigation_node::TYPE_COURSE) {
+                            $coursenodes[] = $this->find($node->key, navigation_node::TYPE_COURSE);
+                            $this->remove($node->key, navigation_node::TYPE_COURSE);
+                        }
+                    }
+                    foreach ($coursenodes as $cn) {
+                        $this->add($cn);
                     }
                 }
-                foreach ($coursenodes as $cn) {
-                    $this->add($cn);
-                }
+
                 return; // Nothing more for admins.
             }
 
@@ -259,6 +267,14 @@ class savoir_flat_navigation extends flat_navigation {
         $this->add_other_nodes($isstudent, $isteacher, $isstaff);
     }
 
+    /**
+     * Add node from definition
+     *
+     * @param array $nodedefinition
+     * @param string $beforekey
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
     protected function add_node_from_definition($nodedefinition, $beforekey = null) {
         $navlink = navigation_node::create(
             $nodedefinition['label'],
@@ -278,6 +294,16 @@ class savoir_flat_navigation extends flat_navigation {
         }
     }
 
+    /**
+     * Add help node in menu
+     *
+     * @param bool $istudent
+     * @param bool $isteacher
+     * @param bool $isstaff
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
     protected function add_help_node($istudent = true, $isteacher = true, $isstaff = true) {
         global $CFG;
         $studentcourseid = get_config('theme_savoir', 'studenthelpcourse');
@@ -332,6 +358,15 @@ class savoir_flat_navigation extends flat_navigation {
         }
     }
 
+    /**
+     * Add all other nodes
+     *
+     * @param bool $istudent
+     * @param bool $isteacher
+     * @param bool $isstaff
+     * @throws coding_exception
+     * @throws moodle_exception
+     */
     protected function add_other_nodes($istudent = true, $isteacher = true, $isstaff = true) {
         global $PAGE;
         // Add-a-block in editing mode.
@@ -355,6 +390,17 @@ class savoir_flat_navigation extends flat_navigation {
         }
     }
 
+    /**
+     * Add a node
+     *
+     * @param moodle_url $url
+     * @param string $label
+     * @param string  $key
+     * @param string $iconname
+     * @param string $iconcomponent
+     * @param int $indent
+     * @throws coding_exception
+     */
     protected function add_node($url, $label, $key, $iconname, $iconcomponent = 'moodle', $indent = 0) {
 
         $navlink = navigation_node::create($label, $url);
@@ -369,6 +415,13 @@ class savoir_flat_navigation extends flat_navigation {
     }
 }
 
+/**
+ * Check if user has a role from its name
+ * @param int $userid
+ * @param string $rolestring
+ * @return bool
+ * @throws dml_exception
+ */
 function has_role_from_name($userid, $rolestring) {
     global $DB;
     $role = $DB->get_record('role', array('shortname' => $rolestring));
@@ -381,7 +434,7 @@ function has_role_from_name($userid, $rolestring) {
  * Note: we need to pass the $output as a variable as the global $OUTPUT is not set correctly
  * (see https://moodle.org/mod/forum/discuss.php?d=336651)
  *
- * @param $output
+ * @param core_renderer $output
  * @return array
  * @throws coding_exception
  */
@@ -424,6 +477,7 @@ function get_context_two_columns_layout($output) {
 
 /**
  * Get additional icon mapping for font-awesome and this theme.
+ * @return string[]
  */
 function theme_savoir_get_fontawesome_icon_map() {
     return [

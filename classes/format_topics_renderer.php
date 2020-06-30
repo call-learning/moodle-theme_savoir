@@ -13,10 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Topic Renderer override
- * Add the course syllabus/description at the top of the course
+ * Topic Renderer override - Add the course syllabus/description at the top of the course
  *
  * @package   theme_savoir
  * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
@@ -28,6 +26,13 @@ use theme_savoir\format_renderer_trait;
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot . "/course/format/topics/renderer.php");
 
+/**
+ * Topic course format renderer override class
+ *
+ * @package   theme_savoir
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class theme_savoir_format_topics_renderer extends format_topics_renderer {
     use format_renderer_trait;
 

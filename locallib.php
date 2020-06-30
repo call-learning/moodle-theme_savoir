@@ -30,7 +30,16 @@ defined('MOODLE_INTERNAL') || die();
  * Setting Tools
  */
 
+/**
+ * Class savoir_settings_navigation
+ * @copyright 2019 - Clément Jourdain (clement.jourdain@gmail.com) & Laurent David (laurent@call-learning.fr)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class savoir_settings_navigation  extends settings_navigation {
+    /**
+     * Intialise the navigation settings for Savoir
+     * @return bool|void
+     */
     public function initialise() {
         global $PAGE;
         /* This is where it also gets very hackish because question_extend_settings_navigation function
@@ -45,8 +54,9 @@ class savoir_settings_navigation  extends settings_navigation {
 /**
  * This function is a bit of a hack, it gets all course setting values from a fake front page
  *
- * @param null $page
- * @param null $currentitem
+ * @param moodle_page $page
+ * @param navigation_node $currentitem
+ * @param string $currentpath
  * @return array
  * @throws coding_exception
  */
@@ -86,7 +96,9 @@ require_once($CFG->dirroot . '/my/lib.php');
 
 /**
  * Setup Main System Dashboard (student view)
- *
+ * @return bool
+ * @throws dml_exception
+ * @throws dml_transaction_exception
  */
 function setup_system_dashboard() {
     global $DB;
@@ -123,8 +135,8 @@ function setup_system_dashboard() {
 /**
  * Delete all blocks from this dashboard
  *
- * @param $context
- * @param $page
+ * @param context $context
+ * @param moodle_page $page
  * @throws dml_exception
  */
 function savoir_utils_delete_dashboard_blocks($context, $page) {
@@ -143,10 +155,10 @@ function savoir_utils_delete_dashboard_blocks($context, $page) {
 /**
  * Add a block to a page
  *
- * @param $context
- * @param $pagepattern
- * @param $subpagepattern
- * @param $newblocks
+ * @param context $context
+ * @param string $pagepattern
+ * @param int $subpageid
+ * @param array $newblocks
  * @throws dml_exception
  */
 function savoir_utils_add_blocks($context, $pagepattern, $subpageid, $newblocks) {
@@ -196,6 +208,8 @@ function savoir_utils_add_blocks($context, $pagepattern, $subpageid, $newblocks)
  * Setup all Dashboard blocks for a given student
  * It deletes previous blocks instances so proceed with caution
  *
+ * @param int $userid
+ * @param array $defaultblockinstances
  * @return bool
  * @throws dml_exception
  * @throws dml_transaction_exception
@@ -250,6 +264,10 @@ function setup_dashboard_blocks($userid = null, $defaultblockinstances = null) {
     return true;
 }
 
+/**
+ * Setup CSS for mobile (work in progress)
+ * @return bool
+ */
 function setup_mobile_css() {
     global $CFG;
     // TODO setup the CSS for savoir.
@@ -257,10 +275,22 @@ function setup_mobile_css() {
     return true;
 }
 
+/**
+ * Setup theme at install
+ *
+ * @return bool
+ */
 function setup_theme() {
     return setup_mobile_css();
 }
 
+/**
+ * Used from CLI script to add syllabus in the course
+ *
+ * @return bool
+ * @throws dml_exception
+ * @throws dml_transaction_exception
+ */
 function setup_syllabus() {
     global $DB;
 
